@@ -1,0 +1,4192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <title>Calendar - Digital NoteBook</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        .calendar-day {
+            min-height: 92px;
+            transition: 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-1px);
+        }
+
+        .calendar-day.today {
+            box-shadow:
+                inset 0 0 0 2px
+                rgba(59, 130, 246, 0.8);
+        }
+
+        .calendar-day.selected {
+            box-shadow:
+                inset 0 0 0 2px
+                rgba(168, 85, 247, 0.9);
+        }
+
+        .event-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .event-line {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(7, minmax(0, 1fr));
+        }
+
+        @media (max-width: 640px) {
+
+            .calendar-day {
+                min-height: 66px;
+                padding: 5px !important;
+            }
+
+            .event-line {
+                font-size: 9px;
+            }
+
+            .event-dot {
+                width: 5px;
+                height: 5px;
+            }
+
+            .weekday {
+                font-size: 10px;
+            }
+        }
+
+        .slide-panel {
+            animation: slidePanel 0.25s ease-out;
+        }
+
+        @keyframes slidePanel {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        .fade-in {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-white"
+>
+
+<div
+    id="toast-container"
+    class="fixed top-4 right-4 z-[100]"
+></div>
+
+
+<!-- Mobile Overlay -->
+
+<div
+    id="sidebar-overlay"
+    class="hidden fixed inset-0 bg-black/50 z-40"
+></div>
+
+
+<!-- Sidebar -->
+
+<aside
+    id="sidebar"
+    class="
+        fixed
+        left-0
+        top-0
+        bottom-0
+        w-72
+        bg-white
+        dark:bg-gray-900
+        border-r
+        border-gray-200
+        dark:border-gray-800
+        z-50
+        transform
+        -translate-x-full
+        md:translate-x-0
+        transition-transform
+        duration-300
+        overflow-y-auto
+    "
+>
+
+    <div class="p-5">
+
+        <div class="flex items-center gap-3 mb-8">
+
+            <div
+                class="
+                    w-11
+                    h-11
+                    rounded-xl
+                    bg-blue-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                "
+            >
+                <i class="fa-solid fa-book"></i>
+            </div>
+
+            <div>
+
+                <h1 class="font-bold text-lg">
+                    Digital NoteBook
+                </h1>
+
+                <p class="text-xs text-gray-500">
+                    Personal Life Manager
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile -->
+
+        <div
+            class="
+                bg-gray-100
+                dark:bg-gray-800
+                rounded-2xl
+                p-4
+                mb-5
+            "
+        >
+
+            <div class="flex items-center gap-3 mb-3">
+
+                <div
+                    id="sidebar-avatar"
+                    class="
+                        w-11
+                        h-11
+                        rounded-full
+                        bg-blue-600
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                        overflow-hidden
+                    "
+                >
+                    <span id="sidebar-avatar-letter">
+                        U
+                    </span>
+
+                    <img
+                        id="sidebar-avatar-image"
+                        class="hidden w-full h-full object-cover"
+                        alt="Avatar"
+                    >
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p
+                        id="sidebar-profile-name"
+                        class="font-semibold truncate"
+                    >
+                        User
+                    </p>
+
+                    <p
+                        id="sidebar-profile-mobile"
+                        class="text-xs text-gray-500 truncate"
+                    >
+                        Personal Account
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                id="profile-btn"
+                class="
+                    w-full
+                    text-sm
+                    py-2
+                    rounded-lg
+                    bg-white
+                    dark:bg-gray-700
+                    hover:bg-gray-200
+                    dark:hover:bg-gray-600
+                "
+            >
+                <i class="fa-solid fa-user mr-2"></i>
+                Profile
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="space-y-1">
+
+            <a
+                href="./index.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-house w-5"></i>
+                <span data-i18n="dashboard">
+                    Dashboard
+                </span>
+            </a>
+
+            <a
+                href="./add-income.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
+                <span data-i18n="income">
+                    Income
+                </span>
+            </a>
+
+            <a
+                href="./add-saving.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-piggy-bank w-5"></i>
+                <span data-i18n="saving">
+                    Saving
+                </span>
+            </a>
+
+            <a
+                href="./add-transaction.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-right-left w-5"></i>
+                <span data-i18n="transaction">
+                    Transaction
+                </span>
+            </a>
+
+            <a
+                href="./notebook.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-note-sticky w-5"></i>
+                <span data-i18n="notebook">
+                    Notebook
+                </span>
+            </a>
+
+            <a
+                href="./calendar.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    bg-blue-600
+                    text-white
+                "
+            >
+                <i class="fa-solid fa-calendar-days w-5"></i>
+                <span data-i18n="calendar">
+                    Calendar
+                </span>
+            </a>
+
+            <a
+                href="./calculate.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-calculator w-5"></i>
+                <span data-i18n="calculator">
+                    Calculator
+                </span>
+            </a>
+
+            <a
+                href="./account.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-user-circle w-5"></i>
+                <span data-i18n="account">
+                    Account
+                </span>
+            </a>
+
+            <a
+                href="./setting.html"
+                class="
+                    flex items-center gap-3
+                    px-4 py-3 rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-gear w-5"></i>
+                <span data-i18n="settings">
+                    Settings
+                </span>
+            </a>
+
+        </nav>
+
+    </div>
+
+</aside>
+
+
+<!-- Main -->
+
+<div class="md:ml-72 min-h-screen">
+
+
+    <!-- Header -->
+
+    <header
+        class="
+            sticky
+            top-0
+            z-30
+            bg-white/90
+            dark:bg-gray-950/90
+            backdrop-blur
+            border-b
+            border-gray-200
+            dark:border-gray-800
+        "
+    >
+
+        <div
+            class="
+                px-4
+                md:px-6
+                py-3
+                flex
+                items-center
+                justify-between
+                gap-3
+            "
+        >
+
+            <div class="flex items-center gap-3">
+
+                <button
+                    id="menu-btn"
+                    class="
+                        md:hidden
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+
+                    <h2 class="font-bold text-lg md:text-xl">
+                        <i class="fa-solid fa-calendar-days text-blue-500 mr-1"></i>
+                        Calendar
+                    </h2>
+
+                    <p
+                        id="header-date"
+                        class="text-xs text-gray-500"
+                    ></p>
+
+                </div>
+
+            </div>
+
+
+            <div class="flex items-center gap-2">
+
+                <button
+                    id="privacy-toggle"
+                    title="Privacy"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button
+                    id="language-toggle"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                        text-xs
+                        font-bold
+                    "
+                >
+                    EN
+                </button>
+
+                <button
+                    id="theme-toggle"
+                    title="Theme"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- Content -->
+
+    <main class="p-4 md:p-6 max-w-7xl mx-auto">
+
+
+        <!-- Top Quick Cards -->
+
+        <div
+            class="
+                grid
+                grid-cols-2
+                lg:grid-cols-4
+                gap-3
+                mb-5
+            "
+        >
+
+            <div
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                "
+            >
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Today
+                        </p>
+
+                        <p
+                            id="today-count"
+                            class="text-2xl font-bold mt-1"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="
+                            w-10 h-10
+                            rounded-xl
+                            bg-blue-100
+                            dark:bg-blue-900/30
+                            text-blue-600
+                            flex items-center justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                "
+            >
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Pending
+                        </p>
+
+                        <p
+                            id="pending-count"
+                            class="text-2xl font-bold mt-1"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="
+                            w-10 h-10
+                            rounded-xl
+                            bg-orange-100
+                            dark:bg-orange-900/30
+                            text-orange-600
+                            flex items-center justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                "
+            >
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            This Month
+                        </p>
+
+                        <p
+                            id="month-count"
+                            class="text-2xl font-bold mt-1"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="
+                            w-10 h-10
+                            rounded-xl
+                            bg-purple-100
+                            dark:bg-purple-900/30
+                            text-purple-600
+                            flex items-center justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-calendar"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                "
+            >
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Important
+                        </p>
+
+                        <p
+                            id="important-count"
+                            class="text-2xl font-bold mt-1"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="
+                            w-10 h-10
+                            rounded-xl
+                            bg-red-100
+                            dark:bg-red-900/30
+                            text-red-600
+                            flex items-center justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Calendar + Day Details -->
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                xl:grid-cols-[1fr_360px]
+                gap-5
+            "
+        >
+
+
+            <!-- Calendar -->
+
+            <section
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    overflow-hidden
+                "
+            >
+
+                <!-- Calendar Toolbar -->
+
+                <div
+                    class="
+                        p-4
+                        border-b
+                        border-gray-200
+                        dark:border-gray-800
+                    "
+                >
+
+                    <div
+                        class="
+                            flex
+                            flex-col
+                            sm:flex-row
+                            sm:items-center
+                            justify-between
+                            gap-3
+                        "
+                    >
+
+                        <div>
+
+                            <h3
+                                id="calendar-month-title"
+                                class="text-xl font-bold"
+                            >
+                                Month Year
+                            </h3>
+
+                            <p
+                                id="calendar-subtitle"
+                                class="text-xs text-gray-500"
+                            >
+                                Select a date
+                            </p>
+
+                        </div>
+
+
+                        <div class="flex items-center gap-2">
+
+                            <button
+                                id="prev-month"
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-xl
+                                    bg-gray-100
+                                    dark:bg-gray-800
+                                "
+                                title="Previous month"
+                            >
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+
+                            <button
+                                id="today-btn"
+                                class="
+                                    px-4
+                                    h-10
+                                    rounded-xl
+                                    bg-blue-600
+                                    text-white
+                                    text-sm
+                                    font-semibold
+                                "
+                            >
+                                Today
+                            </button>
+
+                            <button
+                                id="next-month"
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-xl
+                                    bg-gray-100
+                                    dark:bg-gray-800
+                                "
+                                title="Next month"
+                            >
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Search -->
+
+                    <div class="mt-4 relative">
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-magnifying-glass
+                                absolute
+                                left-4
+                                top-1/2
+                                -translate-y-1/2
+                                text-gray-400
+                            "
+                        ></i>
+
+                        <input
+                            id="calendar-search"
+                            type="search"
+                            placeholder="Search notes, tasks, events..."
+                            class="
+                                w-full
+                                pl-11
+                                pr-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                border
+                                border-transparent
+                                focus:border-blue-500
+                            "
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Weekdays -->
+
+                <div
+                    class="
+                        calendar-grid
+                        border-b
+                        border-gray-200
+                        dark:border-gray-800
+                    "
+                >
+
+                    <div class="weekday p-2 text-center text-xs font-semibold text-red-500">
+                        Sun
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold">
+                        Mon
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold">
+                        Tue
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold">
+                        Wed
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold">
+                        Thu
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold">
+                        Fri
+                    </div>
+
+                    <div class="weekday p-2 text-center text-xs font-semibold text-red-500">
+                        Sat
+                    </div>
+
+                </div>
+
+
+                <!-- Days -->
+
+                <div
+                    id="calendar-grid"
+                    class="calendar-grid"
+                ></div>
+
+
+                <!-- Legend -->
+
+                <div
+                    class="
+                        p-4
+                        border-t
+                        border-gray-200
+                        dark:border-gray-800
+                        flex
+                        flex-wrap
+                        gap-4
+                        text-xs
+                    "
+                >
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-blue-500"></span>
+                        Task / Note
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-red-500"></span>
+                        Urgent
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-orange-500"></span>
+                        Important
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-green-500"></span>
+                        Income
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-purple-500"></span>
+                        Saving
+                    </span>
+
+                    <span class="flex items-center gap-2">
+                        <span class="event-dot bg-red-400"></span>
+                        Expense
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- Selected Day -->
+
+            <aside
+                class="
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    overflow-hidden
+                    h-fit
+                    xl:sticky
+                    xl:top-24
+                "
+            >
+
+                <div
+                    class="
+                        p-4
+                        border-b
+                        border-gray-200
+                        dark:border-gray-800
+                    "
+                >
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-2
+                        "
+                    >
+
+                        <div>
+
+                            <p class="text-xs text-gray-500">
+                                Selected date
+                            </p>
+
+                            <h3
+                                id="selected-date-title"
+                                class="font-bold text-lg"
+                            >
+                                Today
+                            </h3>
+
+                        </div>
+
+                        <button
+                            id="add-day-note"
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-blue-600
+                                text-white
+                            "
+                            title="Add note"
+                        >
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Day Summary -->
+
+                <div class="p-4">
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-3
+                            gap-2
+                            mb-4
+                        "
+                    >
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                p-3
+                                text-center
+                            "
+                        >
+
+                            <p
+                                id="day-task-count"
+                                class="font-bold"
+                            >
+                                0
+                            </p>
+
+                            <p class="text-[10px] text-gray-500">
+                                Tasks
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                p-3
+                                text-center
+                            "
+                        >
+
+                            <p
+                                id="day-income-count"
+                                class="font-bold"
+                            >
+                                0
+                            </p>
+
+                            <p class="text-[10px] text-gray-500">
+                                Income
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                p-3
+                                text-center
+                            "
+                        >
+
+                            <p
+                                id="day-expense-count"
+                                class="font-bold"
+                            >
+                                0
+                            </p>
+
+                            <p class="text-[10px] text-gray-500">
+                                Expense
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="selected-day-list"
+                        class="space-y-2"
+                    ></div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <!-- Add Event / Task -->
+
+        <section
+            id="event-form-section"
+            class="
+                mt-5
+                hidden
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                p-5
+            "
+        >
+
+            <div
+                class="
+                    flex
+                    items-center
+                    justify-between
+                    mb-4
+                "
+            >
+
+                <div>
+
+                    <h3 class="font-bold text-lg">
+                        Add Calendar Item
+                    </h3>
+
+                    <p
+                        id="form-date-label"
+                        class="text-xs text-gray-500"
+                    ></p>
+
+                </div>
+
+                <button
+                    id="close-event-form"
+                    class="
+                        w-9
+                        h-9
+                        rounded-lg
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <form id="event-form">
+
+                <input
+                    type="hidden"
+                    id="event-id"
+                >
+
+                <div
+                    class="
+                        grid
+                        grid-cols-1
+                        md:grid-cols-2
+                        gap-4
+                    "
+                >
+
+                    <div class="md:col-span-2">
+
+                        <label class="text-sm font-medium">
+                            Title
+                        </label>
+
+                        <input
+                            id="event-title"
+                            required
+                            type="text"
+                            placeholder="e.g. Pay electricity bill"
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm font-medium">
+                            Date
+                        </label>
+
+                        <input
+                            id="event-date"
+                            required
+                            type="date"
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm font-medium">
+                            Time
+                        </label>
+
+                        <input
+                            id="event-time"
+                            type="time"
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm font-medium">
+                            Category
+                        </label>
+
+                        <select
+                            id="event-category"
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            <option value="general">
+                                General
+                            </option>
+
+                            <option value="todo">
+                                To-Do
+                            </option>
+
+                            <option value="work">
+                                Work
+                            </option>
+
+                            <option value="personal">
+                                Personal
+                            </option>
+
+                            <option value="shopping">
+                                Shopping
+                            </option>
+
+                            <option value="bill">
+                                Bill / Payment
+                            </option>
+
+                            <option value="birthday">
+                                Birthday
+                            </option>
+
+                            <option value="anniversary">
+                                Anniversary
+                            </option>
+
+                            <option value="travel">
+                                Travel
+                            </option>
+
+                            <option value="study">
+                                Study
+                            </option>
+
+                            <option value="important">
+                                Important Date
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label class="text-sm font-medium">
+                            Priority
+                        </label>
+
+                        <select
+                            id="event-priority"
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            <option value="normal">
+                                Normal
+                            </option>
+
+                            <option value="important">
+                                Important
+                            </option>
+
+                            <option value="urgent">
+                                Urgent
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="md:col-span-2">
+
+                        <label class="text-sm font-medium">
+                            Note
+                        </label>
+
+                        <textarea
+                            id="event-note"
+                            rows="3"
+                            placeholder="Additional details..."
+                            class="
+                                mt-1
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="flex gap-2 mt-4">
+
+                    <button
+                        type="submit"
+                        class="
+                            flex-1
+                            py-3
+                            rounded-xl
+                            bg-blue-600
+                            text-white
+                            font-semibold
+                        "
+                    >
+                        <i class="fa-solid fa-save mr-2"></i>
+                        Save
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancel-event"
+                        class="
+                            px-5
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- Upcoming -->
+
+        <section
+            class="
+                mt-5
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <div
+                class="
+                    p-4
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                    flex
+                    items-center
+                    justify-between
+                "
+            >
+
+                <div>
+
+                    <h3 class="font-bold">
+                        <i class="fa-solid fa-clock text-blue-500 mr-1"></i>
+                        Upcoming
+                    </h3>
+
+                    <p class="text-xs text-gray-500">
+                        Your next tasks and important dates
+                    </p>
+
+                </div>
+
+                <span
+                    id="upcoming-count"
+                    class="
+                        text-xs
+                        px-2
+                        py-1
+                        rounded-full
+                        bg-blue-100
+                        dark:bg-blue-900/30
+                        text-blue-600
+                    "
+                >
+                    0
+                </span>
+
+            </div>
+
+            <div
+                id="upcoming-list"
+                class="p-4"
+            ></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- Profile Modal -->
+
+<div
+    id="profile-modal"
+    class="
+        hidden
+        fixed
+        inset-0
+        z-[80]
+        bg-black/50
+        flex
+        items-center
+        justify-center
+        p-4
+    "
+>
+
+    <div
+        class="
+            w-full
+            max-w-md
+            bg-white
+            dark:bg-gray-900
+            rounded-2xl
+            p-5
+            shadow-2xl
+        "
+    >
+
+        <div class="flex items-center justify-between mb-4">
+
+            <h3 class="font-bold text-lg">
+                Profile
+            </h3>
+
+            <button
+                id="close-profile"
+                class="
+                    w-9
+                    h-9
+                    rounded-lg
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <div class="space-y-3">
+
+            <input
+                id="input-full-name"
+                type="text"
+                placeholder="Full name"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-address"
+                type="text"
+                placeholder="Address"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-mobile"
+                type="tel"
+                placeholder="Mobile number"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-email"
+                type="email"
+                placeholder="Email"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+        </div>
+
+
+        <button
+            id="save-profile"
+            class="
+                w-full
+                mt-4
+                py-3
+                rounded-xl
+                bg-blue-600
+                text-white
+                font-semibold
+            "
+        >
+            Save Profile
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    getNotes,
+    addNote,
+    updateNote,
+    deleteNote
+} from "./js/notes.js";
+
+import {
+    getIncomes
+} from "./js/incomes.js";
+
+import {
+    getSavings
+} from "./js/savings.js";
+
+import {
+    getTransactions
+} from "./js/transactions.js";
+
+import {
+    initTheme,
+    toggleTheme,
+    getTheme
+} from "./js/theme.js";
+
+import {
+    getLanguage,
+    setLanguage,
+    applyTranslations
+} from "./js/language.js";
+
+
+/* =========================================
+   State
+   ========================================= */
+
+const now = new Date();
+
+let currentMonth =
+    new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1
+    );
+
+let selectedDate =
+    formatDate(now);
+
+let privacyMode =
+    localStorage.getItem(
+        "privacy_mode"
+    ) === "true";
+
+
+/* =========================================
+   Elements
+   ========================================= */
+
+const calendarGrid =
+    document.getElementById(
+        "calendar-grid"
+    );
+
+const monthTitle =
+    document.getElementById(
+        "calendar-month-title"
+    );
+
+const selectedDateTitle =
+    document.getElementById(
+        "selected-date-title"
+    );
+
+const selectedDayList =
+    document.getElementById(
+        "selected-day-list"
+    );
+
+const eventFormSection =
+    document.getElementById(
+        "event-form-section"
+    );
+
+const eventForm =
+    document.getElementById(
+        "event-form"
+    );
+
+
+/* =========================================
+   Helpers
+   ========================================= */
+
+function formatDate(date) {
+
+    const d =
+        new Date(date);
+
+    const year =
+        d.getFullYear();
+
+    const month =
+        String(
+            d.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            d.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const container =
+        document.getElementById(
+            "toast-container"
+        );
+
+    const toast =
+        document.createElement(
+            "div"
+        );
+
+    const icon =
+        type === "error"
+            ? "fa-circle-exclamation"
+            : "fa-circle-check";
+
+    toast.className = `
+        mb-2
+        px-4
+        py-3
+        rounded-xl
+        shadow-xl
+        text-sm
+        bg-gray-900
+        text-white
+        flex
+        items-center
+        gap-2
+    `;
+
+    toast.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${escapeHTML(message)}</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 2500);
+}
+
+
+function formatMoney(
+    amount
+) {
+
+    if (privacyMode) {
+        return "••••";
+    }
+
+    return Number(amount || 0)
+        .toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        );
+}
+
+
+/* =========================================
+   Calendar Events
+   ========================================= */
+
+function getCalendarItems() {
+
+    const items = [];
+
+
+    /* Notes */
+
+    for (
+        const note of getNotes()
+    ) {
+
+        if (!note.date) {
+            continue;
+        }
+
+        items.push({
+
+            id:
+                note.id,
+
+            source:
+                "note",
+
+            title:
+                note.title || "Note",
+
+            date:
+                note.date,
+
+            time:
+                note.reminder || "",
+
+            category:
+                note.category || "general",
+
+            priority:
+                note.priority || "normal",
+
+            completed:
+                note.completed === true,
+
+            note:
+                note.content || ""
+
+        });
+
+    }
+
+
+    /* Incomes */
+
+    for (
+        const income of getIncomes()
+    ) {
+
+        if (!income.date) {
+            continue;
+        }
+
+        items.push({
+
+            id:
+                income.id,
+
+            source:
+                "income",
+
+            title:
+                `Income: ${
+                    income.sourceName || "Income"
+                }`,
+
+            date:
+                income.date,
+
+            time:
+                "",
+
+            category:
+                "income",
+
+            priority:
+                "normal",
+
+            amount:
+                income.total || income.amount || 0,
+
+            completed:
+                false
+
+        });
+
+    }
+
+
+    /* Savings */
+
+    for (
+        const saving of getSavings()
+    ) {
+
+        if (!saving.date) {
+            continue;
+        }
+
+        items.push({
+
+            id:
+                saving.id,
+
+            source:
+                "saving",
+
+            title:
+                `Saving: ${
+                    saving.category || "Saving"
+                }`,
+
+            date:
+                saving.date,
+
+            time:
+                "",
+
+            category:
+                "saving",
+
+            priority:
+                "normal",
+
+            amount:
+                saving.amount || 0,
+
+            completed:
+                false
+
+        });
+
+    }
+
+
+    /* Transactions */
+
+    for (
+        const transaction of getTransactions()
+    ) {
+
+        if (!transaction.date) {
+            continue;
+        }
+
+        let title =
+            "Transaction";
+
+        if (
+            transaction.type === "expense"
+        ) {
+            title = "Expense";
+        }
+
+        if (
+            transaction.type === "receivable"
+        ) {
+            title = "Receivable";
+        }
+
+        if (
+            transaction.type === "payable"
+        ) {
+            title = "Payable";
+        }
+
+        items.push({
+
+            id:
+                transaction.id,
+
+            source:
+                "transaction",
+
+            title,
+
+            date:
+                transaction.date,
+
+            time:
+                "",
+
+            category:
+                transaction.type,
+
+            priority:
+                "normal",
+
+            amount:
+                transaction.amount || 0,
+
+            completed:
+                false
+
+        });
+
+    }
+
+
+    return items;
+
+}
+
+
+/* =========================================
+   Calendar Rendering
+   ========================================= */
+
+function renderCalendar() {
+
+    const year =
+        currentMonth.getFullYear();
+
+    const month =
+        currentMonth.getMonth();
+
+    const monthName =
+        currentMonth.toLocaleDateString(
+            "en-US",
+            {
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+    monthTitle.textContent =
+        monthName;
+
+
+    calendarGrid.innerHTML = "";
+
+
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
+
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    const daysInPreviousMonth =
+        new Date(
+            year,
+            month,
+            0
+        ).getDate();
+
+
+    const items =
+        getCalendarItems();
+
+
+    /* Previous month */
+
+    for (
+        let i = firstDay - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const day =
+            daysInPreviousMonth - i;
+
+        const date =
+            new Date(
+                year,
+                month - 1,
+                day
+            );
+
+        createCalendarDay(
+            date,
+            true,
+            items
+        );
+
+    }
+
+
+    /* Current month */
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+        const date =
+            new Date(
+                year,
+                month,
+                day
+            );
+
+        createCalendarDay(
+            date,
+            false,
+            items
+        );
+
+    }
+
+
+    /* Next month */
+
+    const totalCells =
+        firstDay + daysInMonth;
+
+    const remaining =
+        totalCells % 7 === 0
+            ? 0
+            : 7 - (
+                totalCells % 7
+            );
+
+
+    for (
+        let day = 1;
+        day <= remaining;
+        day++
+    ) {
+
+        const date =
+            new Date(
+                year,
+                month + 1,
+                day
+            );
+
+        createCalendarDay(
+            date,
+            true,
+            items
+        );
+
+    }
+
+
+    updateStatistics();
+
+}
+
+
+function createCalendarDay(
+    date,
+    otherMonth,
+    allItems
+) {
+
+    const dateKey =
+        formatDate(date);
+
+    const todayKey =
+        formatDate(
+            new Date()
+        );
+
+
+    const dayItems =
+        allItems.filter(
+            item =>
+                item.date === dateKey
+        );
+
+
+    const search =
+        document
+            .getElementById(
+                "calendar-search"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const filteredItems =
+        search
+            ? dayItems.filter(
+                item =>
+                    `${item.title} ${item.note || ""}`
+                        .toLowerCase()
+                        .includes(search)
+            )
+            : dayItems;
+
+
+    const cell =
+        document.createElement(
+            "button"
+        );
+
+
+    cell.type =
+        "button";
+
+
+    cell.className = `
+        calendar-day
+        text-left
+        p-2
+        border-r
+        border-b
+        border-gray-200
+        dark:border-gray-800
+        bg-white
+        dark:bg-gray-900
+        hover:bg-gray-50
+        dark:hover:bg-gray-800
+        ${otherMonth ? "opacity-40" : ""}
+        ${dateKey === todayKey ? "today" : ""}
+        ${dateKey === selectedDate ? "selected" : ""}
+    `;
+
+
+    let html = `
+
+        <div
+            class="
+                flex
+                items-center
+                justify-between
+                mb-1
+            "
+        >
+
+            <span
+                class="
+                    text-xs
+                    font-semibold
+                    ${
+                        date.getDay() === 0 ||
+                        date.getDay() === 6
+                            ? "text-red-500"
+                            : ""
+                    }
+                "
+            >
+                ${date.getDate()}
+            </span>
+
+            ${
+                dateKey === todayKey
+                    ? `
+                        <span
+                            class="
+                                text-[8px]
+                                px-1.5
+                                py-0.5
+                                rounded-full
+                                bg-blue-600
+                                text-white
+                            "
+                        >
+                            Today
+                        </span>
+                    `
+                    : ""
+            }
+
+        </div>
+
+    `;
+
+
+    const maxItems =
+        window.innerWidth < 640
+            ? 2
+            : 4;
+
+
+    filteredItems
+        .slice(0, maxItems)
+        .forEach(
+            item => {
+
+                const dotClass =
+                    getItemColor(
+                        item
+                    );
+
+
+                html += `
+
+                    <div
+                        class="
+                            event-line
+                            flex
+                            items-center
+                            gap-1
+                            text-[10px]
+                            mb-0.5
+                            ${
+                                item.completed
+                                    ? "line-through opacity-50"
+                                    : ""
+                            }
+                        "
+                    >
+
+                        <span
+                            class="
+                                event-dot
+                                ${dotClass}
+                            "
+                        ></span>
+
+                        <span>
+                            ${escapeHTML(item.title)}
+                        </span>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+    if (
+        filteredItems.length > maxItems
+    ) {
+
+        html += `
+
+            <div
+                class="
+                    text-[9px]
+                    text-blue-500
+                    mt-1
+                "
+            >
+                +${filteredItems.length - maxItems} more
+            </div>
+
+        `;
+
+    }
+
+
+    cell.innerHTML =
+        html;
+
+
+    cell.addEventListener(
+        "click",
+        () => {
+
+            selectedDate =
+                dateKey;
+
+            renderCalendar();
+
+            renderSelectedDay();
+
+        }
+    );
+
+
+    calendarGrid.appendChild(
+        cell
+    );
+
+}
+
+
+function getItemColor(
+    item
+) {
+
+    if (
+        item.source === "income"
+    ) {
+        return "bg-green-500";
+    }
+
+    if (
+        item.source === "saving"
+    ) {
+        return "bg-purple-500";
+    }
+
+    if (
+        item.source === "transaction"
+    ) {
+
+        if (
+            item.category === "expense"
+        ) {
+            return "bg-red-400";
+        }
+
+        if (
+            item.category === "payable"
+        ) {
+            return "bg-orange-500";
+        }
+
+        return "bg-blue-500";
+    }
+
+
+    if (
+        item.priority === "urgent"
+    ) {
+        return "bg-red-500";
+    }
+
+    if (
+        item.priority === "important"
+    ) {
+        return "bg-orange-500";
+    }
+
+    return "bg-blue-500";
+
+}
+
+
+/* =========================================
+   Selected Day
+   ========================================= */
+
+function renderSelectedDay() {
+
+    const date =
+        new Date(
+            `${selectedDate}T00:00:00`
+        );
+
+
+    selectedDateTitle.textContent =
+        date.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+
+    const allItems =
+        getCalendarItems();
+
+
+    let items =
+        allItems.filter(
+            item =>
+                item.date === selectedDate
+        );
+
+
+    const search =
+        document
+            .getElementById(
+                "calendar-search"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    if (search) {
+
+        items =
+            items.filter(
+                item =>
+                    `${item.title} ${item.note || ""}`
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+    }
+
+
+    const tasks =
+        items.filter(
+            item =>
+                item.source === "note"
+        );
+
+
+    const incomes =
+        items.filter(
+            item =>
+                item.source === "income"
+        );
+
+
+    const expenses =
+        items.filter(
+            item =>
+                item.source === "transaction"
+                &&
+                item.category === "expense"
+        );
+
+
+    document.getElementById(
+        "day-task-count"
+    ).textContent =
+        tasks.length;
+
+
+    document.getElementById(
+        "day-income-count"
+    ).textContent =
+        incomes.length;
+
+
+    document.getElementById(
+        "day-expense-count"
+    ).textContent =
+        expenses.length;
+
+
+    if (!items.length) {
+
+        selectedDayList.innerHTML = `
+
+            <div
+                class="
+                    text-center
+                    py-8
+                    text-gray-500
+                "
+            >
+
+                <i
+                    class="
+                        fa-regular
+                        fa-calendar-xmark
+                        text-3xl
+                        mb-3
+                    "
+                ></i>
+
+                <p class="text-sm">
+                    No items for this date.
+                </p>
+
+                <button
+                    id="empty-add-btn"
+                    class="
+                        mt-3
+                        px-4
+                        py-2
+                        rounded-xl
+                        bg-blue-600
+                        text-white
+                        text-sm
+                    "
+                >
+                    <i class="fa-solid fa-plus mr-1"></i>
+                    Add item
+                </button>
+
+            </div>
+
+        `;
+
+
+        document
+            .getElementById(
+                "empty-add-btn"
+            )
+            ?.addEventListener(
+                "click",
+                openEventForm
+            );
+
+        return;
+
+    }
+
+
+    selectedDayList.innerHTML =
+        items
+            .map(
+                item =>
+                    createDayItemHTML(
+                        item
+                    )
+            )
+            .join("");
+
+
+    attachDayItemEvents();
+
+}
+
+
+function createDayItemHTML(
+    item
+) {
+
+    const color =
+        getItemColor(
+            item
+        );
+
+
+    let icon =
+        "fa-note-sticky";
+
+
+    if (
+        item.source === "income"
+    ) {
+        icon =
+            "fa-arrow-trend-up";
+    }
+
+    if (
+        item.source === "saving"
+    ) {
+        icon =
+            "fa-piggy-bank";
+    }
+
+    if (
+        item.source === "transaction"
+    ) {
+        icon =
+            "fa-right-left";
+    }
+
+
+    return `
+
+        <div
+            class="
+                day-item
+                p-3
+                rounded-xl
+                bg-gray-100
+                dark:bg-gray-800
+                slide-panel
+            "
+            data-source="${escapeHTML(item.source)}"
+            data-id="${escapeHTML(item.id)}"
+        >
+
+            <div
+                class="
+                    flex
+                    items-start
+                    gap-3
+                "
+            >
+
+                <div
+                    class="
+                        w-9
+                        h-9
+                        rounded-lg
+                        ${color}
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        flex-shrink-0
+                    "
+                >
+                    <i
+                        class="
+                            fa-solid
+                            ${icon}
+                        "
+                    ></i>
+                </div>
+
+
+                <div class="min-w-0 flex-1">
+
+                    <p
+                        class="
+                            text-sm
+                            font-semibold
+                            ${
+                                item.completed
+                                    ? "line-through opacity-50"
+                                    : ""
+                            }
+                        "
+                    >
+                        ${escapeHTML(item.title)}
+                    </p>
+
+                    ${
+                        item.time
+                            ? `
+                                <p class="text-[10px] text-gray-500 mt-0.5">
+                                    <i class="fa-regular fa-clock mr-1"></i>
+                                    ${escapeHTML(item.time)}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        item.amount !== undefined
+                            ? `
+                                <p class="text-xs text-gray-500 mt-1">
+                                    ₹ ${formatMoney(item.amount)}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        item.note
+                            ? `
+                                <p class="text-xs text-gray-500 mt-1">
+                                    ${escapeHTML(item.note)}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                </div>
+
+
+                ${
+                    item.source === "note"
+                        ? `
+                            <div class="flex gap-1">
+
+                                <button
+                                    class="
+                                        edit-day-item
+                                        w-8
+                                        h-8
+                                        rounded-lg
+                                        bg-white
+                                        dark:bg-gray-700
+                                    "
+                                    title="Edit"
+                                >
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+
+                                <button
+                                    class="
+                                        delete-day-item
+                                        w-8
+                                        h-8
+                                        rounded-lg
+                                        bg-white
+                                        dark:bg-gray-700
+                                        text-red-500
+                                    "
+                                    title="Delete"
+                                >
+                                    <i class="fa-solid fa-trash text-xs"></i>
+                                </button>
+
+                            </div>
+                        `
+                        : ""
+                }
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================
+   Day Item Events
+   ========================================= */
+
+function attachDayItemEvents() {
+
+    document
+        .querySelectorAll(
+            ".edit-day-item"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+                        const parent =
+                            button.closest(
+                                ".day-item"
+                            );
+
+                        const id =
+                            parent.dataset.id;
+
+                        const note =
+                            getNotes().find(
+                                item =>
+                                    item.id === id
+                            );
+
+                        if (!note) {
+                            return;
+                        }
+
+                        openEditEventForm(
+                            note
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".delete-day-item"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+                        const parent =
+                            button.closest(
+                                ".day-item"
+                            );
+
+                        const id =
+                            parent.dataset.id;
+
+                        if (
+                            confirm(
+                                "Delete this note?"
+                            )
+                        ) {
+
+                            deleteNote(id);
+
+                            refreshAll();
+
+                            showToast(
+                                "Note deleted."
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Statistics
+   ========================================= */
+
+function updateStatistics() {
+
+    const today =
+        formatDate(
+            new Date()
+        );
+
+
+    const items =
+        getCalendarItems();
+
+
+    const todayItems =
+        items.filter(
+            item =>
+                item.date === today
+        );
+
+
+    const pending =
+        items.filter(
+            item =>
+                item.source === "note"
+                &&
+                !item.completed
+        );
+
+
+    const monthPrefix =
+        `${currentMonth.getFullYear()}-${
+            String(
+                currentMonth.getMonth() + 1
+            ).padStart(2, "0")
+        }`;
+
+
+    const monthItems =
+        items.filter(
+            item =>
+                item.date.startsWith(
+                    monthPrefix
+                )
+        );
+
+
+    const important =
+        items.filter(
+            item =>
+                item.priority === "important"
+                ||
+                item.priority === "urgent"
+        );
+
+
+    document.getElementById(
+        "today-count"
+    ).textContent =
+        todayItems.length;
+
+
+    document.getElementById(
+        "pending-count"
+    ).textContent =
+        pending.length;
+
+
+    document.getElementById(
+        "month-count"
+    ).textContent =
+        monthItems.length;
+
+
+    document.getElementById(
+        "important-count"
+    ).textContent =
+        important.length;
+
+}
+
+
+/* =========================================
+   Upcoming
+   ========================================= */
+
+function renderUpcoming() {
+
+    const container =
+        document.getElementById(
+            "upcoming-list"
+        );
+
+
+    const today =
+        formatDate(
+            new Date()
+        );
+
+
+    const items =
+        getCalendarItems()
+            .filter(
+                item =>
+                    item.date >= today
+            )
+            .sort(
+                (a, b) =>
+                    `${a.date} ${a.time || ""}`
+                        .localeCompare(
+                            `${b.date} ${b.time || ""}`
+                        )
+            )
+            .slice(0, 8);
+
+
+    document.getElementById(
+        "upcoming-count"
+    ).textContent =
+        items.length;
+
+
+    if (!items.length) {
+
+        container.innerHTML = `
+
+            <div
+                class="
+                    py-8
+                    text-center
+                    text-gray-500
+                "
+            >
+
+                <i
+                    class="
+                        fa-regular
+                        fa-calendar-check
+                        text-3xl
+                        mb-2
+                    "
+                ></i>
+
+                <p class="text-sm">
+                    No upcoming items.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        items
+            .map(
+                item => {
+
+                    const date =
+                        new Date(
+                            `${item.date}T00:00:00`
+                        );
+
+
+                    return `
+
+                        <button
+                            type="button"
+                            class="
+                                upcoming-item
+                                w-full
+                                text-left
+                                p-3
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                mb-2
+                                hover:bg-gray-200
+                                dark:hover:bg-gray-700
+                            "
+                            data-date="${item.date}"
+                        >
+
+                            <div class="flex items-center gap-3">
+
+                                <div
+                                    class="
+                                        w-10
+                                        h-10
+                                        rounded-xl
+                                        ${getItemColor(item)}
+                                        text-white
+                                        flex
+                                        items-center
+                                        justify-center
+                                    "
+                                >
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                </div>
+
+
+                                <div class="min-w-0 flex-1">
+
+                                    <p class="text-sm font-semibold truncate">
+                                        ${escapeHTML(item.title)}
+                                    </p>
+
+                                    <p class="text-[10px] text-gray-500">
+                                        ${date.toLocaleDateString(
+                                            "en-US",
+                                            {
+                                                month: "short",
+                                                day: "numeric",
+                                                year: "numeric"
+                                            }
+                                        )}
+                                        ${
+                                            item.time
+                                                ? ` • ${escapeHTML(item.time)}`
+                                                : ""
+                                        }
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </button>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    document
+        .querySelectorAll(
+            ".upcoming-item"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const date =
+                            button.dataset.date;
+
+                        selectedDate =
+                            date;
+
+                        const d =
+                            new Date(
+                                `${date}T00:00:00`
+                            );
+
+                        currentMonth =
+                            new Date(
+                                d.getFullYear(),
+                                d.getMonth(),
+                                1
+                            );
+
+                        refreshAll();
+
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Event Form
+   ========================================= */
+
+function openEventForm() {
+
+    eventFormSection.classList.remove(
+        "hidden"
+    );
+
+    document.getElementById(
+        "event-id"
+    ).value = "";
+
+
+    document.getElementById(
+        "event-title"
+    ).value = "";
+
+
+    document.getElementById(
+        "event-date"
+    ).value =
+        selectedDate;
+
+
+    document.getElementById(
+        "event-time"
+    ).value = "";
+
+
+    document.getElementById(
+        "event-category"
+    ).value =
+        "general";
+
+
+    document.getElementById(
+        "event-priority"
+    ).value =
+        "normal";
+
+
+    document.getElementById(
+        "event-note"
+    ).value = "";
+
+
+    document.getElementById(
+        "form-date-label"
+    ).textContent =
+        formatDisplayDate(
+            selectedDate
+        );
+
+
+    eventFormSection.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+
+    setTimeout(
+        () =>
+            document
+                .getElementById(
+                    "event-title"
+                )
+                .focus(),
+        250
+    );
+
+}
+
+
+function openEditEventForm(
+    note
+) {
+
+    eventFormSection.classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "event-id"
+    ).value =
+        note.id;
+
+
+    document.getElementById(
+        "event-title"
+    ).value =
+        note.title || "";
+
+
+    document.getElementById(
+        "event-date"
+    ).value =
+        note.date || selectedDate;
+
+
+    document.getElementById(
+        "event-time"
+    ).value =
+        note.reminder || "";
+
+
+    document.getElementById(
+        "event-category"
+    ).value =
+        note.category || "general";
+
+
+    document.getElementById(
+        "event-priority"
+    ).value =
+        note.priority || "normal";
+
+
+    document.getElementById(
+        "event-note"
+    ).value =
+        note.content || "";
+
+
+    document.getElementById(
+        "form-date-label"
+    ).textContent =
+        formatDisplayDate(
+            note.date || selectedDate
+        );
+
+
+    eventFormSection.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+function closeEventForm() {
+
+    eventFormSection.classList.add(
+        "hidden"
+    );
+
+}
+
+
+function formatDisplayDate(
+    dateString
+) {
+
+    const date =
+        new Date(
+            `${dateString}T00:00:00`
+        );
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================
+   Form Submit
+   ========================================= */
+
+eventForm.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+
+        const id =
+            document.getElementById(
+                "event-id"
+            ).value;
+
+
+        const title =
+            document.getElementById(
+                "event-title"
+            ).value.trim();
+
+
+        const date =
+            document.getElementById(
+                "event-date"
+            ).value;
+
+
+        const time =
+            document.getElementById(
+                "event-time"
+            ).value;
+
+
+        const category =
+            document.getElementById(
+                "event-category"
+            ).value;
+
+
+        const priority =
+            document.getElementById(
+                "event-priority"
+            ).value;
+
+
+        const content =
+            document.getElementById(
+                "event-note"
+            ).value.trim();
+
+
+        if (!title || !date) {
+
+            showToast(
+                "Please enter title and date.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const data = {
+
+            title,
+
+            date,
+
+            reminder:
+                time,
+
+            category,
+
+            priority,
+
+            content
+
+        };
+
+
+        if (id) {
+
+            updateNote(
+                id,
+                data
+            );
+
+            showToast(
+                "Calendar item updated."
+            );
+
+        } else {
+
+            addNote(
+                data
+            );
+
+            showToast(
+                "Calendar item added."
+            );
+
+        }
+
+
+        selectedDate =
+            date;
+
+
+        const d =
+            new Date(
+                `${date}T00:00:00`
+            );
+
+
+        currentMonth =
+            new Date(
+                d.getFullYear(),
+                d.getMonth(),
+                1
+            );
+
+
+        closeEventForm();
+
+        refreshAll();
+
+    }
+);
+
+
+/* =========================================
+   Navigation
+   ========================================= */
+
+document
+    .getElementById(
+        "prev-month"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            currentMonth =
+                new Date(
+                    currentMonth.getFullYear(),
+                    currentMonth.getMonth() - 1,
+                    1
+                );
+
+            refreshAll();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "next-month"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            currentMonth =
+                new Date(
+                    currentMonth.getFullYear(),
+                    currentMonth.getMonth() + 1,
+                    1
+                );
+
+            refreshAll();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "today-btn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const today =
+                new Date();
+
+            currentMonth =
+                new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    1
+                );
+
+            selectedDate =
+                formatDate(
+                    today
+                );
+
+            refreshAll();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "add-day-note"
+    )
+    .addEventListener(
+        "click",
+        openEventForm
+    );
+
+
+document
+    .getElementById(
+        "close-event-form"
+    )
+    .addEventListener(
+        "click",
+        closeEventForm
+    );
+
+
+document
+    .getElementById(
+        "cancel-event"
+    )
+    .addEventListener(
+        "click",
+        closeEventForm
+    );
+
+
+document
+    .getElementById(
+        "calendar-search"
+    )
+    .addEventListener(
+        "input",
+        refreshAll
+    );
+
+
+/* =========================================
+   Theme
+   ========================================= */
+
+initTheme();
+
+
+document
+    .getElementById(
+        "theme-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            toggleTheme();
+
+            updateThemeIcon();
+
+        }
+    );
+
+
+function updateThemeIcon() {
+
+    const button =
+        document.getElementById(
+            "theme-toggle"
+        );
+
+    button.innerHTML =
+        getTheme() === "dark"
+            ? `<i class="fa-solid fa-sun"></i>`
+            : `<i class="fa-solid fa-moon"></i>`;
+
+}
+
+
+updateThemeIcon();
+
+
+/* =========================================
+   Language
+   ========================================= */
+
+let language =
+    getLanguage();
+
+
+setLanguage(
+    language
+);
+
+
+document
+    .getElementById(
+        "language-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            language =
+                language === "en"
+                    ? "ne"
+                    : "en";
+
+            setLanguage(
+                language
+            );
+
+            updateLanguageButton();
+
+        }
+    );
+
+
+function updateLanguageButton() {
+
+    document.getElementById(
+        "language-toggle"
+    ).textContent =
+        language === "en"
+            ? "EN"
+            : "ने";
+
+}
+
+
+updateLanguageButton();
+
+
+/* =========================================
+   Privacy
+   ========================================= */
+
+function updatePrivacyIcon() {
+
+    const button =
+        document.getElementById(
+            "privacy-toggle"
+        );
+
+
+    button.innerHTML =
+        privacyMode
+            ? `<i class="fa-solid fa-eye-slash"></i>`
+            : `<i class="fa-solid fa-eye"></i>`;
+
+}
+
+
+document
+    .getElementById(
+        "privacy-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            privacyMode =
+                !privacyMode;
+
+            localStorage.setItem(
+                "privacy_mode",
+                String(
+                    privacyMode
+                )
+            );
+
+            updatePrivacyIcon();
+
+            refreshAll();
+
+        }
+    );
+
+
+updatePrivacyIcon();
+
+
+/* =========================================
+   Header Date
+   ========================================= */
+
+function updateHeaderDate() {
+
+    const date =
+        new Date();
+
+    document.getElementById(
+        "header-date"
+    ).textContent =
+        date.toLocaleString(
+            "en-US",
+            {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+}
+
+
+updateHeaderDate();
+
+setInterval(
+    updateHeaderDate,
+    60000
+);
+
+
+/* =========================================
+   Profile
+   ========================================= */
+
+function loadProfile() {
+
+    const name =
+        localStorage.getItem(
+            "profile_name"
+        ) || "User";
+
+    const mobile =
+        localStorage.getItem(
+            "profile_mobile"
+        ) || "";
+
+
+    document.getElementById(
+        "sidebar-profile-name"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "sidebar-profile-mobile"
+    ).textContent =
+        mobile || "Personal Account";
+
+
+    document.getElementById(
+        "input-full-name"
+    ).value =
+        name === "User"
+            ? ""
+            : name;
+
+
+    document.getElementById(
+        "input-address"
+    ).value =
+        localStorage.getItem(
+            "profile_address"
+        ) || "";
+
+
+    document.getElementById(
+        "input-mobile"
+    ).value =
+        mobile;
+
+
+    document.getElementById(
+        "input-email"
+    ).value =
+        localStorage.getItem(
+            "profile_email"
+        ) || "";
+
+
+    const avatar =
+        localStorage.getItem(
+            "profile_avatar"
+        );
+
+
+    if (avatar) {
+
+        document.getElementById(
+            "sidebar-avatar-image"
+        ).src =
+            avatar;
+
+        document.getElementById(
+            "sidebar-avatar-image"
+        ).classList.remove(
+            "hidden"
+        );
+
+        document.getElementById(
+            "sidebar-avatar-letter"
+        ).classList.add(
+            "hidden"
+        );
+
+    } else {
+
+        document.getElementById(
+            "sidebar-avatar-letter"
+        ).textContent =
+            name
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+}
+
+
+loadProfile();
+
+
+document
+    .getElementById(
+        "profile-btn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.remove(
+                    "hidden"
+                );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "close-profile"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "save-profile"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const name =
+                document.getElementById(
+                    "input-full-name"
+                ).value.trim();
+
+
+            const address =
+                document.getElementById(
+                    "input-address"
+                ).value.trim();
+
+
+            const mobile =
+                document.getElementById(
+                    "input-mobile"
+                ).value.trim();
+
+
+            const email =
+                document.getElementById(
+                    "input-email"
+                ).value.trim();
+
+
+            localStorage.setItem(
+                "profile_name",
+                name || "User"
+            );
+
+            localStorage.setItem(
+                "profile_address",
+                address
+            );
+
+            localStorage.setItem(
+                "profile_mobile",
+                mobile
+            );
+
+            localStorage.setItem(
+                "profile_email",
+                email
+            );
+
+
+            loadProfile();
+
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+
+            showToast(
+                "Profile saved."
+            );
+
+        }
+    );
+
+
+/* =========================================
+   Mobile Sidebar
+   ========================================= */
+
+const sidebar =
+    document.getElementById(
+        "sidebar"
+    );
+
+const overlay =
+    document.getElementById(
+        "sidebar-overlay"
+    );
+
+
+document
+    .getElementById(
+        "menu-btn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.remove(
+                "-translate-x-full"
+            );
+
+            overlay.classList.remove(
+                "hidden"
+            );
+
+        }
+    );
+
+
+overlay.addEventListener(
+    "click",
+    closeSidebar
+);
+
+
+document
+    .querySelectorAll(
+        "#sidebar a"
+    )
+    .forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+    );
+
+
+function closeSidebar() {
+
+    sidebar.classList.add(
+        "-translate-x-full"
+    );
+
+    overlay.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================
+   Refresh
+   ========================================= */
+
+function refreshAll() {
+
+    renderCalendar();
+
+    renderSelectedDay();
+
+    renderUpcoming();
+
+    applyTranslations(
+        getLanguage()
+    );
+
+}
+
+
+refreshAll();
+
+</script>
+
+</body>
+</html>
