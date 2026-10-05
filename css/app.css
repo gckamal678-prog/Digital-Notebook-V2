@@ -1,0 +1,214 @@
+/* =========================================
+   Digital NoteBook V2
+   Common Application CSS
+   ========================================= */
+
+
+/* ---------- Base ---------- */
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ---------- Mobile Touch ---------- */
+
+button,
+a,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* ---------- Scrollbar ---------- */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+}
+
+
+/* ---------- Form Elements ---------- */
+
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+}
+
+
+/* ---------- Number Input ---------- */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+
+/* ---------- Prevent Image Drag ---------- */
+
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+
+/* ---------- Utility ---------- */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ---------- Toast ---------- */
+
+#toast-container {
+    pointer-events: none;
+}
+
+#toast-container > div {
+    pointer-events: auto;
+    animation: toast-in 0.25s ease-out;
+}
+
+@keyframes toast-in {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ---------- Sidebar ---------- */
+
+#sidebar {
+    will-change: transform;
+}
+
+
+/* ---------- Modal ---------- */
+
+.modal-backdrop {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+
+/* ---------- Privacy Amount ---------- */
+
+.privacy-amount {
+    transition: opacity 0.15s ease;
+}
+
+
+/* ---------- Cards ---------- */
+
+.app-card {
+    border-radius: 1rem;
+}
+
+
+/* ---------- Safe Area for Mobile ---------- */
+
+.safe-bottom {
+    padding-bottom:
+        max(1rem, env(safe-area-inset-bottom));
+}
+
+.safe-top {
+    padding-top:
+        max(0.5rem, env(safe-area-inset-top));
+}
+
+
+/* ---------- Prevent Horizontal Overflow ---------- */
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+
+/* ---------- Mobile Form Improvements ---------- */
+
+@media (max-width: 640px) {
+
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+    }
+
+    button {
+        min-height: 40px;
+    }
+}
+
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 768px) {
+
+    #sidebar {
+        max-width: 18rem;
+    }
+}
+
+
+/* ---------- Print ---------- */
+
+@media print {
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    #sidebar,
+    header,
+    #toast-container {
+        display: none !important;
+    }
+
+    main {
+        overflow: visible !important;
+        max-width: none !important;
+    }
+}
