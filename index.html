@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta
+        name="theme-color"
+        content="#020617"
+    >
+
+    <title>Digital NoteBook</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <!-- Poppins -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- V2 CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
+
+    <style>
+
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .dark body {
+            background: #020617;
+            color: #f8fafc;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(15,23,42,0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .dark .glass {
+            background: rgba(15,23,42,0.88);
+            border-color: rgba(148,163,184,0.16);
+        }
+
+        .muted {
+            color: #64748b;
+        }
+
+        .dark .muted {
+            color: #94a3b8;
+        }
+
+        .sidebar-link {
+            transition: 0.2s ease;
+        }
+
+        .sidebar-link:hover {
+            transform: translateX(2px);
+        }
+
+        .summary-card {
+            transition: transform 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         MOBILE OVERLAY
+         ========================================= -->
+
+    <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+
+
+    <!-- =========================================
+         SIDEBAR
+         ========================================= -->
+
+    <aside
+        id="sidebar"
+        class="fixed left-0 top-0 bottom-0 z-50 w-72
+               bg-slate-950 text-white
+               transform -translate-x-full
+               md:translate-x-0
+               transition-transform duration-300
+               overflow-y-auto"
+    >
+
+        <!-- Logo / Profile -->
+
+        <div class="p-5 border-b border-slate-800">
+
+            <div class="flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        id="sidebar-avatar"
+                        class="w-11 h-11 rounded-full
+                               bg-indigo-600
+                               flex items-center justify-center
+                               overflow-hidden"
+                    >
+
+                        <i class="fa-solid fa-book"></i>
+
+                    </div>
+
+
+                    <div class="min-w-0">
+
+                        <div
+                            id="sidebar-name"
+                            class="font-semibold truncate"
+                        >
+                            Digital NoteBook
+                        </div>
+
+                        <div
+                            class="text-xs text-slate-400"
+                        >
+                            Personal Finance
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    id="close-sidebar"
+                    type="button"
+                    class="md:hidden text-slate-400"
+                >
+
+                    <i
+                        class="fa-solid fa-xmark text-xl"
+                    ></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             NAVIGATION
+             ===================================== -->
+
+        <nav class="p-4 space-y-1">
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="./index.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       bg-indigo-600 text-white"
+            >
+
+                <i
+                    class="fa-solid fa-chart-pie w-5"
+                ></i>
+
+                <span data-i18n="dashboard">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+
+            <!-- Income -->
+
+            <a
+                href="./add-income.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-money-bill-trend-up w-5"
+                ></i>
+
+                <span>
+                    Income
+                </span>
+
+            </a>
+
+
+
+            <!-- Saving -->
+
+            <a
+                href="./add-saving.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-piggy-bank w-5"
+                ></i>
+
+                <span data-i18n="saving">
+                    Saving
+                </span>
+
+            </a>
+
+
+
+            <!-- Transaction -->
+
+            <a
+                href="./add-transaction.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-arrow-right-arrow-left w-5"
+                ></i>
+
+                <span data-i18n="transaction">
+                    Transaction
+                </span>
+
+            </a>
+
+
+
+            <!-- Notebook -->
+
+            <a
+                href="./notebook.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-book w-5"
+                ></i>
+
+                <span data-i18n="notebook">
+                    Notebook
+                </span>
+
+            </a>
+
+
+
+            <!-- Calendar -->
+
+            <a
+                href="./calendar.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-calendar-days w-5"
+                ></i>
+
+                <span data-i18n="calendar">
+                    Calendar
+                </span>
+
+            </a>
+
+
+
+            <!-- Calculator -->
+
+            <a
+                href="./calculate.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-calculator w-5"
+                ></i>
+
+                <span data-i18n="calculator">
+                    Calculator
+                </span>
+
+            </a>
+
+
+
+            <!-- Account -->
+
+            <a
+                href="./account.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-user-circle w-5"
+                ></i>
+
+                <span data-i18n="account">
+                    Account
+                </span>
+
+            </a>
+
+
+
+            <!-- Settings -->
+
+            <a
+                href="./setting.html"
+                class="sidebar-link flex items-center gap-3
+                       px-4 py-3 rounded-xl
+                       text-slate-300 hover:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-gear w-5"
+                ></i>
+
+                <span data-i18n="settings">
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN
+         ========================================= -->
+
+    <div class="md:ml-72 min-h-screen">
+
+
+        <!-- =====================================
+             HEADER
+             ===================================== -->
+
+        <header
+            class="sticky top-0 z-30
+                   bg-white/90
+                   dark:bg-slate-950/90
+                   backdrop-blur
+                   border-b
+                   border-slate-200
+                   dark:border-slate-800"
+        >
+
+            <div
+                class="max-w-7xl mx-auto
+                       px-4 sm:px-6 py-3
+                       flex items-center
+                       justify-between"
+            >
+
+
+                <!-- Left -->
+
+                <div class="flex items-center gap-3">
+
+                    <button
+                        id="open-sidebar"
+                        type="button"
+                        class="md:hidden
+                               w-10 h-10 rounded-xl
+                               bg-slate-100
+                               dark:bg-slate-800
+                               flex items-center
+                               justify-center"
+                    >
+
+                        <i class="fa-solid fa-bars"></i>
+
+                    </button>
+
+
+                    <div>
+
+                        <h1
+                            class="font-bold
+                                   text-lg sm:text-xl"
+                        >
+                            Digital NoteBook
+                        </h1>
+
+                        <div
+                            id="current-date-time"
+                            class="text-xs muted"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Right -->
+
+                <div
+                    class="flex items-center gap-2"
+                >
+
+
+                    <!-- Privacy -->
+
+                    <button
+                        id="privacy-toggle"
+                        type="button"
+                        title="Privacy"
+                        class="w-10 h-10 rounded-xl
+                               bg-slate-100
+                               dark:bg-slate-800
+                               flex items-center
+                               justify-center"
+                    >
+
+                        <i
+                            id="privacy-icon"
+                            class="fa-solid fa-eye"
+                        ></i>
+
+                    </button>
+
+
+
+                    <!-- Language -->
+
+                    <button
+                        id="language-toggle"
+                        type="button"
+                        class="w-10 h-10 rounded-xl
+                               bg-slate-100
+                               dark:bg-slate-800
+                               flex items-center
+                               justify-center
+                               text-xs font-bold"
+                    >
+                        EN
+                    </button>
+
+
+
+                    <!-- Theme -->
+
+                    <button
+                        id="theme-toggle"
+                        type="button"
+                        title="Theme"
+                        class="w-10 h-10 rounded-xl
+                               bg-slate-100
+                               dark:bg-slate-800
+                               flex items-center
+                               justify-center"
+                    >
+
+                        <i
+                            id="theme-icon"
+                            class="fa-solid fa-moon"
+                        ></i>
+
+                    </button>
+
+
+
+                    <!-- Avatar -->
+
+                    <div
+                        id="header-avatar"
+                        class="w-10 h-10 rounded-full
+                               bg-indigo-600
+                               text-white
+                               flex items-center
+                               justify-center
+                               overflow-hidden"
+                    >
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================
+             CONTENT
+             ===================================== -->
+
+        <main
+            class="max-w-7xl mx-auto
+                   px-4 sm:px-6 py-6"
+        >
+
+
+            <!-- =================================
+                 WELCOME
+                 ================================= -->
+
+            <section
+                class="glass rounded-2xl
+                       p-5 sm:p-6 mb-6"
+            >
+
+                <div
+                    class="flex flex-col
+                           sm:flex-row
+                           sm:items-center
+                           sm:justify-between
+                           gap-4"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-sm muted"
+                        >
+                            Welcome back
+                        </p>
+
+                        <h2
+                            id="welcome-name"
+                            class="text-2xl
+                                   sm:text-3xl
+                                   font-bold mt-1"
+                        >
+                            Digital NoteBook
+                        </h2>
+
+                        <p
+                            class="text-sm muted mt-2"
+                        >
+                            Manage your income,
+                            savings and transactions
+                            in one place.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="./add-income.html"
+                        class="inline-flex
+                               items-center
+                               justify-center
+                               gap-2
+                               px-5 py-3
+                               rounded-xl
+                               bg-indigo-600
+                               hover:bg-indigo-700
+                               text-white
+                               font-semibold"
+                    >
+
+                        <i
+                            class="fa-solid fa-plus"
+                        ></i>
+
+                        Add Income
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 SUMMARY CARDS
+                 ================================= -->
+
+            <section
+                class="grid
+                       grid-cols-1
+                       sm:grid-cols-2
+                       lg:grid-cols-3
+                       gap-4 mb-6"
+            >
+
+
+                <!-- Income -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Total Income
+                            </p>
+
+                            <h3
+                                id="total-income"
+                                class="text-2xl
+                                       font-bold mt-2
+                                       text-emerald-600
+                                       dark:text-emerald-400"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-emerald-100
+                                   dark:bg-emerald-950
+                                   text-emerald-600
+                                   dark:text-emerald-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-money-bill-trend-up"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Expense -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Total Expense
+                            </p>
+
+                            <h3
+                                id="total-expense"
+                                class="text-2xl
+                                       font-bold mt-2
+                                       text-red-600
+                                       dark:text-red-400"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-red-100
+                                   dark:bg-red-950
+                                   text-red-600
+                                   dark:text-red-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-arrow-down"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Saving -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Total Saving
+                            </p>
+
+                            <h3
+                                id="total-saving"
+                                class="text-2xl
+                                       font-bold mt-2
+                                       text-blue-600
+                                       dark:text-blue-400"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-blue-100
+                                   dark:bg-blue-950
+                                   text-blue-600
+                                   dark:text-blue-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-piggy-bank"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Receivable -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Receivable
+                            </p>
+
+                            <h3
+                                id="total-receivable"
+                                class="text-2xl
+                                       font-bold mt-2"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-amber-100
+                                   dark:bg-amber-950
+                                   text-amber-600
+                                   dark:text-amber-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-hand-holding-dollar"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Payable -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Payable
+                            </p>
+
+                            <h3
+                                id="total-payable"
+                                class="text-2xl
+                                       font-bold mt-2"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-orange-100
+                                   dark:bg-orange-950
+                                   text-orange-600
+                                   dark:text-orange-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-hand-holding"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Balance -->
+
+                <div
+                    class="summary-card
+                           glass rounded-2xl p-5"
+                >
+
+                    <div
+                        class="flex items-center
+                               justify-between"
+                    >
+
+                        <div>
+
+                            <p
+                                class="text-sm muted"
+                            >
+                                Balance
+                            </p>
+
+                            <h3
+                                id="total-balance"
+                                class="text-2xl
+                                       font-bold mt-2"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-xl
+                                   bg-indigo-100
+                                   dark:bg-indigo-950
+                                   text-indigo-600
+                                   dark:text-indigo-400
+                                   flex items-center
+                                   justify-center"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-wallet"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 QUICK ACTIONS
+                 ================================= -->
+
+            <section
+                class="glass rounded-2xl p-5 sm:p-6"
+            >
+
+                <div class="mb-5">
+
+                    <h2
+                        class="text-lg font-bold"
+                    >
+                        Quick Actions
+                    </h2>
+
+                    <p
+                        class="text-sm muted"
+                    >
+                        Quickly access your
+                        finance tools.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="grid
+                           grid-cols-2
+                           sm:grid-cols-3
+                           lg:grid-cols-6
+                           gap-3"
+                >
+
+
+                    <a
+                        href="./add-income.html"
+                        class="p-4 rounded-xl
+                               bg-emerald-50
+                               dark:bg-emerald-950/40
+                               text-emerald-700
+                               dark:text-emerald-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-money-bill-trend-up
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Income
+                        </div>
+
+                    </a>
+
+
+
+                    <a
+                        href="./add-saving.html"
+                        class="p-4 rounded-xl
+                               bg-blue-50
+                               dark:bg-blue-950/40
+                               text-blue-700
+                               dark:text-blue-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-piggy-bank
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Saving
+                        </div>
+
+                    </a>
+
+
+
+                    <a
+                        href="./add-transaction.html"
+                        class="p-4 rounded-xl
+                               bg-red-50
+                               dark:bg-red-950/40
+                               text-red-700
+                               dark:text-red-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-arrow-right-arrow-left
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Transaction
+                        </div>
+
+                    </a>
+
+
+
+                    <a
+                        href="./notebook.html"
+                        class="p-4 rounded-xl
+                               bg-purple-50
+                               dark:bg-purple-950/40
+                               text-purple-700
+                               dark:text-purple-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-book
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Notebook
+                        </div>
+
+                    </a>
+
+
+
+                    <a
+                        href="./calendar.html"
+                        class="p-4 rounded-xl
+                               bg-amber-50
+                               dark:bg-amber-950/40
+                               text-amber-700
+                               dark:text-amber-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-calendar-days
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Calendar
+                        </div>
+
+                    </a>
+
+
+
+                    <a
+                        href="./calculate.html"
+                        class="p-4 rounded-xl
+                               bg-indigo-50
+                               dark:bg-indigo-950/40
+                               text-indigo-700
+                               dark:text-indigo-300
+                               text-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-calculator
+                                   text-xl"
+                        ></i>
+
+                        <div
+                            class="text-sm
+                                   font-medium mt-2"
+                        >
+                            Calculator
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =========================================
+         TOAST
+         ========================================= -->
+
+    <div
+        id="toast-container"
+        class="fixed right-4 bottom-4
+               z-[200]"
+    ></div>
+
+
+
+    <!-- =========================================
+         V2 APP SCRIPT
+         ========================================= -->
+
+    <script type="module">
+
+        import {
+            waitForAuth
+        } from "./js/auth.js";
+
+
+        import {
+            getIncomes
+        } from "./js/incomes.js";
+
+
+        import {
+            getSavings
+        } from "./js/savings.js";
+
+
+        import {
+            getTransactions
+        } from "./js/transactions.js";
+
+
+        import {
+            calculateFinance
+        } from "./js/finance.js";
+
+
+        import {
+            initTheme,
+            toggleTheme,
+            getTheme
+        } from "./js/theme.js";
+
+
+        import {
+            getLanguage,
+            setLanguage
+        } from "./js/language.js";
+
+
+
+        /* =========================================
+           AUTH
+           ========================================= */
+
+        const user =
+            await waitForAuth();
+
+
+        /*
+         * Dashboard is a protected page.
+         */
+
+        if (!user) {
+
+            window.location.href =
+                "./index.html";
+
+        }
+
+
+
+        /* =========================================
+           THEME
+           ========================================= */
+
+        initTheme();
+
+
+        document
+            .getElementById(
+                "theme-toggle"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    toggleTheme();
+
+                    updateThemeIcon();
+
+                }
+            );
+
+
+        function updateThemeIcon() {
+
+            const icon =
+                document.getElementById(
+                    "theme-icon"
+                );
+
+            icon.className =
+                getTheme() === "dark"
+                    ? "fa-solid fa-sun"
+                    : "fa-solid fa-moon";
+
+        }
+
+
+        updateThemeIcon();
+
+
+
+        /* =========================================
+           LANGUAGE
+           ========================================= */
+
+        document
+            .getElementById(
+                "language-toggle"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    const current =
+                        getLanguage();
+
+
+                    const next =
+                        current === "en"
+                            ? "ne"
+                            : "en";
+
+
+                    setLanguage(next);
+
+
+                    updateLanguageButton();
+
+                }
+            );
+
+
+        function updateLanguageButton() {
+
+            document
+                .getElementById(
+                    "language-toggle"
+                )
+                .textContent =
+                    getLanguage() === "ne"
+                        ? "NEP"
+                        : "EN";
+
+        }
+
+
+        updateLanguageButton();
+
+
+
+        /* =========================================
+           PRIVACY
+           ========================================= */
+
+        let privacyMode =
+            localStorage.getItem(
+                "privacy_mode"
+            ) === "true";
+
+
+        document
+            .getElementById(
+                "privacy-toggle"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    privacyMode =
+                        !privacyMode;
+
+
+                    localStorage.setItem(
+                        "privacy_mode",
+                        String(
+                            privacyMode
+                        )
+                    );
+
+
+                    updatePrivacyIcon();
+
+                    renderDashboard();
+
+                }
+            );
+
+
+        function updatePrivacyIcon() {
+
+            const icon =
+                document.getElementById(
+                    "privacy-icon"
+                );
+
+
+            icon.className =
+                privacyMode
+                    ? "fa-solid fa-eye-slash"
+                    : "fa-solid fa-eye";
+
+        }
+
+
+        updatePrivacyIcon();
+
+
+
+        /* =========================================
+           PROFILE
+           ========================================= */
+
+        function loadProfile() {
+
+            const name =
+                localStorage.getItem(
+                    "profile_name"
+                ) || "Digital NoteBook";
+
+
+            document
+                .getElementById(
+                    "sidebar-name"
+                )
+                .textContent =
+                    name;
+
+
+            document
+                .getElementById(
+                    "welcome-name"
+                )
+                .textContent =
+                    name;
+
+
+            const avatar =
+                localStorage.getItem(
+                    "profile_avatar"
+                );
+
+
+            if (avatar) {
+
+                setAvatar(
+                    "sidebar-avatar",
+                    avatar
+                );
+
+
+                setAvatar(
+                    "header-avatar",
+                    avatar
+                );
+
+            }
+
+        }
+
+
+        function setAvatar(
+            id,
+            src
+        ) {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            element.innerHTML = "";
+
+
+            const img =
+                document.createElement(
+                    "img"
+                );
+
+
+            img.src =
+                src;
+
+
+            img.className =
+                "w-full h-full object-cover";
+
+
+            element.appendChild(
+                img
+            );
+
+        }
+
+
+        loadProfile();
+
+
+
+        /* =========================================
+           DATE / TIME
+           ========================================= */
+
+        function updateDateTime() {
+
+            const element =
+                document.getElementById(
+                    "current-date-time"
+                );
+
+
+            element.textContent =
+                new Date().toLocaleString(
+                    undefined,
+                    {
+                        dateStyle:
+                            "medium",
+
+                        timeStyle:
+                            "short"
+                    }
+                );
+
+        }
+
+
+        updateDateTime();
+
+
+        setInterval(
+            updateDateTime,
+            30000
+        );
+
+
+
+        /* =========================================
+           FINANCE
+           ========================================= */
+
+        function renderDashboard() {
+
+            const incomes =
+                getIncomes();
+
+
+            const savings =
+                getSavings();
+
+
+            const transactions =
+                getTransactions();
+
+
+            const finance =
+                calculateFinance(
+                    incomes,
+                    transactions,
+                    savings
+                );
+
+
+            setAmount(
+                "total-income",
+                finance.totalIncome
+            );
+
+
+            setAmount(
+                "total-expense",
+                finance.totalExpense
+            );
+
+
+            setAmount(
+                "total-saving",
+                finance.totalSaving
+            );
+
+
+            setAmount(
+                "total-receivable",
+                finance.totalReceivable
+            );
+
+
+            setAmount(
+                "total-payable",
+                finance.totalPayable
+            );
+
+
+            setAmount(
+                "total-balance",
+                finance.balance
+            );
+
+        }
+
+
+
+        function setAmount(
+            elementId,
+            amount
+        ) {
+
+            const element =
+                document.getElementById(
+                    elementId
+                );
+
+
+            if (privacyMode) {
+
+                element.textContent =
+                    "••••••";
+
+                return;
+
+            }
+
+
+            element.textContent =
+                "NPR " +
+                Number(
+                    amount || 0
+                ).toLocaleString(
+                    undefined,
+                    {
+                        minimumFractionDigits:
+                            2,
+
+                        maximumFractionDigits:
+                            2
+                    }
+                );
+
+        }
+
+
+        renderDashboard();
+
+
+
+        /* =========================================
+           MOBILE SIDEBAR
+           ========================================= */
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "sidebar-overlay"
+            );
+
+
+        document
+            .getElementById(
+                "open-sidebar"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    sidebar.classList.remove(
+                        "-translate-x-full"
+                    );
+
+
+                    overlay.classList.remove(
+                        "hidden"
+                    );
+
+                }
+            );
+
+
+        function closeSidebar() {
+
+            sidebar.classList.add(
+                "-translate-x-full"
+            );
+
+
+            overlay.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        document
+            .getElementById(
+                "close-sidebar"
+            )
+            .addEventListener(
+                "click",
+                closeSidebar
+            );
+
+
+        overlay
+            .addEventListener(
+                "click",
+                closeSidebar
+            );
+
+
+
+        /* =========================================
+           READY
+           ========================================= */
+
+        console.log(
+            "Digital NoteBook V2 Dashboard ready."
+        );
+
+    </script>
+
+</body>
+
+</html>
