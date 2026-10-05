@@ -1,20 +1,28 @@
 {
-  "name": "प्रिमियम डिजिटल खाता तथा नोटबुक",
-  "short_name": "मेरो खाता",
-  "start_url": "/",
+  "name": "Digital NoteBook",
+  "short_name": "NoteBook",
+  "description": "Simple personal finance, notes, savings and daily life management app.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4f46e5",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "lang": "en",
+  "dir": "ltr",
+
   "icons": [
     {
-      "src": "N512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "N1024.png",
+      "src": "./assets/N1024.png",
       "sizes": "1024x1024",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
+  ],
+
+  "categories": [
+    "finance",
+    "productivity",
+    "utilities"
   ]
 }
