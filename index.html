@@ -36,16 +36,13 @@
         href="./css/app.css"
     >
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
 
-    <!-- Font -->
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -206,7 +203,10 @@
                     id="sidebar-avatar"
                     class="w-11 h-11 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden"
                 >
-                    <i class="fa-solid fa-user text-slate-400"></i>
+                    <i
+                        id="sidebar-avatar-icon"
+                        class="fa-solid fa-user text-slate-400"
+                    ></i>
                 </div>
 
                 <div class="min-w-0">
@@ -243,6 +243,7 @@
                 <span data-i18n="dashboard">Dashboard</span>
             </a>
 
+
             <a
                 href="./add-income.html"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
@@ -250,6 +251,7 @@
                 <i class="fa-solid fa-money-bill-trend-up w-5"></i>
                 <span data-i18n="income">Income</span>
             </a>
+
 
             <a
                 href="./add-saving.html"
@@ -259,6 +261,7 @@
                 <span data-i18n="saving">Saving</span>
             </a>
 
+
             <a
                 href="./add-transaction.html"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
@@ -266,6 +269,7 @@
                 <i class="fa-solid fa-arrow-right-arrow-left w-5"></i>
                 <span data-i18n="transaction">Transaction</span>
             </a>
+
 
             <a
                 href="./notebook.html"
@@ -275,6 +279,7 @@
                 <span data-i18n="notebook">Notebook</span>
             </a>
 
+
             <a
                 href="./calendar.html"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
@@ -283,6 +288,7 @@
                 <span data-i18n="calendar">Calendar</span>
             </a>
 
+
             <a
                 href="./calculate.html"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
@@ -290,6 +296,7 @@
                 <i class="fa-solid fa-calculator w-5"></i>
                 <span data-i18n="calculator">Calculator</span>
             </a>
+
 
             <div class="pt-4 mt-4 border-t border-slate-800">
 
@@ -301,6 +308,7 @@
                     <span data-i18n="account">Account</span>
                 </a>
 
+
                 <a
                     href="./setting.html"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
@@ -308,6 +316,7 @@
                     <i class="fa-solid fa-gear w-5"></i>
                     <span data-i18n="settings">Settings</span>
                 </a>
+
 
                 <a
                     href="./qrscan.html"
@@ -340,26 +349,51 @@
      MAIN
 ========================================================= -->
 
-<div id="main-content" class="min-h-screen">
+<div
+    id="main-content"
+    class="min-h-screen"
+>
 
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- HEADER -->
 
     <header
-        class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-950/90 dark:border-slate-800"
+        class="
+            sticky
+            top-0
+            z-30
+            bg-white/90
+            backdrop-blur
+            border-b
+            border-slate-200
+            dark:bg-slate-950/90
+            dark:border-slate-800
+        "
     >
 
         <div
-            class="px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
+            class="
+                px-4
+                sm:px-6
+                py-3
+                flex
+                items-center
+                justify-between
+                gap-3
+            "
         >
 
             <div class="flex items-center gap-3">
 
                 <button
                     id="menu-button"
-                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-slate-100
+                        dark:bg-slate-800
+                    "
                     aria-label="Open menu"
                 >
                     <i class="fa-solid fa-bars"></i>
@@ -368,7 +402,11 @@
                 <div>
 
                     <h1
-                        class="font-bold text-lg sm:text-xl"
+                        class="
+                            font-bold
+                            text-lg
+                            sm:text-xl
+                        "
                         data-i18n="dashboard"
                     >
                         Dashboard
@@ -376,7 +414,11 @@
 
                     <p
                         id="today-date"
-                        class="text-xs muted-text text-slate-500"
+                        class="
+                            text-xs
+                            muted-text
+                            text-slate-500
+                        "
                     ></p>
 
                 </div>
@@ -386,20 +428,30 @@
 
             <div class="flex items-center gap-2">
 
-                <!-- Language -->
                 <button
                     id="language-button"
-                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-slate-100
+                        dark:bg-slate-800
+                    "
                     title="Language"
                 >
                     <i class="fa-solid fa-language"></i>
                 </button>
 
 
-                <!-- Theme -->
                 <button
                     id="theme-button"
-                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-slate-100
+                        dark:bg-slate-800
+                    "
                     title="Theme"
                 >
                     <i
@@ -409,10 +461,15 @@
                 </button>
 
 
-                <!-- Privacy -->
                 <button
                     id="privacy-button"
-                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-slate-100
+                        dark:bg-slate-800
+                    "
                     title="Hide amounts"
                 >
                     <i
@@ -428,21 +485,44 @@
     </header>
 
 
-    <!-- =====================================================
-         CONTENT
-    ====================================================== -->
+    <!-- CONTENT -->
 
-    <main class="p-4 sm:p-6 max-w-7xl mx-auto">
+    <main
+        class="
+            p-4
+            sm:p-6
+            max-w-7xl
+            mx-auto
+        "
+    >
 
 
         <!-- Welcome -->
+
         <section class="mb-5">
 
             <div
-                class="app-card bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-5 sm:p-6 shadow-lg"
+                class="
+                    app-card
+                    bg-gradient-to-r
+                    from-blue-600
+                    to-indigo-600
+                    text-white
+                    rounded-2xl
+                    p-5
+                    sm:p-6
+                    shadow-lg
+                "
             >
 
-                <div class="flex items-center justify-between gap-4">
+                <div
+                    class="
+                        flex
+                        items-center
+                        justify-between
+                        gap-4
+                    "
+                >
 
                     <div>
 
@@ -452,18 +532,36 @@
 
                         <h2
                             id="welcome-name"
-                            class="text-2xl sm:text-3xl font-bold mt-1"
+                            class="
+                                text-2xl
+                                sm:text-3xl
+                                font-bold
+                                mt-1
+                            "
                         >
                             Guest User
                         </h2>
 
-                        <p class="text-blue-100 text-sm mt-2">
+                        <p
+                            class="
+                                text-blue-100
+                                text-sm
+                                mt-2
+                            "
+                        >
                             Manage your income, saving and transactions easily.
                         </p>
 
                     </div>
 
-                    <div class="hidden sm:block text-5xl opacity-20">
+                    <div
+                        class="
+                            hidden
+                            sm:block
+                            text-5xl
+                            opacity-20
+                        "
+                    >
                         <i class="fa-solid fa-wallet"></i>
                     </div>
 
@@ -474,22 +572,46 @@
         </section>
 
 
-        <!-- =================================================
-             SUMMARY CARDS
-        ================================================== -->
+        <!-- SUMMARY CARDS -->
 
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5">
-
+        <section
+            class="
+                grid
+                grid-cols-2
+                lg:grid-cols-4
+                gap-3
+                sm:gap-4
+                mb-5
+            "
+        >
 
             <!-- Balance -->
+
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div class="flex items-center justify-between">
 
                     <div
-                        class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center"
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-blue-100
+                            text-blue-600
+                            flex
+                            items-center
+                            justify-center
+                        "
                     >
                         <i class="fa-solid fa-wallet"></i>
                     </div>
@@ -502,7 +624,13 @@
 
                 <h3
                     id="total-balance"
-                    class="amount text-lg sm:text-xl font-bold mt-1"
+                    class="
+                        amount
+                        text-lg
+                        sm:text-xl
+                        font-bold
+                        mt-1
+                    "
                 >
                     NPR 0
                 </h3>
@@ -511,12 +639,30 @@
 
 
             <!-- Income -->
+
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div
-                    class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-green-100
+                        text-green-600
+                        flex
+                        items-center
+                        justify-center
+                    "
                 >
                     <i class="fa-solid fa-arrow-down"></i>
                 </div>
@@ -527,21 +673,64 @@
 
                 <h3
                     id="total-income"
-                    class="amount text-lg sm:text-xl font-bold text-green-600 mt-1"
+                    class="
+                        amount
+                        text-lg
+                        sm:text-xl
+                        font-bold
+                        text-green-600
+                        mt-1
+                    "
                 >
                     NPR 0
                 </h3>
+
+                <div
+                    id="currency-summary"
+                    class="
+                        mt-2
+                        text-xs
+                        text-slate-500
+                        space-y-1
+                    "
+                >
+                    <div id="income-npr-summary">
+                        🇳🇵 NPR 0
+                    </div>
+
+                    <div id="income-inr-summary">
+                        🇮🇳 INR 0
+                    </div>
+                </div>
 
             </div>
 
 
             <!-- Expense -->
+
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div
-                    class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-red-100
+                        text-red-600
+                        flex
+                        items-center
+                        justify-center
+                    "
                 >
                     <i class="fa-solid fa-arrow-up"></i>
                 </div>
@@ -552,7 +741,14 @@
 
                 <h3
                     id="total-expense"
-                    class="amount text-lg sm:text-xl font-bold text-red-600 mt-1"
+                    class="
+                        amount
+                        text-lg
+                        sm:text-xl
+                        font-bold
+                        text-red-600
+                        mt-1
+                    "
                 >
                     NPR 0
                 </h3>
@@ -561,12 +757,30 @@
 
 
             <!-- Saving -->
+
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div
-                    class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-purple-100
+                        text-purple-600
+                        flex
+                        items-center
+                        justify-center
+                    "
                 >
                     <i class="fa-solid fa-piggy-bank"></i>
                 </div>
@@ -577,7 +791,14 @@
 
                 <h3
                     id="total-saving"
-                    class="amount text-lg sm:text-xl font-bold text-purple-600 mt-1"
+                    class="
+                        amount
+                        text-lg
+                        sm:text-xl
+                        font-bold
+                        text-purple-600
+                        mt-1
+                    "
                 >
                     NPR 0
                 </h3>
@@ -587,23 +808,50 @@
         </section>
 
 
-        <!-- =================================================
-             RECEIVABLE / PAYABLE
-        ================================================== -->
+        <!-- RECEIVABLE / PAYABLE -->
 
-        <section class="grid grid-cols-2 gap-3 sm:gap-4 mb-5">
-
+        <section
+            class="
+                grid
+                grid-cols-2
+                gap-3
+                sm:gap-4
+                mb-5
+            "
+        >
 
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div class="flex items-center gap-3">
 
                     <div
-                        class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-amber-100
+                            text-amber-600
+                            flex
+                            items-center
+                            justify-center
+                        "
                     >
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                        <i
+                            class="
+                                fa-solid
+                                fa-hand-holding-dollar
+                            "
+                        ></i>
                     </div>
 
                     <div>
@@ -627,15 +875,37 @@
 
 
             <div
-                class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    p-4
+                    shadow-sm
+                "
             >
 
                 <div class="flex items-center gap-3">
 
                     <div
-                        class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center"
+                        class="
+                            w-10
+                            h-10
+                            rounded-xl
+                            bg-orange-100
+                            text-orange-600
+                            flex
+                            items-center
+                            justify-center
+                        "
                     >
-                        <i class="fa-solid fa-money-bill-transfer"></i>
+                        <i
+                            class="
+                                fa-solid
+                                fa-money-bill-transfer
+                            "
+                        ></i>
                     </div>
 
                     <div>
@@ -660,9 +930,7 @@
         </section>
 
 
-        <!-- =================================================
-             QUICK ACTIONS
-        ================================================== -->
+        <!-- QUICK ACTIONS -->
 
         <section class="mb-5">
 
@@ -675,16 +943,42 @@
             </div>
 
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-
+            <div
+                class="
+                    grid
+                    grid-cols-2
+                    sm:grid-cols-4
+                    gap-3
+                "
+            >
 
                 <a
                     href="./add-income.html"
-                    class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
+                    class="
+                        app-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-4
+                        shadow-sm
+                        hover:shadow-md
+                        transition
+                    "
                 >
 
                     <div
-                        class="w-11 h-11 rounded-xl bg-green-100 text-green-600 flex items-center justify-center mb-3"
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-green-100
+                            text-green-600
+                            flex
+                            items-center
+                            justify-center
+                            mb-3
+                        "
                     >
                         <i class="fa-solid fa-plus"></i>
                     </div>
@@ -702,11 +996,31 @@
 
                 <a
                     href="./add-saving.html"
-                    class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
+                    class="
+                        app-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-4
+                        shadow-sm
+                        hover:shadow-md
+                        transition
+                    "
                 >
 
                     <div
-                        class="w-11 h-11 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-3"
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-purple-100
+                            text-purple-600
+                            flex
+                            items-center
+                            justify-center
+                            mb-3
+                        "
                     >
                         <i class="fa-solid fa-piggy-bank"></i>
                     </div>
@@ -724,13 +1038,38 @@
 
                 <a
                     href="./add-transaction.html"
-                    class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
+                    class="
+                        app-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-4
+                        shadow-sm
+                        hover:shadow-md
+                        transition
+                    "
                 >
 
                     <div
-                        class="w-11 h-11 rounded-xl bg-red-100 text-red-600 flex items-center justify-center mb-3"
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-red-100
+                            text-red-600
+                            flex
+                            items-center
+                            justify-center
+                            mb-3
+                        "
                     >
-                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        <i
+                            class="
+                                fa-solid
+                                fa-arrow-right-arrow-left
+                            "
+                        ></i>
                     </div>
 
                     <p class="font-semibold">
@@ -746,11 +1085,31 @@
 
                 <a
                     href="./notebook.html"
-                    class="app-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
+                    class="
+                        app-card
+                        bg-white
+                        border
+                        border-slate-200
+                        rounded-2xl
+                        p-4
+                        shadow-sm
+                        hover:shadow-md
+                        transition
+                    "
                 >
 
                     <div
-                        class="w-11 h-11 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3"
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-blue-100
+                            text-blue-600
+                            flex
+                            items-center
+                            justify-center
+                            mb-3
+                        "
                     >
                         <i class="fa-solid fa-book"></i>
                     </div>
@@ -770,13 +1129,18 @@
         </section>
 
 
-        <!-- =================================================
-             RECENT ACTIVITY
-        ================================================== -->
+        <!-- RECENT ACTIVITY -->
 
         <section>
 
-            <div class="flex items-center justify-between mb-3">
+            <div
+                class="
+                    flex
+                    items-center
+                    justify-between
+                    mb-3
+                "
+            >
 
                 <h2 class="font-bold text-lg">
                     Recent Activity
@@ -784,7 +1148,11 @@
 
                 <a
                     href="./add-transaction.html"
-                    class="text-sm text-blue-600 font-medium"
+                    class="
+                        text-sm
+                        text-blue-600
+                        font-medium
+                    "
                 >
                     View All
                 </a>
@@ -794,18 +1162,46 @@
 
             <div
                 id="recent-activity"
-                class="app-card bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden"
+                class="
+                    app-card
+                    bg-white
+                    border
+                    border-slate-200
+                    rounded-2xl
+                    shadow-sm
+                    overflow-hidden
+                "
             >
 
                 <div
                     id="empty-activity"
-                    class="p-8 text-center text-slate-500"
+                    class="
+                        p-8
+                        text-center
+                        text-slate-500
+                    "
                 >
 
                     <div
-                        class="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-3"
+                        class="
+                            w-14
+                            h-14
+                            mx-auto
+                            rounded-full
+                            bg-slate-100
+                            flex
+                            items-center
+                            justify-center
+                            mb-3
+                        "
                     >
-                        <i class="fa-solid fa-receipt text-xl"></i>
+                        <i
+                            class="
+                                fa-solid
+                                fa-receipt
+                                text-xl
+                            "
+                        ></i>
                     </div>
 
                     <p class="font-medium">
@@ -818,9 +1214,14 @@
 
                 </div>
 
+
                 <div
                     id="activity-list"
-                    class="hidden divide-y divide-slate-100"
+                    class="
+                        hidden
+                        divide-y
+                        divide-slate-100
+                    "
                 ></div>
 
             </div>
@@ -833,19 +1234,27 @@
 </div>
 
 
-<!-- =========================================================
-     TOAST
-========================================================= -->
+<!-- TOAST -->
 
 <div
     id="toast-container"
-    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm"
+    class="
+        fixed
+        bottom-5
+        left-1/2
+        -translate-x-1/2
+        z-[100]
+        w-[90%]
+        max-w-sm
+    "
 ></div>
 
 
 <!-- =========================================================
      DASHBOARD SCRIPT
 ========================================================= -->
+
+<script type="module">
 
 import {
     getIncomes,
@@ -883,7 +1292,7 @@ import {
 } from "./js/language.js";
 
 import {
-    getData
+    getProfileValue
 } from "./js/storage.js";
 
 import "./js/app.js";
@@ -895,18 +1304,24 @@ import "./js/app.js";
 
 initTheme();
 
+
 function updateThemeIcon() {
 
     const icon =
-        document.getElementById("theme-icon");
+        document.getElementById(
+            "theme-icon"
+        );
 
-    if (!icon) return;
+    if (!icon) {
+        return;
+    }
 
     icon.className =
         getTheme() === "dark"
             ? "fa-solid fa-sun"
             : "fa-solid fa-moon";
 }
+
 
 updateThemeIcon();
 
@@ -927,16 +1342,17 @@ applyTranslations(
 function loadProfile() {
 
     const name =
-        getData(
+        getProfileValue(
             "profile_name",
             ""
         );
 
     const avatar =
-        getData(
+        getProfileValue(
             "profile_avatar",
             ""
         );
+
 
     const displayName =
         name || "Guest User";
@@ -948,6 +1364,7 @@ function loadProfile() {
         );
 
     if (welcomeName) {
+
         welcomeName.textContent =
             displayName;
     }
@@ -959,6 +1376,7 @@ function loadProfile() {
         );
 
     if (sidebarName) {
+
         sidebarName.textContent =
             displayName;
     }
@@ -969,6 +1387,13 @@ function loadProfile() {
             "sidebar-avatar"
         );
 
+
+    const avatarIcon =
+        document.getElementById(
+            "sidebar-avatar-icon"
+        );
+
+
     if (
         avatarBox &&
         avatar
@@ -976,23 +1401,37 @@ function loadProfile() {
 
         avatarBox.innerHTML = "";
 
+
         const image =
             document.createElement(
                 "img"
             );
 
-        image.src = avatar;
 
-        image.alt = "Profile";
+        image.src =
+            avatar;
+
+        image.alt =
+            "Profile";
 
         image.className =
             "w-full h-full object-cover";
 
+
         avatarBox.appendChild(
             image
         );
+
+    } else if (
+        avatarIcon
+    ) {
+
+        avatarIcon.classList.remove(
+            "hidden"
+        );
     }
 }
+
 
 loadProfile();
 
@@ -1008,7 +1447,10 @@ function showDate() {
             "today-date"
         );
 
-    if (!element) return;
+    if (!element) {
+        return;
+    }
+
 
     element.textContent =
         new Date().toLocaleDateString(
@@ -1022,6 +1464,7 @@ function showDate() {
         );
 }
 
+
 showDate();
 
 
@@ -1029,10 +1472,13 @@ showDate();
    MONEY FORMAT
 ========================================================= */
 
-function formatNPR(amount) {
+function formatNPR(
+    amount
+) {
 
     return (
-        "NPR " +
+        "NPR "
+        +
         (
             Number(amount) || 0
         ).toLocaleString(
@@ -1046,10 +1492,13 @@ function formatNPR(amount) {
 }
 
 
-function formatINR(amount) {
+function formatINR(
+    amount
+) {
 
     return (
-        "INR " +
+        "INR "
+        +
         (
             Number(amount) || 0
         ).toLocaleString(
@@ -1072,8 +1521,10 @@ function loadDashboard() {
     const incomes =
         getIncomes();
 
+
     const savings =
         getSavings();
+
 
     const transactions =
         getTransactions();
@@ -1082,20 +1533,26 @@ function loadDashboard() {
     const totalIncome =
         getTotalIncome();
 
+
     const totalIncomeNPR =
         getTotalIncomeNPR();
+
 
     const totalIncomeINR =
         getTotalIncomeINR();
 
+
     const totalSaving =
         getTotalSaving();
+
 
     const totalExpense =
         getTotalExpense();
 
+
     const totalReceivable =
         getTotalReceivable();
+
 
     const totalPayable =
         getTotalPayable();
@@ -1109,8 +1566,6 @@ function loadDashboard() {
         );
 
 
-    /* Balance */
-
     setText(
         "total-balance",
         formatNPR(
@@ -1118,8 +1573,6 @@ function loadDashboard() {
         )
     );
 
-
-    /* Income */
 
     setText(
         "total-income",
@@ -1129,8 +1582,6 @@ function loadDashboard() {
     );
 
 
-    /* Expense */
-
     setText(
         "total-expense",
         formatNPR(
@@ -1138,8 +1589,6 @@ function loadDashboard() {
         )
     );
 
-
-    /* Saving */
 
     setText(
         "total-saving",
@@ -1149,8 +1598,6 @@ function loadDashboard() {
     );
 
 
-    /* Receivable */
-
     setText(
         "total-receivable",
         formatNPR(
@@ -1158,8 +1605,6 @@ function loadDashboard() {
         )
     );
 
-
-    /* Payable */
 
     setText(
         "total-payable",
@@ -1169,15 +1614,11 @@ function loadDashboard() {
     );
 
 
-    /* NPR / INR summary */
-
     updateCurrencySummary(
         totalIncomeNPR,
         totalIncomeINR
     );
 
-
-    /* Recent activity */
 
     loadRecentActivity(
         incomes,
@@ -1197,9 +1638,13 @@ function setText(
 ) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
+
 
     if (element) {
+
         element.textContent =
             value;
     }
@@ -1207,7 +1652,7 @@ function setText(
 
 
 /* =========================================================
-   NPR / INR
+   NPR / INR SUMMARY
 ========================================================= */
 
 function updateCurrencySummary(
@@ -1215,53 +1660,32 @@ function updateCurrencySummary(
     inr
 ) {
 
-    let box =
+    const nprElement =
         document.getElementById(
-            "currency-summary"
+            "income-npr-summary"
         );
 
 
-    if (!box) {
-
-        const incomeCard =
-            document.getElementById(
-                "total-income"
-            )?.closest(
-                ".app-card"
-            );
-
-        if (!incomeCard) {
-            return;
-        }
-
-
-        box =
-            document.createElement(
-                "div"
-            );
-
-        box.id =
-            "currency-summary";
-
-        box.className =
-            "mt-2 text-xs text-slate-500 space-y-1";
-
-
-        incomeCard.appendChild(
-            box
+    const inrElement =
+        document.getElementById(
+            "income-inr-summary"
         );
+
+
+    if (nprElement) {
+
+        nprElement.textContent =
+            "🇳🇵 " +
+            formatNPR(npr);
     }
 
 
-    box.innerHTML = `
-        <div>
-            🇳🇵 ${formatNPR(npr)}
-        </div>
+    if (inrElement) {
 
-        <div>
-            🇮🇳 ${formatINR(inr)}
-        </div>
-    `;
+        inrElement.textContent =
+            "🇮🇳 " +
+            formatINR(inr);
+    }
 }
 
 
@@ -1280,13 +1704,18 @@ function loadRecentActivity(
             "activity-list"
         );
 
+
     const empty =
         document.getElementById(
             "empty-activity"
         );
 
 
-    if (!list || !empty) {
+    if (
+        !list ||
+        !empty
+    ) {
+
         return;
     }
 
@@ -1301,10 +1730,13 @@ function loadRecentActivity(
 
             items.push({
 
-                type: "income",
+                type:
+                    "income",
 
                 title:
                     item.sourceName
+                    ||
+                    item.source
                     ||
                     item.category
                     ||
@@ -1322,7 +1754,8 @@ function loadRecentActivity(
                     item.date
                     || "",
 
-                positive: true
+                positive:
+                    true
             });
         }
     );
@@ -1335,7 +1768,8 @@ function loadRecentActivity(
 
             items.push({
 
-                type: "saving",
+                type:
+                    "saving",
 
                 title:
                     item.category
@@ -1352,7 +1786,8 @@ function loadRecentActivity(
                     item.date
                     || "",
 
-                positive: true
+                positive:
+                    false
             });
         }
     );
@@ -1365,6 +1800,7 @@ function loadRecentActivity(
 
             let title =
                 "Transaction";
+
 
             let positive =
                 false;
@@ -1390,7 +1826,8 @@ function loadRecentActivity(
                     ||
                     "Receivable";
 
-                positive = true;
+                positive =
+                    true;
 
             } else if (
                 item.type === "payable"
@@ -1429,16 +1866,25 @@ function loadRecentActivity(
 
 
     items.sort(
-        (a, b) => {
+        (
+            a,
+            b
+        ) => {
 
-            return (
-                new Date(
-                    b.date || 0
-                )
-                -
+            const dateA =
                 new Date(
                     a.date || 0
-                )
+                ).getTime();
+
+
+            const dateB =
+                new Date(
+                    b.date || 0
+                ).getTime();
+
+
+            return (
+                dateB - dateA
             );
         }
     );
@@ -1459,11 +1905,15 @@ function loadRecentActivity(
             "hidden"
         );
 
+
         list.classList.add(
             "hidden"
         );
 
-        list.innerHTML = "";
+
+        list.innerHTML =
+            "";
+
 
         return;
     }
@@ -1473,12 +1923,14 @@ function loadRecentActivity(
         "hidden"
     );
 
+
     list.classList.remove(
         "hidden"
     );
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
 
     recent.forEach(
@@ -1489,6 +1941,7 @@ function loadRecentActivity(
                     "div"
                 );
 
+
             row.className =
                 "p-4 flex items-center justify-between gap-3";
 
@@ -1496,8 +1949,10 @@ function loadRecentActivity(
             let icon =
                 "fa-receipt";
 
+
             let iconBg =
                 "bg-slate-100";
+
 
             let iconColor =
                 "text-slate-600";
@@ -1575,6 +2030,7 @@ function loadRecentActivity(
                     "div"
                 );
 
+
             left.className =
                 "flex items-center gap-3 min-w-0";
 
@@ -1584,17 +2040,34 @@ function loadRecentActivity(
                     "div"
                 );
 
+
             iconBox.className =
-                `w-10 h-10 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center shrink-0`;
+                `
+                w-10
+                h-10
+                rounded-xl
+                ${iconBg}
+                ${iconColor}
+                flex
+                items-center
+                justify-center
+                shrink-0
+                `;
+
 
             iconBox.innerHTML =
-                `<i class="fa-solid ${icon}"></i>`;
+                `
+                <i
+                    class="fa-solid ${icon}"
+                ></i>
+                `;
 
 
             const info =
                 document.createElement(
                     "div"
                 );
+
 
             info.className =
                 "min-w-0";
@@ -1605,8 +2078,10 @@ function loadRecentActivity(
                     "p"
                 );
 
+
             title.className =
                 "font-medium truncate";
+
 
             title.textContent =
                 item.title;
@@ -1617,8 +2092,10 @@ function loadRecentActivity(
                     "p"
                 );
 
+
             date.className =
                 "text-xs text-slate-500";
+
 
             date.textContent =
                 item.date || "-";
@@ -1628,6 +2105,7 @@ function loadRecentActivity(
                 title
             );
 
+
             info.appendChild(
                 date
             );
@@ -1636,6 +2114,7 @@ function loadRecentActivity(
             left.appendChild(
                 iconBox
             );
+
 
             left.appendChild(
                 info
@@ -1647,18 +2126,20 @@ function loadRecentActivity(
                     "div"
                 );
 
+
             amount.className =
-                "font-semibold whitespace-nowrap";
+                "amount font-semibold whitespace-nowrap";
 
 
             amount.textContent =
                 (
                     item.positive
-                    ? "+"
-                    : "-"
+                        ? "+"
+                        : "-"
                 )
                 +
-                " " +
+                " "
+                +
                 formatNPR(
                     item.amount
                 );
@@ -1683,6 +2164,7 @@ function loadRecentActivity(
             row.appendChild(
                 left
             );
+
 
             row.appendChild(
                 amount
@@ -1712,6 +2194,7 @@ document
             toggleTheme();
 
             updateThemeIcon();
+
         }
     );
 
@@ -1733,9 +2216,11 @@ document
                     ? "ne"
                     : "en";
 
+
             setLanguage(
                 next
             );
+
         }
     );
 
@@ -1744,7 +2229,8 @@ document
    PRIVACY
 ========================================================= */
 
-let privacyMode = false;
+let privacyMode =
+    false;
 
 
 document
@@ -1788,6 +2274,7 @@ document
                     "privacy-icon"
                 );
 
+
             if (icon) {
 
                 icon.className =
@@ -1795,6 +2282,7 @@ document
                         ? "fa-solid fa-eye-slash"
                         : "fa-solid fa-eye";
             }
+
         }
     );
 
@@ -1808,6 +2296,7 @@ const sidebar =
         "sidebar"
     );
 
+
 const overlay =
     document.getElementById(
         "sidebar-overlay"
@@ -1820,6 +2309,7 @@ function openSidebar() {
         "open"
     );
 
+
     overlay?.classList.add(
         "show"
     );
@@ -1831,6 +2321,7 @@ function closeSidebar() {
     sidebar?.classList.remove(
         "open"
     );
+
 
     overlay?.classList.remove(
         "show"
@@ -1945,6 +2436,8 @@ if (
         }
     );
 }
+
+</script>
 
 </body>
 </html>
