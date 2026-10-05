@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <title>Digital NoteBook - Saving</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <!-- Poppins -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Common CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
+
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        html[data-theme="dark"] body {
+            background: #111827;
+            color: #f9fafb;
+        }
+
+        .app-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        html[data-theme="dark"] .app-panel {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .app-input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            color: #111827;
+        }
+
+        html[data-theme="dark"] .app-input {
+            background: #111827;
+            color: #f9fafb;
+            border-color: #4b5563;
+        }
+
+        .app-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            color: #374151;
+            transition: 0.2s;
+        }
+
+        html[data-theme="dark"] .sidebar-link {
+            color: #d1d5db;
+        }
+
+        .sidebar-link:hover {
+            background: #f3f4f6;
+        }
+
+        html[data-theme="dark"] .sidebar-link:hover {
+            background: #374151;
+        }
+
+        .sidebar-link.active {
+            background: #4f46e5;
+            color: white !important;
+        }
+
+        .saving-row {
+            transition: 0.2s;
+        }
+
+        .saving-row:hover {
+            transform: translateY(-1px);
+        }
+
+        .modal-bg {
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        .toast {
+            animation: toastIn 0.25s ease;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================
+         MOBILE SIDEBAR BACKDROP
+         ========================================= -->
+
+    <div
+        id="sidebar-backdrop"
+        class="fixed inset-0 z-40 hidden bg-black/50"
+    ></div>
+
+
+    <!-- =========================================
+         SIDEBAR
+         ========================================= -->
+
+    <aside
+        id="sidebar"
+        class="fixed left-0 top-0 z-50 h-full w-72 -translate-x-full overflow-y-auto border-r bg-white p-4 transition-transform duration-300 dark:border-gray-700 dark:bg-gray-900 md:translate-x-0"
+    >
+
+        <!-- Logo -->
+        <div class="mb-6 flex items-center gap-3 px-2">
+
+            <div
+                class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white"
+            >
+                <i class="fa-solid fa-book"></i>
+            </div>
+
+            <div>
+                <h1 class="text-lg font-bold">
+                    Digital NoteBook
+                </h1>
+
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Finance Manager
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Profile -->
+        <div
+            class="mb-5 rounded-2xl bg-gray-100 p-4 dark:bg-gray-800"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    id="sidebar-avatar"
+                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-bold text-white"
+                >
+                    <span id="sidebar-avatar-letter">
+                        U
+                    </span>
+
+                    <img
+                        id="sidebar-avatar-image"
+                        src=""
+                        alt="Avatar"
+                        class="hidden h-full w-full object-cover"
+                    >
+                </div>
+
+                <div class="min-w-0">
+
+                    <p
+                        id="sidebar-profile-name"
+                        class="truncate font-semibold"
+                    >
+                        User
+                    </p>
+
+                    <p class="truncate text-xs text-gray-500 dark:text-gray-400">
+                        Personal Account
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Profile information -->
+            <div class="mt-4 space-y-2">
+
+                <input
+                    id="input-full-name"
+                    type="text"
+                    placeholder="Full Name"
+                    class="app-input text-sm"
+                >
+
+                <input
+                    id="input-address"
+                    type="text"
+                    placeholder="Address"
+                    class="app-input text-sm"
+                >
+
+                <input
+                    id="input-mobile"
+                    type="tel"
+                    placeholder="Mobile Number"
+                    class="app-input text-sm"
+                >
+
+                <input
+                    id="input-email"
+                    type="email"
+                    placeholder="Email"
+                    class="app-input text-sm"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- Navigation -->
+        <nav class="space-y-1">
+
+            <a
+                href="./index.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-house w-5"></i>
+                <span data-i18n="dashboard">Dashboard</span>
+            </a>
+
+            <a
+                href="./add-income.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
+                <span data-i18n="income">Income</span>
+            </a>
+
+            <a
+                href="./add-saving.html"
+                class="sidebar-link active"
+            >
+                <i class="fa-solid fa-piggy-bank w-5"></i>
+                <span data-i18n="saving">Saving</span>
+            </a>
+
+            <a
+                href="./add-transaction.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-right-left w-5"></i>
+                <span data-i18n="transaction">Transaction</span>
+            </a>
+
+            <a
+                href="./notebook.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-book-open w-5"></i>
+                <span data-i18n="notebook">Notebook</span>
+            </a>
+
+            <a
+                href="./calendar.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-calendar-days w-5"></i>
+                <span data-i18n="calendar">Calendar</span>
+            </a>
+
+            <a
+                href="./calculate.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-calculator w-5"></i>
+                <span data-i18n="calculator">Calculator</span>
+            </a>
+
+            <a
+                href="./account.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-user w-5"></i>
+                <span data-i18n="account">Account</span>
+            </a>
+
+            <a
+                href="./setting.html"
+                class="sidebar-link"
+            >
+                <i class="fa-solid fa-gear w-5"></i>
+                <span data-i18n="settings">Settings</span>
+            </a>
+
+        </nav>
+
+
+        <!-- Sidebar bottom -->
+        <div class="mt-6 border-t border-gray-200 pt-4 dark:border-gray-700">
+
+            <p class="px-3 text-xs text-gray-500 dark:text-gray-400">
+                Digital NoteBook V2
+            </p>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+         ========================================= -->
+
+    <main class="min-h-screen md:ml-72">
+
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-700 dark:bg-gray-900/95"
+        >
+
+            <div
+                class="flex items-center justify-between gap-3 px-4 py-3 md:px-6"
+            >
+
+                <!-- Left -->
+                <div class="flex items-center gap-3">
+
+                    <button
+                        id="menu-button"
+                        type="button"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 md:hidden"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div>
+                        <h2 class="text-lg font-bold md:text-xl">
+                            <span data-i18n="saving">Saving</span>
+                        </h2>
+
+                        <p
+                            id="current-date-time"
+                            class="text-xs text-gray-500 dark:text-gray-400"
+                        ></p>
+                    </div>
+
+                </div>
+
+
+                <!-- Right controls -->
+                <div class="flex items-center gap-2">
+
+                    <!-- Privacy -->
+                    <button
+                        id="privacy-toggle"
+                        type="button"
+                        title="Privacy"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
+                    >
+                        <i
+                            id="privacy-icon"
+                            class="fa-solid fa-eye"
+                        ></i>
+                    </button>
+
+
+                    <!-- Language -->
+                    <button
+                        id="language-toggle"
+                        type="button"
+                        title="Language"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xs font-bold dark:bg-gray-800"
+                    >
+                        EN
+                    </button>
+
+
+                    <!-- Theme -->
+                    <button
+                        id="theme-toggle"
+                        type="button"
+                        title="Theme"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
+                    >
+                        <i
+                            id="theme-icon"
+                            class="fa-solid fa-moon"
+                        ></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Page content -->
+        <div class="mx-auto max-w-6xl p-4 md:p-6">
+
+
+            <!-- =====================================
+                 SUMMARY
+                 ===================================== -->
+
+            <section
+                class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
+            >
+
+                <!-- Total saving -->
+                <div class="app-panel rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Total Saving
+                            </p>
+
+                            <h3
+                                id="total-saving"
+                                class="privacy-amount mt-1 text-2xl font-bold"
+                            >
+                                NPR 0.00
+                            </h3>
+
+                        </div>
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                        >
+                            <i class="fa-solid fa-piggy-bank text-xl"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Number of records -->
+                <div class="app-panel rounded-2xl p-5 shadow-sm">
+
+                    <div class="flex items-center justify-between">
+
+                        <div>
+
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Saving Records
+                            </p>
+
+                            <h3
+                                id="saving-count"
+                                class="mt-1 text-2xl font-bold"
+                            >
+                                0
+                            </h3>
+
+                        </div>
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+                        >
+                            <i class="fa-solid fa-list text-xl"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 ADD / EDIT SAVING FORM
+                 ===================================== -->
+
+            <section
+                class="app-panel mb-6 rounded-2xl p-5 shadow-sm"
+            >
+
+                <div class="mb-5 flex items-center justify-between gap-3">
+
+                    <div>
+
+                        <h3
+                            id="form-title"
+                            class="text-lg font-bold"
+                        >
+                            Add Saving
+                        </h3>
+
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Record your saving amount
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                    >
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+
+                </div>
+
+
+                <form id="saving-form">
+
+                    <input
+                        type="hidden"
+                        id="edit-saving-id"
+                        value=""
+                    >
+
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+
+                        <!-- Amount -->
+                        <div>
+
+                            <label
+                                for="saving-amount"
+                                class="mb-2 block text-sm font-medium"
+                            >
+                                Saving Amount (NPR)
+                            </label>
+
+                            <input
+                                id="saving-amount"
+                                type="number"
+                                inputmode="decimal"
+                                min="0"
+                                step="0.01"
+                                placeholder="Enter saving amount"
+                                class="app-input"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Category -->
+                        <div>
+
+                            <label
+                                for="saving-category"
+                                class="mb-2 block text-sm font-medium"
+                            >
+                                Category
+                            </label>
+
+                            <input
+                                id="saving-category"
+                                type="text"
+                                placeholder="e.g. Bank, Cash, Emergency"
+                                class="app-input"
+                            >
+
+                        </div>
+
+
+                        <!-- Date -->
+                        <div>
+
+                            <label
+                                for="saving-date"
+                                class="mb-2 block text-sm font-medium"
+                            >
+                                Date
+                            </label>
+
+                            <input
+                                id="saving-date"
+                                type="date"
+                                class="app-input"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Note -->
+                        <div>
+
+                            <label
+                                for="saving-note"
+                                class="mb-2 block text-sm font-medium"
+                            >
+                                Note
+                            </label>
+
+                            <input
+                                id="saving-note"
+                                type="text"
+                                placeholder="Optional note"
+                                class="app-input"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+                    <div class="mt-5 flex flex-wrap gap-3">
+
+                        <button
+                            type="submit"
+                            id="save-button"
+                            class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
+                        >
+                            <i class="fa-solid fa-plus mr-2"></i>
+                            <span id="save-button-text">
+                                Save Saving
+                            </span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="cancel-edit"
+                            class="hidden rounded-xl bg-gray-200 px-5 py-3 font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                        >
+                            <i class="fa-solid fa-xmark mr-2"></i>
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =====================================
+                 SAVING LIST
+                 ===================================== -->
+
+            <section
+                class="app-panel rounded-2xl p-5 shadow-sm"
+            >
+
+                <div class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+                    <div>
+
+                        <h3 class="text-lg font-bold">
+                            Saving Ledger
+                        </h3>
+
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Your saving records
+                        </p>
+
+                    </div>
+
+
+                    <!-- Search / Sort -->
+                    <div class="flex flex-col gap-2 sm:flex-row">
+
+                        <div class="relative">
+
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                            ></i>
+
+                            <input
+                                id="search-saving"
+                                type="search"
+                                placeholder="Search saving..."
+                                class="app-input pl-10"
+                            >
+
+                        </div>
+
+
+                        <select
+                            id="sort-saving"
+                            class="app-input sm:w-48"
+                        >
+
+                            <option value="date_desc">
+                                Newest First
+                            </option>
+
+                            <option value="date_asc">
+                                Oldest First
+                            </option>
+
+                            <option value="amount_desc">
+                                Amount High → Low
+                            </option>
+
+                            <option value="amount_asc">
+                                Amount Low → High
+                            </option>
+
+                            <option value="category">
+                                Category
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Total -->
+                <div
+                    class="mb-4 flex items-center justify-between rounded-xl bg-gray-100 px-4 py-3 dark:bg-gray-800"
+                >
+
+                    <span class="text-sm font-medium">
+                        Displayed Total
+                    </span>
+
+                    <strong
+                        id="saving-list-total"
+                        class="privacy-amount"
+                    >
+                        NPR 0.00
+                    </strong>
+
+                </div>
+
+
+                <!-- Desktop table -->
+                <div class="hidden overflow-x-auto md:block">
+
+                    <table class="w-full text-left">
+
+                        <thead>
+
+                            <tr
+                                class="border-b border-gray-200 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400"
+                            >
+
+                                <th class="px-3 py-3">
+                                    Date
+                                </th>
+
+                                <th class="px-3 py-3">
+                                    Category
+                                </th>
+
+                                <th class="px-3 py-3">
+                                    Note
+                                </th>
+
+                                <th class="px-3 py-3 text-right">
+                                    Amount
+                                </th>
+
+                                <th class="px-3 py-3 text-center">
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="saving-table-body">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Mobile list -->
+                <div
+                    id="saving-mobile-list"
+                    class="space-y-3 md:hidden"
+                >
+                </div>
+
+
+                <!-- Empty state -->
+                <div
+                    id="saving-empty"
+                    class="hidden py-12 text-center"
+                >
+
+                    <div
+                        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800"
+                    >
+                        <i class="fa-solid fa-piggy-bank text-2xl"></i>
+                    </div>
+
+                    <h4 class="font-semibold">
+                        No saving records
+                    </h4>
+
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Add your first saving record above.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         TOAST
+         ========================================= -->
+
+    <div
+        id="toast-container"
+        class="fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2"
+    >
+        <div
+            id="toast"
+            class="toast rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl dark:bg-white dark:text-gray-900"
+        >
+            Saved
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+         ========================================= -->
+
+    <script type="module">
+
+        import {
+            getSavings,
+            addSaving,
+            updateSaving,
+            deleteSaving
+        } from "./js/savings.js";
+
+        import {
+            initTheme,
+            getTheme,
+            setTheme
+        } from "./js/theme.js";
+
+        import {
+            getLanguage,
+            setLanguage,
+            applyTranslations
+        } from "./js/language.js";
+
+
+        /* =========================================
+           ELEMENTS
+           ========================================= */
+
+        const form =
+            document.getElementById("saving-form");
+
+        const amountInput =
+            document.getElementById("saving-amount");
+
+        const categoryInput =
+            document.getElementById("saving-category");
+
+        const dateInput =
+            document.getElementById("saving-date");
+
+        const noteInput =
+            document.getElementById("saving-note");
+
+        const editIdInput =
+            document.getElementById("edit-saving-id");
+
+        const cancelEditButton =
+            document.getElementById("cancel-edit");
+
+        const formTitle =
+            document.getElementById("form-title");
+
+        const saveButtonText =
+            document.getElementById("save-button-text");
+
+        const tableBody =
+            document.getElementById("saving-table-body");
+
+        const mobileList =
+            document.getElementById("saving-mobile-list");
+
+        const emptyState =
+            document.getElementById("saving-empty");
+
+        const searchInput =
+            document.getElementById("search-saving");
+
+        const sortSelect =
+            document.getElementById("sort-saving");
+
+        const totalSaving =
+            document.getElementById("total-saving");
+
+        const savingCount =
+            document.getElementById("saving-count");
+
+        const listTotal =
+            document.getElementById("saving-list-total");
+
+        const privacyToggle =
+            document.getElementById("privacy-toggle");
+
+        const privacyIcon =
+            document.getElementById("privacy-icon");
+
+        const languageToggle =
+            document.getElementById("language-toggle");
+
+        const themeToggle =
+            document.getElementById("theme-toggle");
+
+        const themeIcon =
+            document.getElementById("theme-icon");
+
+        const menuButton =
+            document.getElementById("menu-button");
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const sidebarBackdrop =
+            document.getElementById("sidebar-backdrop");
+
+
+        /* =========================================
+           INITIALIZATION
+           ========================================= */
+
+        initTheme();
+
+        setToday();
+
+        loadProfile();
+
+        updateThemeIcon();
+
+        updateLanguageButton();
+
+        renderSavings();
+
+        updateDateTime();
+
+        setInterval(
+            updateDateTime,
+            1000
+        );
+
+
+        /* =========================================
+           DATE
+           ========================================= */
+
+        function setToday() {
+
+            if (!dateInput.value) {
+
+                dateInput.value =
+                    new Date()
+                        .toISOString()
+                        .split("T")[0];
+
+            }
+
+        }
+
+
+        function updateDateTime() {
+
+            const element =
+                document.getElementById(
+                    "current-date-time"
+                );
+
+            const now =
+                new Date();
+
+            element.textContent =
+                now.toLocaleString(
+                    getLanguage() === "ne"
+                        ? "ne-NP"
+                        : "en-US",
+                    {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    }
+                );
+
+        }
+
+
+        /* =========================================
+           PROFILE
+           ========================================= */
+
+        function loadProfile() {
+
+            const name =
+                localStorage.getItem(
+                    "profile_name"
+                ) || "";
+
+            const address =
+                localStorage.getItem(
+                    "profile_address"
+                ) || "";
+
+            const mobile =
+                localStorage.getItem(
+                    "profile_mobile"
+                ) || "";
+
+            const email =
+                localStorage.getItem(
+                    "profile_email"
+                ) || "";
+
+            const avatar =
+                localStorage.getItem(
+                    "profile_avatar"
+                ) || "";
+
+            document.getElementById(
+                "input-full-name"
+            ).value = name;
+
+            document.getElementById(
+                "input-address"
+            ).value = address;
+
+            document.getElementById(
+                "input-mobile"
+            ).value = mobile;
+
+            document.getElementById(
+                "input-email"
+            ).value = email;
+
+            document.getElementById(
+                "sidebar-profile-name"
+            ).textContent =
+                name || "User";
+
+            if (avatar) {
+
+                const image =
+                    document.getElementById(
+                        "sidebar-avatar-image"
+                    );
+
+                const letter =
+                    document.getElementById(
+                        "sidebar-avatar-letter"
+                    );
+
+                image.src = avatar;
+
+                image.classList.remove(
+                    "hidden"
+                );
+
+                letter.classList.add(
+                    "hidden"
+                );
+
+            } else {
+
+                const letter =
+                    document.getElementById(
+                        "sidebar-avatar-letter"
+                    );
+
+                letter.textContent =
+                    (
+                        name
+                        ? name.charAt(0)
+                        : "U"
+                    ).toUpperCase();
+
+            }
+
+        }
+
+
+        function saveProfileField(
+            element,
+            key
+        ) {
+
+            element.addEventListener(
+                "change",
+                () => {
+
+                    localStorage.setItem(
+                        key,
+                        element.value.trim()
+                    );
+
+                    if (
+                        key ===
+                        "profile_name"
+                    ) {
+
+                        document.getElementById(
+                            "sidebar-profile-name"
+                        ).textContent =
+                            element.value.trim()
+                            || "User";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        saveProfileField(
+            document.getElementById(
+                "input-full-name"
+            ),
+            "profile_name"
+        );
+
+        saveProfileField(
+            document.getElementById(
+                "input-address"
+            ),
+            "profile_address"
+        );
+
+        saveProfileField(
+            document.getElementById(
+                "input-mobile"
+            ),
+            "profile_mobile"
+        );
+
+        saveProfileField(
+            document.getElementById(
+                "input-email"
+            ),
+            "profile_email"
+        );
+
+
+        /* =========================================
+           FORM SUBMIT
+           ========================================= */
+
+        form.addEventListener(
+            "submit",
+            (event) => {
+
+                event.preventDefault();
+
+                const amount =
+                    Number(
+                        amountInput.value
+                    ) || 0;
+
+                if (amount <= 0) {
+
+                    showToast(
+                        "Please enter a valid amount."
+                    );
+
+                    amountInput.focus();
+
+                    return;
+
+                }
+
+
+                const data = {
+
+                    amount,
+
+                    category:
+                        categoryInput.value.trim(),
+
+                    date:
+                        dateInput.value,
+
+                    note:
+                        noteInput.value.trim()
+
+                };
+
+
+                const editId =
+                    editIdInput.value;
+
+
+                if (editId) {
+
+                    updateSaving(
+                        editId,
+                        data
+                    );
+
+                    showToast(
+                        "Saving updated successfully."
+                    );
+
+                } else {
+
+                    addSaving(data);
+
+                    showToast(
+                        "Saving added successfully."
+                    );
+
+                }
+
+
+                resetForm();
+
+                renderSavings();
+
+            }
+        );
+
+
+        /* =========================================
+           RESET FORM
+           ========================================= */
+
+        function resetForm() {
+
+            form.reset();
+
+            editIdInput.value = "";
+
+            formTitle.textContent =
+                "Add Saving";
+
+            saveButtonText.textContent =
+                "Save Saving";
+
+            cancelEditButton.classList.add(
+                "hidden"
+            );
+
+            setToday();
+
+        }
+
+
+        cancelEditButton.addEventListener(
+            "click",
+            () => {
+
+                resetForm();
+
+            }
+        );
+
+
+        /* =========================================
+           RENDER SAVINGS
+           ========================================= */
+
+        function renderSavings() {
+
+            let savings =
+                getSavings();
+
+            const search =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const sort =
+                sortSelect.value;
+
+
+            /* Search */
+
+            if (search) {
+
+                savings =
+                    savings.filter(
+                        item => {
+
+                            const category =
+                                String(
+                                    item.category
+                                    || ""
+                                ).toLowerCase();
+
+                            const note =
+                                String(
+                                    item.note
+                                    || ""
+                                ).toLowerCase();
+
+                            const date =
+                                String(
+                                    item.date
+                                    || ""
+                                ).toLowerCase();
+
+                            return (
+                                category.includes(
+                                    search
+                                )
+                                ||
+                                note.includes(
+                                    search
+                                )
+                                ||
+                                date.includes(
+                                    search
+                                )
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            /* Sort */
+
+            savings.sort(
+                (a, b) => {
+
+                    if (
+                        sort ===
+                        "amount_desc"
+                    ) {
+
+                        return (
+                            Number(b.amount || 0)
+                            -
+                            Number(a.amount || 0)
+                        );
+
+                    }
+
+                    if (
+                        sort ===
+                        "amount_asc"
+                    ) {
+
+                        return (
+                            Number(a.amount || 0)
+                            -
+                            Number(b.amount || 0)
+                        );
+
+                    }
+
+                    if (
+                        sort ===
+                        "category"
+                    ) {
+
+                        return String(
+                            a.category || ""
+                        ).localeCompare(
+                            String(
+                                b.category || ""
+                            )
+                        );
+
+                    }
+
+                    if (
+                        sort ===
+                        "date_asc"
+                    ) {
+
+                        return String(
+                            a.date || ""
+                        ).localeCompare(
+                            String(
+                                b.date || ""
+                            )
+                        );
+
+                    }
+
+                    return String(
+                        b.date || ""
+                    ).localeCompare(
+                        String(
+                            a.date || ""
+                        )
+                    );
+
+                }
+            );
+
+
+            /* Clear */
+
+            tableBody.innerHTML = "";
+
+            mobileList.innerHTML = "";
+
+
+            /* Empty */
+
+            if (!savings.length) {
+
+                emptyState.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                emptyState.classList.add(
+                    "hidden"
+                );
+
+            }
+
+
+            /* Display total */
+
+            const displayedTotal =
+                savings.reduce(
+                    (
+                        total,
+                        item
+                    ) => {
+
+                        return (
+                            total
+                            +
+                            (
+                                Number(
+                                    item.amount
+                                ) || 0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            listTotal.textContent =
+                formatAmount(
+                    displayedTotal
+                );
+
+
+            /* Overall total */
+
+            const allSavings =
+                getSavings();
+
+            const overallTotal =
+                allSavings.reduce(
+                    (
+                        total,
+                        item
+                    ) => {
+
+                        return (
+                            total
+                            +
+                            (
+                                Number(
+                                    item.amount
+                                ) || 0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            totalSaving.textContent =
+                formatAmount(
+                    overallTotal
+                );
+
+            savingCount.textContent =
+                allSavings.length;
+
+
+            /* Desktop */
+
+            savings.forEach(
+                item => {
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+                    row.className =
+                        "saving-row border-b border-gray-100 dark:border-gray-700";
+
+
+                    row.innerHTML = `
+
+                        <td class="px-3 py-4 text-sm">
+                            ${escapeHTML(item.date || "-")}
+                        </td>
+
+                        <td class="px-3 py-4 text-sm">
+                            ${escapeHTML(item.category || "-")}
+                        </td>
+
+                        <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            ${escapeHTML(item.note || "-")}
+                        </td>
+
+                        <td class="privacy-amount px-3 py-4 text-right text-sm font-semibold text-green-600 dark:text-green-400">
+                            ${formatAmount(item.amount)}
+                        </td>
+
+                        <td class="px-3 py-4 text-center">
+
+                            <div class="flex justify-center gap-2">
+
+                                <button
+                                    type="button"
+                                    data-edit-id="${escapeAttribute(item.id)}"
+                                    class="edit-saving flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+                                    title="Edit"
+                                >
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    data-delete-id="${escapeAttribute(item.id)}"
+                                    class="delete-saving flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                                    title="Delete"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    `;
+
+                    tableBody.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+            /* Mobile */
+
+            savings.forEach(
+                item => {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "saving-row rounded-2xl border border-gray-200 p-4 dark:border-gray-700";
+
+
+                    card.innerHTML = `
+
+                        <div class="flex items-start justify-between gap-3">
+
+                            <div class="min-w-0">
+
+                                <p class="font-semibold">
+                                    ${escapeHTML(item.category || "Saving")}
+                                </p>
+
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    ${escapeHTML(item.date || "-")}
+                                </p>
+
+                            </div>
+
+                            <p class="privacy-amount whitespace-nowrap font-bold text-green-600 dark:text-green-400">
+                                ${formatAmount(item.amount)}
+                            </p>
+
+                        </div>
+
+
+                        ${
+                            item.note
+                            ?
+                            `
+                            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                                ${escapeHTML(item.note)}
+                            </p>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        <div class="mt-4 flex justify-end gap-2">
+
+                            <button
+                                type="button"
+                                data-edit-id="${escapeAttribute(item.id)}"
+                                class="edit-saving rounded-lg bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+                            >
+                                <i class="fa-solid fa-pen mr-1"></i>
+                                Edit
+                            </button>
+
+                            <button
+                                type="button"
+                                data-delete-id="${escapeAttribute(item.id)}"
+                                class="delete-saving rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                            >
+                                <i class="fa-solid fa-trash mr-1"></i>
+                                Delete
+                            </button>
+
+                        </div>
+
+                    `;
+
+                    mobileList.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+            updatePrivacyVisibility();
+
+        }
+
+
+        /* =========================================
+           EDIT / DELETE
+           ========================================= */
+
+        document.addEventListener(
+            "click",
+            (event) => {
+
+                const editButton =
+                    event.target.closest(
+                        ".edit-saving"
+                    );
+
+                if (editButton) {
+
+                    editSaving(
+                        editButton.dataset.editId
+                    );
+
+                    return;
+
+                }
+
+
+                const deleteButton =
+                    event.target.closest(
+                        ".delete-saving"
+                    );
+
+                if (deleteButton) {
+
+                    deleteSavingRecord(
+                        deleteButton.dataset.deleteId
+                    );
+
+                }
+
+            }
+        );
+
+
+        function editSaving(id) {
+
+            const savings =
+                getSavings();
+
+            const item =
+                savings.find(
+                    saving =>
+                        saving.id === id
+                );
+
+            if (!item) {
+                return;
+            }
+
+
+            editIdInput.value =
+                item.id;
+
+            amountInput.value =
+                item.amount ?? "";
+
+            categoryInput.value =
+                item.category ?? "";
+
+            dateInput.value =
+                item.date ?? "";
+
+            noteInput.value =
+                item.note ?? "";
+
+
+            formTitle.textContent =
+                "Edit Saving";
+
+            saveButtonText.textContent =
+                "Update Saving";
+
+            cancelEditButton.classList.remove(
+                "hidden"
+            );
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        function deleteSavingRecord(id) {
+
+            const savings =
+                getSavings();
+
+            const item =
+                savings.find(
+                    saving =>
+                        saving.id === id
+                );
+
+            if (!item) {
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    `Delete this saving record of ${formatAmount(item.amount)}?`
+                );
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            deleteSaving(id);
+
+            showToast(
+                "Saving deleted successfully."
+            );
+
+            renderSavings();
+
+        }
+
+
+        /* =========================================
+           SEARCH / SORT
+           ========================================= */
+
+        searchInput.addEventListener(
+            "input",
+            renderSavings
+        );
+
+        sortSelect.addEventListener(
+            "change",
+            renderSavings
+        );
+
+
+        /* =========================================
+           PRIVACY MODE
+           ========================================= */
+
+        let privacyMode =
+            localStorage.getItem(
+                "privacy_mode"
+            ) === "true";
+
+
+        privacyToggle.addEventListener(
+            "click",
+            () => {
+
+                privacyMode =
+                    !privacyMode;
+
+                localStorage.setItem(
+                    "privacy_mode",
+                    privacyMode
+                );
+
+                updatePrivacyVisibility();
+
+            }
+        );
+
+
+        function updatePrivacyVisibility() {
+
+            document
+                .querySelectorAll(
+                    ".privacy-amount"
+                )
+                .forEach(
+                    element => {
+
+                        if (privacyMode) {
+
+                            element.dataset.original =
+                                element.textContent;
+
+                            element.textContent =
+                                "••••••";
+
+                        } else {
+
+                            if (
+                                element.dataset.original
+                            ) {
+
+                                element.textContent =
+                                    element.dataset.original;
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+            privacyIcon.className =
+                privacyMode
+                    ? "fa-solid fa-eye-slash"
+                    : "fa-solid fa-eye";
+
+        }
+
+
+        /* =========================================
+           LANGUAGE
+           ========================================= */
+
+        languageToggle.addEventListener(
+            "click",
+            () => {
+
+                const current =
+                    getLanguage();
+
+                const next =
+                    current === "en"
+                        ? "ne"
+                        : "en";
+
+                setLanguage(next);
+
+                applyTranslations(next);
+
+                updateLanguageButton();
+
+                updateDateTime();
+
+            }
+        );
+
+
+        function updateLanguageButton() {
+
+            languageToggle.textContent =
+                getLanguage() === "ne"
+                    ? "ने"
+                    : "EN";
+
+        }
+
+
+        /* =========================================
+           THEME
+           ========================================= */
+
+        themeToggle.addEventListener(
+            "click",
+            () => {
+
+                const current =
+                    getTheme();
+
+                const next =
+                    current === "dark"
+                        ? "light"
+                        : "dark";
+
+                setTheme(next);
+
+                updateThemeIcon();
+
+            }
+        );
+
+
+        function updateThemeIcon() {
+
+            const dark =
+                getTheme() === "dark";
+
+            themeIcon.className =
+                dark
+                    ? "fa-solid fa-sun"
+                    : "fa-solid fa-moon";
+
+        }
+
+
+        /* =========================================
+           MOBILE SIDEBAR
+           ========================================= */
+
+        menuButton.addEventListener(
+            "click",
+            () => {
+
+                sidebar.classList.remove(
+                    "-translate-x-full"
+                );
+
+                sidebarBackdrop.classList.remove(
+                    "hidden"
+                );
+
+            }
+        );
+
+
+        sidebarBackdrop.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+        document
+            .querySelectorAll(
+                "#sidebar a"
+            )
+            .forEach(
+                link => {
+
+                    link.addEventListener(
+                        "click",
+                        closeSidebar
+                    );
+
+                }
+            );
+
+
+        function closeSidebar() {
+
+            sidebar.classList.add(
+                "-translate-x-full"
+            );
+
+            sidebarBackdrop.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================
+           TOAST
+           ========================================= */
+
+        let toastTimer = null;
+
+
+        function showToast(message) {
+
+            const container =
+                document.getElementById(
+                    "toast-container"
+                );
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+            toast.textContent =
+                message;
+
+            container.classList.remove(
+                "hidden"
+            );
+
+            clearTimeout(
+                toastTimer
+            );
+
+            toastTimer =
+                setTimeout(
+                    () => {
+
+                        container.classList.add(
+                            "hidden"
+                        );
+
+                    },
+                    2200
+                );
+
+        }
+
+
+        /* =========================================
+           FORMAT AMOUNT
+           ========================================= */
+
+        function formatAmount(amount) {
+
+            const number =
+                Number(amount) || 0;
+
+            return (
+                "NPR " +
+                number.toLocaleString(
+                    "en-IN",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                )
+            );
+
+        }
+
+
+        /* =========================================
+           HTML SAFETY
+           ========================================= */
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        function escapeAttribute(value) {
+
+            return escapeHTML(value);
+
+        }
+
+    </script>
+
+</body>
+</html>
