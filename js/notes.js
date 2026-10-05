@@ -11,22 +11,12 @@ import {
 
 const STORAGE_KEY = "notes";
 
-
 export function getNotes() {
-
-    return getData(
-        STORAGE_KEY,
-        []
-    );
+    return getData(STORAGE_KEY, []);
 }
 
-
 export function saveNotes(notes) {
-
-    saveData(
-        STORAGE_KEY,
-        notes
-    );
+    saveData(STORAGE_KEY, notes);
 
     scheduleSync(
         STORAGE_KEY,
@@ -35,7 +25,6 @@ export function saveNotes(notes) {
 
     return notes;
 }
-
 
 export function addNote(note) {
 
@@ -54,12 +43,24 @@ export function addNote(note) {
         content:
             note.content || "",
 
+        category:
+            note.category || "general",
+
+        priority:
+            note.priority || "normal",
+
+        completed:
+            note.completed === true,
+
         date:
             note.date
             ||
             new Date()
                 .toISOString()
                 .split("T")[0],
+
+        reminder:
+            note.reminder || "",
 
         createdAt:
             note.createdAt
@@ -69,13 +70,12 @@ export function addNote(note) {
             Date.now()
     };
 
-    notes.push(newNote);
+    notes.unshift(newNote);
 
     saveNotes(notes);
 
     return newNote;
 }
-
 
 export function updateNote(
     id,
@@ -108,7 +108,6 @@ export function updateNote(
     return notes[index];
 }
 
-
 export function deleteNote(id) {
 
     const notes = getNotes();
@@ -123,7 +122,6 @@ export function deleteNote(id) {
     return true;
 }
 
-
 export function getNoteById(id) {
 
     const notes = getNotes();
@@ -136,16 +134,15 @@ export function getNoteById(id) {
     );
 }
 
-
-function convertArrayToObject(
-    items
-) {
+function convertArrayToObject(items) {
 
     const result = {};
 
     for (const item of items) {
 
-        if (!item?.id) continue;
+        if (!item?.id) {
+            continue;
+        }
 
         result[item.id] = item;
     }
