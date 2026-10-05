@@ -1,7 +1,5 @@
-// js/savings.js
-
 import {
-    getData,
+    getDataWithLegacy,
     saveData
 } from "./storage.js";
 
@@ -9,53 +7,99 @@ import {
     scheduleSync
 } from "./sync.js";
 
+
 const STORAGE_KEY = "savings";
 
 
+/*
+|--------------------------------------------------------------------------
+| GET SAVINGS
+|--------------------------------------------------------------------------
+*/
+
 export function getSavings() {
 
-    return getData(
+    return getDataWithLegacy(
         STORAGE_KEY,
+
+        [
+            "savings",
+            "saving",
+            "savingData",
+            "savingRecords",
+            "savingHistory"
+        ],
+
         []
     );
 }
 
 
-export function saveSavings(savings) {
+/*
+|--------------------------------------------------------------------------
+| SAVE SAVINGS
+|--------------------------------------------------------------------------
+*/
+
+export function saveSavings(
+    savings
+) {
 
     saveData(
         STORAGE_KEY,
         savings
     );
 
+
     scheduleSync(
         STORAGE_KEY,
-        convertArrayToObject(savings)
+        convertArrayToObject(
+            savings
+        )
     );
+
 
     return savings;
 }
 
 
-export function addSaving(saving) {
+/*
+|--------------------------------------------------------------------------
+| ADD SAVING
+|--------------------------------------------------------------------------
+*/
 
-    const savings = getSavings();
+export function addSaving(
+    saving
+) {
+
+    const savings =
+        getSavings();
+
 
     const newSaving = {
 
         id:
             saving.id
             ||
-            `saving_${Date.now()}`,
+            `saving_${Date.now()}_${Math.random()
+                .toString(36)
+                .slice(2, 7)}`,
 
         amount:
-            Number(saving.amount) || 0,
+            Number(
+                saving.amount
+            ) || 0,
 
         category:
-            saving.category || "",
+            saving.category
+            ||
+            "",
 
         note:
-            saving.note || "",
+            saving.note
+            ||
+            "",
 
         date:
             saving.date
@@ -66,39 +110,65 @@ export function addSaving(saving) {
 
         createdAt:
             saving.createdAt
-            || Date.now(),
+            ||
+            Date.now(),
 
         updatedAt:
             Date.now()
     };
 
-    savings.push(newSaving);
 
-    saveSavings(savings);
+    savings.unshift(
+        newSaving
+    );
+
+
+    saveSavings(
+        savings
+    );
+
 
     return newSaving;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE SAVING
+|--------------------------------------------------------------------------
+*/
 
 export function updateSaving(
     id,
     changes
 ) {
 
-    const savings = getSavings();
+    const savings =
+        getSavings();
+
 
     const index =
         savings.findIndex(
-            item => item.id === id
+            item =>
+                item.id === id
         );
 
-    if (index === -1) {
+
+    if (
+        index === -1
+    ) {
+
         return null;
     }
 
+
+    const current =
+        savings[index];
+
+
     savings[index] = {
 
-        ...savings[index],
+        ...current,
 
         ...changes,
 
@@ -106,46 +176,120 @@ export function updateSaving(
             Number(
                 changes.amount
                 ??
-                savings[index].amount
+                current.amount
             ) || 0,
 
         updatedAt:
             Date.now()
     };
 
-    saveSavings(savings);
+
+    saveSavings(
+        savings
+    );
+
 
     return savings[index];
 }
 
 
-export function deleteSaving(id) {
+/*
+|--------------------------------------------------------------------------
+| DELETE SAVING
+|--------------------------------------------------------------------------
+*/
 
-    const savings = getSavings();
+export function deleteSaving(
+    id
+) {
+
+    const savings =
+        getSavings();
+
 
     const updated =
         savings.filter(
-            item => item.id !== id
+            item =>
+                item.id !== id
         );
 
-    saveSavings(updated);
+
+    saveSavings(
+        updated
+    );
+
 
     return true;
 }
 
 
-export function getSavingById(id) {
+/*
+|--------------------------------------------------------------------------
+| GET ONE SAVING
+|--------------------------------------------------------------------------
+*/
 
-    const savings = getSavings();
+export function getSavingById(
+    id
+) {
+
+    const savings =
+        getSavings();
+
 
     return (
         savings.find(
-            item => item.id === id
+            item =>
+                item.id === id
         )
-        || null
+        ||
+        null
     );
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL SAVING
+|--------------------------------------------------------------------------
+*/
+
+export function getTotalSaving() {
+
+    const savings =
+        getSavings();
+
+
+    return savings.reduce(
+        (
+            total,
+            item
+        ) => {
+
+            return (
+                total
+                +
+                (
+                    Number(
+                        item.amount
+                    )
+                    ||
+                    0
+                )
+            );
+
+        },
+
+        0
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ARRAY → FIREBASE OBJECT
+|--------------------------------------------------------------------------
+*/
 
 function convertArrayToObject(
     items
@@ -153,12 +297,25 @@ function convertArrayToObject(
 
     const result = {};
 
-    for (const item of items) {
 
-        if (!item?.id) continue;
+    for (
+        const item
+        of items
+    ) {
 
-        result[item.id] = item;
+        if (
+            !item?.id
+        ) {
+
+            continue;
+        }
+
+
+        result[
+            item.id
+        ] = item;
     }
+
 
     return result;
 }
