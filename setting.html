@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <meta
+        name="description"
+        content="Digital NoteBook settings"
+    >
+
+    <link
+        rel="manifest"
+        href="./manifest.json"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <title>Settings - Digital NoteBook</title>
+
+    <style>
+
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        .setting-row {
+            transition:
+                background-color 0.2s ease,
+                transform 0.15s ease;
+        }
+
+        .setting-row:active {
+            transform: scale(0.99);
+        }
+
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            background: #9ca3af;
+            border-radius: 999px;
+            transition: 0.25s;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.25s;
+        }
+
+        .switch input:checked + .slider {
+            background: #16a34a;
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(22px);
+        }
+
+        .danger-zone {
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="
+        bg-gray-100
+        text-gray-900
+        dark:bg-gray-950
+        dark:text-white
+    "
+>
+
+
+<!-- =========================================
+     SIDEBAR OVERLAY
+     ========================================= -->
+
+<div
+    id="sidebar-overlay"
+    class="
+        hidden
+        fixed
+        inset-0
+        bg-black/50
+        z-40
+    "
+></div>
+
+
+<!-- =========================================
+     SIDEBAR
+     ========================================= -->
+
+<aside
+    id="sidebar"
+    class="
+        fixed
+        left-0
+        top-0
+        bottom-0
+        z-50
+        w-72
+        bg-white
+        dark:bg-gray-900
+        border-r
+        border-gray-200
+        dark:border-gray-800
+        transform
+        -translate-x-full
+        md:translate-x-0
+        transition-transform
+        duration-300
+        overflow-y-auto
+    "
+>
+
+    <div class="p-5">
+
+        <!-- Logo -->
+
+        <div class="flex items-center gap-3 mb-7">
+
+            <div
+                class="
+                    w-11
+                    h-11
+                    rounded-xl
+                    bg-green-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                "
+            >
+                <i class="fa-solid fa-book"></i>
+            </div>
+
+            <div>
+
+                <h1 class="font-bold text-lg">
+                    Digital NoteBook
+                </h1>
+
+                <p class="text-xs text-gray-500">
+                    Personal Finance
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile -->
+
+        <div
+            class="
+                rounded-2xl
+                p-4
+                bg-gray-100
+                dark:bg-gray-800
+                mb-6
+            "
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="
+                        w-12
+                        h-12
+                        rounded-full
+                        bg-green-600
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        text-lg
+                        font-bold
+                        overflow-hidden
+                    "
+                >
+
+                    <span id="sidebar-avatar-text">
+                        U
+                    </span>
+
+                    <img
+                        id="sidebar-avatar-image"
+                        class="
+                            hidden
+                            w-full
+                            h-full
+                            object-cover
+                        "
+                        alt="Profile"
+                    >
+
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <p
+                        id="sidebar-profile-name"
+                        class="font-semibold truncate"
+                    >
+                        User
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        Settings
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="space-y-2">
+
+            <a
+                href="./index.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-house w-5"></i>
+
+                <span data-i18n="dashboard">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="./add-income.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
+
+                <span data-i18n="income">
+                    Income
+                </span>
+
+            </a>
+
+
+            <a
+                href="./add-saving.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-piggy-bank w-5"></i>
+
+                <span data-i18n="saving">
+                    Saving
+                </span>
+
+            </a>
+
+
+            <a
+                href="./add-transaction.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-right-left w-5"></i>
+
+                <span data-i18n="transaction">
+                    Transaction
+                </span>
+
+            </a>
+
+
+            <a
+                href="./notebook.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-note-sticky w-5"></i>
+
+                <span data-i18n="notebook">
+                    Notebook
+                </span>
+
+            </a>
+
+
+            <a
+                href="./calendar.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-calendar-days w-5"></i>
+
+                <span data-i18n="calendar">
+                    Calendar
+                </span>
+
+            </a>
+
+
+            <a
+                href="./calculate.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-calculator w-5"></i>
+
+                <span data-i18n="calculator">
+                    Calculator
+                </span>
+
+            </a>
+
+
+            <a
+                href="./qrscan.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-qrcode w-5"></i>
+
+                <span>
+                    QR Scan
+                </span>
+
+            </a>
+
+
+            <a
+                href="./account.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-user w-5"></i>
+
+                <span data-i18n="account">
+                    Account
+                </span>
+
+            </a>
+
+
+            <a
+                href="./setting.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-green-600
+                    text-white
+                "
+            >
+                <i class="fa-solid fa-gear w-5"></i>
+
+                <span data-i18n="settings">
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================
+     MAIN
+     ========================================= -->
+
+<main
+    class="
+        min-h-screen
+        md:ml-72
+    "
+>
+
+
+<!-- =========================================
+     HEADER
+     ========================================= -->
+
+<header
+    class="
+        sticky
+        top-0
+        z-30
+        bg-white/90
+        dark:bg-gray-950/90
+        backdrop-blur
+        border-b
+        border-gray-200
+        dark:border-gray-800
+    "
+>
+
+    <div
+        class="
+            px-4
+            sm:px-6
+            py-3
+            flex
+            items-center
+            justify-between
+            gap-3
+        "
+    >
+
+        <div class="flex items-center gap-3">
+
+            <button
+                id="menu-button"
+                class="
+                    md:hidden
+                    w-10
+                    h-10
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+
+            <div>
+
+                <h2 class="font-bold text-lg">
+                    Settings
+                </h2>
+
+                <p
+                    id="current-date"
+                    class="text-xs text-gray-500"
+                ></p>
+
+            </div>
+
+        </div>
+
+
+        <div class="flex items-center gap-2">
+
+            <button
+                id="privacy-button"
+                class="
+                    w-10
+                    h-10
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+                title="Privacy"
+            >
+
+                <i
+                    id="privacy-icon"
+                    class="fa-solid fa-eye"
+                ></i>
+
+            </button>
+
+
+            <button
+                id="language-button"
+                class="
+                    w-10
+                    h-10
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                    text-xs
+                    font-bold
+                "
+            >
+                EN
+            </button>
+
+
+            <button
+                id="theme-button"
+                class="
+                    w-10
+                    h-10
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+                <i
+                    id="theme-icon"
+                    class="fa-solid fa-moon"
+                ></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================
+     CONTENT
+     ========================================= -->
+
+<section
+    class="
+        max-w-4xl
+        mx-auto
+        px-4
+        sm:px-6
+        py-6
+    "
+>
+
+
+    <!-- PAGE TITLE -->
+
+    <div class="mb-6">
+
+        <h1
+            class="
+                text-2xl
+                sm:text-3xl
+                font-bold
+            "
+        >
+            App Settings
+        </h1>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Manage your Digital NoteBook preferences.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================
+         APPEARANCE
+         ===================================== -->
+
+    <div class="mb-6">
+
+        <h2
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-gray-500
+                mb-3
+            "
+        >
+            Appearance
+        </h2>
+
+
+        <div
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <!-- Theme -->
+
+            <div
+                class="
+                    setting-row
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-indigo-100
+                            dark:bg-indigo-900/30
+                            text-indigo-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            Theme
+                        </p>
+
+                        <p
+                            id="theme-description"
+                            class="text-xs text-gray-500"
+                        >
+                            Dark mode
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="theme-switch"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <!-- Language -->
+
+            <div
+                class="
+                    setting-row
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-blue-100
+                            dark:bg-blue-900/30
+                            text-blue-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-language"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            Language
+                        </p>
+
+                        <p
+                            id="language-description"
+                            class="text-xs text-gray-500"
+                        >
+                            English
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    id="settings-language-button"
+                    class="
+                        px-4
+                        py-2
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                        text-sm
+                        font-semibold
+                    "
+                >
+                    EN
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         PRIVACY
+         ===================================== -->
+
+    <div class="mb-6">
+
+        <h2
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-gray-500
+                mb-3
+            "
+        >
+            Privacy
+        </h2>
+
+
+        <div
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <div
+                class="
+                    setting-row
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-purple-100
+                            dark:bg-purple-900/30
+                            text-purple-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            Privacy Mode
+                        </p>
+
+                        <p
+                            id="privacy-description"
+                            class="text-xs text-gray-500"
+                        >
+                            Hide sensitive amounts
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="privacy-switch"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         APP
+         ===================================== -->
+
+    <div class="mb-6">
+
+        <h2
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-gray-500
+                mb-3
+            "
+        >
+            Application
+        </h2>
+
+
+        <div
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <!-- Update -->
+
+            <button
+                id="update-app-button"
+                class="
+                    setting-row
+                    w-full
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                    text-left
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-green-100
+                            dark:bg-green-900/30
+                            text-green-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            Check for App Update
+                        </p>
+
+                        <p class="text-xs text-gray-500">
+                            Refresh the latest app files
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+
+            </button>
+
+
+            <!-- Install -->
+
+            <button
+                id="install-app-button"
+                class="
+                    hidden
+                    setting-row
+                    w-full
+                    p-4
+                    items-center
+                    justify-between
+                    gap-4
+                    text-left
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-blue-100
+                            dark:bg-blue-900/30
+                            text-blue-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            Install App
+                        </p>
+
+                        <p class="text-xs text-gray-500">
+                            Add Digital NoteBook to your phone
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+
+            </button>
+
+
+            <!-- About -->
+
+            <button
+                id="about-button"
+                class="
+                    setting-row
+                    w-full
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                    text-left
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                            text-gray-600
+                            dark:text-gray-300
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+
+                    <div>
+
+                        <p class="font-semibold">
+                            About Digital NoteBook
+                        </p>
+
+                        <p class="text-xs text-gray-500">
+                            App information and version
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i class="fa-solid fa-chevron-right text-gray-400"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         DATA
+         ===================================== -->
+
+    <div class="mb-6">
+
+        <h2
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-gray-500
+                mb-3
+            "
+        >
+            Data Management
+        </h2>
+
+
+        <div
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <!-- Backup information -->
+
+            <div
+                class="
+                    p-4
+                    flex
+                    items-center
+                    gap-3
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                "
+            >
+
+                <div
+                    class="
+                        w-11
+                        h-11
+                        rounded-xl
+                        bg-amber-100
+                        dark:bg-amber-900/30
+                        text-amber-600
+                        flex
+                        items-center
+                        justify-center
+                    "
+                >
+                    <i class="fa-solid fa-cloud"></i>
+                </div>
+
+                <div>
+
+                    <p class="font-semibold">
+                        Cloud Backup
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        Firebase cloud backup will be enabled after account login.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Clear V2 data -->
+
+            <button
+                id="clear-data-button"
+                class="
+                    setting-row
+                    w-full
+                    p-4
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                    text-left
+                "
+            >
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="
+                            w-11
+                            h-11
+                            rounded-xl
+                            bg-red-100
+                            dark:bg-red-900/30
+                            text-red-600
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="
+                                font-semibold
+                                text-red-600
+                            "
+                        >
+                            Clear Local V2 Data
+                        </p>
+
+                        <p class="text-xs text-gray-500">
+                            Delete locally stored V2 data from this device
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <i
+                    class="
+                        fa-solid
+                        fa-chevron-right
+                        text-gray-400
+                    "
+                ></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         ACCOUNT
+         ===================================== -->
+
+    <div class="mb-6">
+
+        <h2
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+                text-gray-500
+                mb-3
+            "
+        >
+            Account
+        </h2>
+
+
+        <div
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                p-5
+            "
+        >
+
+            <div class="flex items-center gap-4">
+
+                <div
+                    class="
+                        w-12
+                        h-12
+                        rounded-full
+                        bg-gray-100
+                        dark:bg-gray-800
+                        flex
+                        items-center
+                        justify-center
+                        text-gray-500
+                    "
+                >
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div>
+
+                    <p class="font-semibold">
+                        Guest Mode
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Login will be added after the V2 pages are completed.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="./account.html"
+                class="
+                    mt-4
+                    block
+                    w-full
+                    text-center
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-green-600
+                    text-white
+                    font-semibold
+                "
+            >
+                Open Account
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         VERSION
+         ===================================== -->
+
+    <div
+        class="
+            text-center
+            py-4
+            text-xs
+            text-gray-500
+        "
+    >
+
+        <p>
+            Digital NoteBook
+        </p>
+
+        <p class="mt-1">
+            Version 2.0
+        </p>
+
+        <p class="mt-1">
+            Simple • Private • Useful
+        </p>
+
+    </div>
+
+
+</section>
+
+</main>
+
+
+<!-- =========================================
+     TOAST
+     ========================================= -->
+
+<div
+    id="toast-container"
+    class="
+        fixed
+        bottom-5
+        left-1/2
+        -translate-x-1/2
+        z-[100]
+    "
+></div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+     ========================================= -->
+
+<script type="module">
+
+    import {
+        initTheme,
+        getTheme,
+        setTheme,
+        toggleTheme
+    } from "./js/theme.js";
+
+    import {
+        getLanguage,
+        setLanguage,
+        applyTranslations
+    } from "./js/language.js";
+
+    import {
+        clearV2Data
+    } from "./js/storage.js";
+
+
+    /* =====================================
+       INITIAL SETUP
+       ===================================== */
+
+    initTheme();
+
+
+    let language =
+        getLanguage();
+
+
+    applyTranslations(
+        language
+    );
+
+
+    /* =====================================
+       DATE
+       ===================================== */
+
+    function updateDate() {
+
+        const element =
+            document.getElementById(
+                "current-date"
+            );
+
+        if (!element) return;
+
+        element.textContent =
+            new Date().toLocaleDateString(
+                language === "ne"
+                    ? "ne-NP"
+                    : "en-US",
+                {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                }
+            );
+    }
+
+    updateDate();
+
+
+    /* =====================================
+       PROFILE
+       ===================================== */
+
+    function loadProfile() {
+
+        const name =
+            localStorage.getItem(
+                "profile_name"
+            )
+            || "User";
+
+
+        const avatar =
+            localStorage.getItem(
+                "profile_avatar"
+            );
+
+
+        const nameElement =
+            document.getElementById(
+                "sidebar-profile-name"
+            );
+
+
+        const avatarText =
+            document.getElementById(
+                "sidebar-avatar-text"
+            );
+
+
+        const avatarImage =
+            document.getElementById(
+                "sidebar-avatar-image"
+            );
+
+
+        if (nameElement) {
+
+            nameElement.textContent =
+                name;
+
+        }
+
+
+        if (avatar) {
+
+            avatarImage.src =
+                avatar;
+
+            avatarImage.classList.remove(
+                "hidden"
+            );
+
+            avatarText.classList.add(
+                "hidden"
+            );
+
+        } else {
+
+            avatarText.textContent =
+                name
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase()
+                || "U";
+
+        }
+
+    }
+
+    loadProfile();
+
+
+    /* =====================================
+       SIDEBAR
+       ===================================== */
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+
+    const overlay =
+        document.getElementById(
+            "sidebar-overlay"
+        );
+
+
+    const menuButton =
+        document.getElementById(
+            "menu-button"
+        );
+
+
+    function openSidebar() {
+
+        sidebar.classList.remove(
+            "-translate-x-full"
+        );
+
+        overlay.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.add(
+            "-translate-x-full"
+        );
+
+        overlay.classList.add(
+            "hidden"
+        );
+    }
+
+
+    menuButton?.addEventListener(
+        "click",
+        openSidebar
+    );
+
+
+    overlay?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    /* =====================================
+       TOAST
+       ===================================== */
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        const container =
+            document.getElementById(
+                "toast-container"
+            );
+
+
+        const toast =
+            document.createElement(
+                "div"
+            );
+
+
+        const icon =
+            type === "error"
+                ? "fa-circle-exclamation"
+                : "fa-circle-check";
+
+
+        toast.className =
+            `
+            mt-2
+            px-5
+            py-3
+            rounded-xl
+            shadow-lg
+            text-sm
+            font-medium
+            bg-gray-900
+            text-white
+            dark:bg-white
+            dark:text-gray-900
+            flex
+            items-center
+            gap-2
+            whitespace-nowrap
+            `;
+
+
+        toast.innerHTML =
+            `
+            <i class="fa-solid ${icon}"></i>
+            <span>${escapeHtml(message)}</span>
+            `;
+
+
+        container.appendChild(
+            toast
+        );
+
+
+        setTimeout(
+            () => {
+
+                toast.remove();
+
+            },
+            2500
+        );
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+    }
+
+
+    /* =====================================
+       THEME
+       ===================================== */
+
+    const themeSwitch =
+        document.getElementById(
+            "theme-switch"
+        );
+
+
+    const themeDescription =
+        document.getElementById(
+            "theme-description"
+        );
+
+
+    function updateThemeUI() {
+
+        const theme =
+            getTheme();
+
+
+        themeSwitch.checked =
+            theme === "dark";
+
+
+        themeDescription.textContent =
+            theme === "dark"
+                ? "Dark mode"
+                : "Light mode";
+
+
+        const icon =
+            document.getElementById(
+                "theme-icon"
+            );
+
+
+        if (icon) {
+
+            icon.className =
+                theme === "dark"
+                    ? "fa-solid fa-sun"
+                    : "fa-solid fa-moon";
+        }
+    }
+
+
+    updateThemeUI();
+
+
+    themeSwitch?.addEventListener(
+        "change",
+        () => {
+
+            setTheme(
+                themeSwitch.checked
+                    ? "dark"
+                    : "light"
+            );
+
+
+            updateThemeUI();
+
+            showToast(
+                themeSwitch.checked
+                    ? "Dark mode enabled"
+                    : "Light mode enabled"
+            );
+        }
+    );
+
+
+    document
+        .getElementById(
+            "theme-button"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                toggleTheme();
+
+                updateThemeUI();
+
+            }
+        );
+
+
+    /* =====================================
+       LANGUAGE
+       ===================================== */
+
+    const languageButton =
+        document.getElementById(
+            "language-button"
+        );
+
+
+    const settingsLanguageButton =
+        document.getElementById(
+            "settings-language-button"
+        );
+
+
+    const languageDescription =
+        document.getElementById(
+            "language-description"
+        );
+
+
+    function updateLanguageUI() {
+
+        language =
+            getLanguage();
+
+
+        const isNepali =
+            language === "ne";
+
+
+        languageButton.textContent =
+            isNepali
+                ? "ने"
+                : "EN";
+
+
+        settingsLanguageButton.textContent =
+            isNepali
+                ? "नेपाली"
+                : "English";
+
+
+        languageDescription.textContent =
+            isNepali
+                ? "नेपाली"
+                : "English";
+
+
+        applyTranslations(
+            language
+        );
+
+
+        updateDate();
+    }
+
+
+    updateLanguageUI();
+
+
+    function changeLanguage() {
+
+        language =
+            language === "en"
+                ? "ne"
+                : "en";
+
+
+        setLanguage(
+            language
+        );
+
+
+        updateLanguageUI();
+
+
+        showToast(
+            language === "ne"
+                ? "भाषा नेपालीमा परिवर्तन भयो"
+                : "Language changed to English"
+        );
+    }
+
+
+    languageButton?.addEventListener(
+        "click",
+        changeLanguage
+    );
+
+
+    settingsLanguageButton?.addEventListener(
+        "click",
+        changeLanguage
+    );
+
+
+    /* =====================================
+       PRIVACY
+       ===================================== */
+
+    const privacySwitch =
+        document.getElementById(
+            "privacy-switch"
+        );
+
+
+    const privacyDescription =
+        document.getElementById(
+            "privacy-description"
+        );
+
+
+    let privacyMode =
+        localStorage.getItem(
+            "privacy_mode"
+        ) === "true";
+
+
+    function updatePrivacyUI() {
+
+        privacySwitch.checked =
+            privacyMode;
+
+
+        privacyDescription.textContent =
+            privacyMode
+                ? "Sensitive amounts are hidden"
+                : "Amounts are visible";
+    }
+
+
+    updatePrivacyUI();
+
+
+    privacySwitch?.addEventListener(
+        "change",
+        () => {
+
+            privacyMode =
+                privacySwitch.checked;
+
+
+            localStorage.setItem(
+                "privacy_mode",
+                privacyMode
+            );
+
+
+            updatePrivacyUI();
+
+
+            showToast(
+                privacyMode
+                    ? "Privacy mode enabled"
+                    : "Privacy mode disabled"
+            );
+        }
+    );
+
+
+    document
+        .getElementById(
+            "privacy-button"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                privacyMode =
+                    !privacyMode;
+
+
+                localStorage.setItem(
+                    "privacy_mode",
+                    privacyMode
+                );
+
+
+                updatePrivacyUI();
+
+            }
+        );
+
+
+    /* =====================================
+       UPDATE APP
+       ===================================== */
+
+    document
+        .getElementById(
+            "update-app-button"
+        )
+        ?.addEventListener(
+            "click",
+            async () => {
+
+                showToast(
+                    "Checking for app update..."
+                );
+
+
+                try {
+
+                    if (
+                        "serviceWorker"
+                        in navigator
+                    ) {
+
+                        const registration =
+                            await navigator
+                                .serviceWorker
+                                .getRegistration();
+
+
+                        if (registration) {
+
+                            await registration.update();
+
+                        }
+
+                    }
+
+
+                    setTimeout(
+                        () => {
+
+                            window.location.reload(
+                                true
+                            );
+
+                        },
+                        700
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    window.location.reload();
+
+                }
+
+            }
+        );
+
+
+    /* =====================================
+       PWA INSTALL
+       ===================================== */
+
+    let deferredInstallPrompt =
+        null;
+
+
+    const installButton =
+        document.getElementById(
+            "install-app-button"
+        );
+
+
+    window.addEventListener(
+        "beforeinstallprompt",
+        (event) => {
+
+            event.preventDefault();
+
+            deferredInstallPrompt =
+                event;
+
+
+            installButton.classList.remove(
+                "hidden"
+            );
+
+            installButton.classList.add(
+                "flex"
+            );
+
+        }
+    );
+
+
+    installButton?.addEventListener(
+        "click",
+        async () => {
+
+            if (!deferredInstallPrompt) {
+
+                showToast(
+                    "Install option is not available right now."
+                );
+
+                return;
+            }
+
+
+            deferredInstallPrompt.prompt();
+
+
+            const result =
+                await deferredInstallPrompt
+                    .userChoice;
+
+
+            console.log(
+                "Install result:",
+                result.outcome
+            );
+
+
+            deferredInstallPrompt =
+                null;
+
+
+            installButton.classList.add(
+                "hidden"
+            );
+
+            installButton.classList.remove(
+                "flex"
+            );
+
+        }
+    );
+
+
+    window.addEventListener(
+        "appinstalled",
+        () => {
+
+            showToast(
+                "Digital NoteBook installed."
+            );
+
+        }
+    );
+
+
+    /* =====================================
+       ABOUT
+       ===================================== */
+
+    document
+        .getElementById(
+            "about-button"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                alert(
+                    "Digital NoteBook\n\n" +
+                    "Version 2.0\n\n" +
+                    "Personal finance, notebook, " +
+                    "saving, transaction and daily " +
+                    "life management app."
+                );
+
+            }
+        );
+
+
+    /* =====================================
+       CLEAR LOCAL DATA
+       ===================================== */
+
+    document
+        .getElementById(
+            "clear-data-button"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                const confirmed =
+                    confirm(
+                        "Clear all Digital NoteBook V2 local data?\n\n" +
+                        "This will remove your local V2 income, " +
+                        "saving, transaction, notebook and settings data " +
+                        "from this device.\n\n" +
+                        "This action cannot be undone."
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                clearV2Data();
+
+
+                // Also clear V2 privacy/theme
+                localStorage.removeItem(
+                    "theme"
+                );
+
+
+                localStorage.removeItem(
+                    "userLang"
+                );
+
+
+                localStorage.removeItem(
+                    "lang"
+                );
+
+
+                localStorage.removeItem(
+                    "privacy_mode"
+                );
+
+
+                showToast(
+                    "Local V2 data cleared."
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "./index.html";
+
+                    },
+                    1000
+                );
+
+            }
+        );
+
+</script>
+
+
+</body>
+</html>
