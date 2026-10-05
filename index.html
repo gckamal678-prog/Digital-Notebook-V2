@@ -847,18 +847,23 @@
      DASHBOARD SCRIPT
 ========================================================= -->
 
-<script type="module">
-
 import {
-    getIncomes
+    getIncomes,
+    getTotalIncome,
+    getTotalIncomeNPR,
+    getTotalIncomeINR
 } from "./js/incomes.js";
 
 import {
-    getSavings
+    getSavings,
+    getTotalSaving
 } from "./js/savings.js";
 
 import {
-    getTransactions
+    getTransactions,
+    getTotalExpense,
+    getTotalReceivable,
+    getTotalPayable
 } from "./js/transactions.js";
 
 import {
@@ -897,16 +902,10 @@ function updateThemeIcon() {
 
     if (!icon) return;
 
-    if (getTheme() === "dark") {
-
-        icon.className =
-            "fa-solid fa-sun";
-
-    } else {
-
-        icon.className =
-            "fa-solid fa-moon";
-    }
+    icon.className =
+        getTheme() === "dark"
+            ? "fa-solid fa-sun"
+            : "fa-solid fa-moon";
 }
 
 updateThemeIcon();
@@ -916,11 +915,8 @@ updateThemeIcon();
    LANGUAGE
 ========================================================= */
 
-const currentLanguage =
-    getLanguage();
-
 applyTranslations(
-    currentLanguage
+    getLanguage()
 );
 
 
@@ -952,7 +948,6 @@ function loadProfile() {
         );
 
     if (welcomeName) {
-
         welcomeName.textContent =
             displayName;
     }
@@ -964,7 +959,6 @@ function loadProfile() {
         );
 
     if (sidebarName) {
-
         sidebarName.textContent =
             displayName;
     }
@@ -983,7 +977,9 @@ function loadProfile() {
         avatarBox.innerHTML = "";
 
         const image =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
         image.src = avatar;
 
@@ -1014,11 +1010,8 @@ function showDate() {
 
     if (!element) return;
 
-    const now =
-        new Date();
-
     element.textContent =
-        now.toLocaleDateString(
+        new Date().toLocaleDateString(
             undefined,
             {
                 weekday: "short",
@@ -1033,17 +1026,33 @@ showDate();
 
 
 /* =========================================================
-   FORMAT MONEY
+   MONEY FORMAT
 ========================================================= */
 
-function formatMoney(amount) {
-
-    const value =
-        Number(amount) || 0;
+function formatNPR(amount) {
 
     return (
         "NPR " +
-        value.toLocaleString(
+        (
+            Number(amount) || 0
+        ).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+}
+
+
+function formatINR(amount) {
+
+    return (
+        "INR " +
+        (
+            Number(amount) || 0
+        ).toLocaleString(
             "en-IN",
             {
                 minimumFractionDigits: 0,
@@ -1055,7 +1064,7 @@ function formatMoney(amount) {
 
 
 /* =========================================================
-   LOAD DASHBOARD
+   DASHBOARD
 ========================================================= */
 
 function loadDashboard() {
@@ -1070,6 +1079,28 @@ function loadDashboard() {
         getTransactions();
 
 
+    const totalIncome =
+        getTotalIncome();
+
+    const totalIncomeNPR =
+        getTotalIncomeNPR();
+
+    const totalIncomeINR =
+        getTotalIncomeINR();
+
+    const totalSaving =
+        getTotalSaving();
+
+    const totalExpense =
+        getTotalExpense();
+
+    const totalReceivable =
+        getTotalReceivable();
+
+    const totalPayable =
+        getTotalPayable();
+
+
     const finance =
         calculateFinance(
             incomes,
@@ -1078,59 +1109,159 @@ function loadDashboard() {
         );
 
 
-    document.getElementById(
-        "total-balance"
-    ).textContent =
-        formatMoney(
+    /* Balance */
+
+    setText(
+        "total-balance",
+        formatNPR(
             finance.balance
-        );
+        )
+    );
 
 
-    document.getElementById(
-        "total-income"
-    ).textContent =
-        formatMoney(
-            finance.totalIncome
-        );
+    /* Income */
+
+    setText(
+        "total-income",
+        formatNPR(
+            totalIncome
+        )
+    );
 
 
-    document.getElementById(
-        "total-expense"
-    ).textContent =
-        formatMoney(
-            finance.totalExpense
-        );
+    /* Expense */
+
+    setText(
+        "total-expense",
+        formatNPR(
+            totalExpense
+        )
+    );
 
 
-    document.getElementById(
-        "total-saving"
-    ).textContent =
-        formatMoney(
-            finance.totalSaving
-        );
+    /* Saving */
+
+    setText(
+        "total-saving",
+        formatNPR(
+            totalSaving
+        )
+    );
 
 
-    document.getElementById(
-        "total-receivable"
-    ).textContent =
-        formatMoney(
-            finance.totalReceivable
-        );
+    /* Receivable */
+
+    setText(
+        "total-receivable",
+        formatNPR(
+            totalReceivable
+        )
+    );
 
 
-    document.getElementById(
-        "total-payable"
-    ).textContent =
-        formatMoney(
-            finance.totalPayable
-        );
+    /* Payable */
 
+    setText(
+        "total-payable",
+        formatNPR(
+            totalPayable
+        )
+    );
+
+
+    /* NPR / INR summary */
+
+    updateCurrencySummary(
+        totalIncomeNPR,
+        totalIncomeINR
+    );
+
+
+    /* Recent activity */
 
     loadRecentActivity(
         incomes,
         savings,
         transactions
     );
+}
+
+
+/* =========================================================
+   SET TEXT
+========================================================= */
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+        element.textContent =
+            value;
+    }
+}
+
+
+/* =========================================================
+   NPR / INR
+========================================================= */
+
+function updateCurrencySummary(
+    npr,
+    inr
+) {
+
+    let box =
+        document.getElementById(
+            "currency-summary"
+        );
+
+
+    if (!box) {
+
+        const incomeCard =
+            document.getElementById(
+                "total-income"
+            )?.closest(
+                ".app-card"
+            );
+
+        if (!incomeCard) {
+            return;
+        }
+
+
+        box =
+            document.createElement(
+                "div"
+            );
+
+        box.id =
+            "currency-summary";
+
+        box.className =
+            "mt-2 text-xs text-slate-500 space-y-1";
+
+
+        incomeCard.appendChild(
+            box
+        );
+    }
+
+
+    box.innerHTML = `
+        <div>
+            🇳🇵 ${formatNPR(npr)}
+        </div>
+
+        <div>
+            🇮🇳 ${formatINR(inr)}
+        </div>
+    `;
 }
 
 
@@ -1155,8 +1286,15 @@ function loadRecentActivity(
         );
 
 
+    if (!list || !empty) {
+        return;
+    }
+
+
     const items = [];
 
+
+    /* Income */
 
     incomes.forEach(
         item => {
@@ -1174,19 +1312,23 @@ function loadRecentActivity(
 
                 amount:
                     Number(
+                        item.total
+                        ??
                         item.amount
-                    ) || 0,
+                    )
+                    || 0,
 
                 date:
                     item.date
-                    ||
-                    "",
+                    || "",
 
                 positive: true
             });
         }
     );
 
+
+    /* Saving */
 
     savings.forEach(
         item => {
@@ -1203,12 +1345,12 @@ function loadRecentActivity(
                 amount:
                     Number(
                         item.amount
-                    ) || 0,
+                    )
+                    || 0,
 
                 date:
                     item.date
-                    ||
-                    "",
+                    || "",
 
                 positive: true
             });
@@ -1216,28 +1358,50 @@ function loadRecentActivity(
     );
 
 
+    /* Transactions */
+
     transactions.forEach(
         item => {
 
             let title =
                 "Transaction";
 
+            let positive =
+                false;
+
+
             if (
                 item.type === "expense"
             ) {
-                title = "Expense";
-            }
 
-            if (
+                title =
+                    item.category
+                    ||
+                    "Expense";
+
+            } else if (
                 item.type === "receivable"
             ) {
-                title = "Receivable";
-            }
 
-            if (
+                title =
+                    item.category
+                    ||
+                    item.partyName
+                    ||
+                    "Receivable";
+
+                positive = true;
+
+            } else if (
                 item.type === "payable"
             ) {
-                title = "Payable";
+
+                title =
+                    item.category
+                    ||
+                    item.partyName
+                    ||
+                    "Payable";
             }
 
 
@@ -1251,31 +1415,40 @@ function loadRecentActivity(
                 amount:
                     Number(
                         item.amount
-                    ) || 0,
+                    )
+                    || 0,
 
                 date:
                     item.date
-                    ||
-                    "",
+                    || "",
 
-                positive:
-                    item.type ===
-                    "receivable"
+                positive
             });
         }
     );
 
 
     items.sort(
-        (a, b) =>
-            new Date(b.date || 0)
-            -
-            new Date(a.date || 0)
+        (a, b) => {
+
+            return (
+                new Date(
+                    b.date || 0
+                )
+                -
+                new Date(
+                    a.date || 0
+                )
+            );
+        }
     );
 
 
     const recent =
-        items.slice(0, 6);
+        items.slice(
+            0,
+            6
+        );
 
 
     if (
@@ -1368,6 +1541,32 @@ function loadRecentActivity(
 
                 iconColor =
                     "text-red-600";
+
+            } else if (
+                item.type === "receivable"
+            ) {
+
+                icon =
+                    "fa-hand-holding-dollar";
+
+                iconBg =
+                    "bg-amber-100";
+
+                iconColor =
+                    "text-amber-600";
+
+            } else if (
+                item.type === "payable"
+            ) {
+
+                icon =
+                    "fa-money-bill-transfer";
+
+                iconBg =
+                    "bg-orange-100";
+
+                iconColor =
+                    "text-orange-600";
             }
 
 
@@ -1387,7 +1586,6 @@ function loadRecentActivity(
 
             iconBox.className =
                 `w-10 h-10 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center shrink-0`;
-
 
             iconBox.innerHTML =
                 `<i class="fa-solid ${icon}"></i>`;
@@ -1450,7 +1648,7 @@ function loadRecentActivity(
                 );
 
             amount.className =
-                "amount font-semibold whitespace-nowrap";
+                "font-semibold whitespace-nowrap";
 
 
             amount.textContent =
@@ -1461,7 +1659,7 @@ function loadRecentActivity(
                 )
                 +
                 " " +
-                formatMoney(
+                formatNPR(
                     item.amount
                 );
 
@@ -1500,64 +1698,14 @@ function loadRecentActivity(
 
 
 /* =========================================================
-   PRIVACY MODE
+   THEME BUTTON
 ========================================================= */
 
-let privacyMode = false;
-
-
-function applyPrivacy() {
-
-    document
-        .querySelectorAll(
-            ".amount"
-        )
-        .forEach(
-            element => {
-
-                if (
-                    !element.dataset.original
-                ) {
-
-                    element.dataset.original =
-                        element.textContent;
-                }
-
-
-                element.textContent =
-                    privacyMode
-                    ? "••••••"
-                    : element.dataset.original;
-            }
-        );
-
-
-    const icon =
-        document.getElementById(
-            "privacy-icon"
-        );
-
-    if (icon) {
-
-        icon.className =
-            privacyMode
-            ? "fa-solid fa-eye-slash"
-            : "fa-solid fa-eye";
-    }
-}
-
-
-/* =========================================================
-   EVENTS
-========================================================= */
-
-
-/* Theme */
 document
     .getElementById(
         "theme-button"
     )
-    .addEventListener(
+    ?.addEventListener(
         "click",
         () => {
 
@@ -1568,19 +1716,22 @@ document
     );
 
 
-/* Language */
+/* =========================================================
+   LANGUAGE BUTTON
+========================================================= */
+
 document
     .getElementById(
         "language-button"
     )
-    .addEventListener(
+    ?.addEventListener(
         "click",
         () => {
 
             const next =
                 getLanguage() === "en"
-                ? "ne"
-                : "en";
+                    ? "ne"
+                    : "en";
 
             setLanguage(
                 next
@@ -1589,19 +1740,61 @@ document
     );
 
 
-/* Privacy */
+/* =========================================================
+   PRIVACY
+========================================================= */
+
+let privacyMode = false;
+
+
 document
     .getElementById(
         "privacy-button"
     )
-    .addEventListener(
+    ?.addEventListener(
         "click",
         () => {
 
             privacyMode =
                 !privacyMode;
 
-            applyPrivacy();
+
+            document
+                .querySelectorAll(
+                    ".amount"
+                )
+                .forEach(
+                    element => {
+
+                        if (
+                            !element.dataset.original
+                        ) {
+
+                            element.dataset.original =
+                                element.textContent;
+                        }
+
+
+                        element.textContent =
+                            privacyMode
+                                ? "••••••"
+                                : element.dataset.original;
+                    }
+                );
+
+
+            const icon =
+                document.getElementById(
+                    "privacy-icon"
+                );
+
+            if (icon) {
+
+                icon.className =
+                    privacyMode
+                        ? "fa-solid fa-eye-slash"
+                        : "fa-solid fa-eye";
+            }
         }
     );
 
@@ -1623,11 +1816,11 @@ const overlay =
 
 function openSidebar() {
 
-    sidebar.classList.add(
+    sidebar?.classList.add(
         "open"
     );
 
-    overlay.classList.add(
+    overlay?.classList.add(
         "show"
     );
 }
@@ -1635,11 +1828,11 @@ function openSidebar() {
 
 function closeSidebar() {
 
-    sidebar.classList.remove(
+    sidebar?.classList.remove(
         "open"
     );
 
-    overlay.classList.remove(
+    overlay?.classList.remove(
         "show"
     );
 }
@@ -1649,7 +1842,7 @@ document
     .getElementById(
         "menu-button"
     )
-    .addEventListener(
+    ?.addEventListener(
         "click",
         openSidebar
     );
@@ -1659,19 +1852,18 @@ document
     .getElementById(
         "close-sidebar"
     )
-    .addEventListener(
+    ?.addEventListener(
         "click",
         closeSidebar
     );
 
 
-overlay.addEventListener(
+overlay?.addEventListener(
     "click",
     closeSidebar
 );
 
 
-/* Close menu after navigation */
 document
     .querySelectorAll(
         "#sidebar a"
@@ -1688,13 +1880,20 @@ document
 
 
 /* =========================================================
-   INITIAL LOAD
+   FIRST LOAD
 ========================================================= */
+
+loadProfile();
+
+showDate();
 
 loadDashboard();
 
 
-/* Refresh when page becomes visible */
+/* =========================================================
+   REFRESH
+========================================================= */
+
 window.addEventListener(
     "pageshow",
     () => {
@@ -1706,7 +1905,6 @@ window.addEventListener(
 );
 
 
-/* Update when other V2 pages save data */
 window.addEventListener(
     "storage",
     () => {
@@ -1747,8 +1945,6 @@ if (
         }
     );
 }
-
-</script>
 
 </body>
 </html>
