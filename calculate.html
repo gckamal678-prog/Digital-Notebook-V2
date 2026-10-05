@@ -1,0 +1,4236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
+
+    <title>Calculator - Digital NoteBook</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        .calculator-button {
+            min-height: 58px;
+            transition: 0.15s ease;
+        }
+
+        .calculator-button:active {
+            transform: scale(0.96);
+        }
+
+        .tool-card {
+            transition: 0.2s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-box {
+            animation: resultIn 0.2s ease-out;
+        }
+
+        @keyframes resultIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        input,
+        select {
+            font-size: 16px;
+        }
+
+        @media (max-width: 640px) {
+
+            .calculator-button {
+                min-height: 52px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="
+        bg-gray-100
+        text-gray-900
+        dark:bg-gray-950
+        dark:text-white
+    "
+>
+
+
+<!-- Toast -->
+
+<div
+    id="toast-container"
+    class="fixed top-4 right-4 z-[100]"
+></div>
+
+
+<!-- Sidebar Overlay -->
+
+<div
+    id="sidebar-overlay"
+    class="
+        hidden
+        fixed
+        inset-0
+        bg-black/50
+        z-40
+    "
+></div>
+
+
+<!-- Sidebar -->
+
+<aside
+    id="sidebar"
+    class="
+        fixed
+        left-0
+        top-0
+        bottom-0
+        w-72
+        bg-white
+        dark:bg-gray-900
+        border-r
+        border-gray-200
+        dark:border-gray-800
+        z-50
+        transform
+        -translate-x-full
+        md:translate-x-0
+        transition-transform
+        duration-300
+        overflow-y-auto
+    "
+>
+
+    <div class="p-5">
+
+        <!-- Logo -->
+
+        <div
+            class="
+                flex
+                items-center
+                gap-3
+                mb-8
+            "
+        >
+
+            <div
+                class="
+                    w-11
+                    h-11
+                    rounded-xl
+                    bg-blue-600
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                "
+            >
+                <i class="fa-solid fa-book"></i>
+            </div>
+
+            <div>
+
+                <h1 class="font-bold text-lg">
+                    Digital NoteBook
+                </h1>
+
+                <p class="text-xs text-gray-500">
+                    Personal Life Manager
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profile -->
+
+        <div
+            class="
+                bg-gray-100
+                dark:bg-gray-800
+                rounded-2xl
+                p-4
+                mb-5
+            "
+        >
+
+            <div
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    mb-3
+                "
+            >
+
+                <div
+                    class="
+                        w-11
+                        h-11
+                        rounded-full
+                        bg-blue-600
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                        overflow-hidden
+                    "
+                >
+
+                    <span id="sidebar-avatar-letter">
+                        U
+                    </span>
+
+                    <img
+                        id="sidebar-avatar-image"
+                        class="
+                            hidden
+                            w-full
+                            h-full
+                            object-cover
+                        "
+                        alt="Avatar"
+                    >
+
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <p
+                        id="sidebar-profile-name"
+                        class="font-semibold truncate"
+                    >
+                        User
+                    </p>
+
+                    <p
+                        id="sidebar-profile-mobile"
+                        class="
+                            text-xs
+                            text-gray-500
+                            truncate
+                        "
+                    >
+                        Personal Account
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="profile-btn"
+                class="
+                    w-full
+                    text-sm
+                    py-2
+                    rounded-lg
+                    bg-white
+                    dark:bg-gray-700
+                    hover:bg-gray-200
+                    dark:hover:bg-gray-600
+                "
+            >
+                <i class="fa-solid fa-user mr-2"></i>
+                Profile
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="space-y-1">
+
+            <a
+                href="./index.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-house w-5"></i>
+                <span data-i18n="dashboard">
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                href="./add-income.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i
+                    class="
+                        fa-solid
+                        fa-money-bill-trend-up
+                        w-5
+                    "
+                ></i>
+
+                <span data-i18n="income">
+                    Income
+                </span>
+
+            </a>
+
+
+            <a
+                href="./add-saving.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-piggy-bank w-5"></i>
+
+                <span data-i18n="saving">
+                    Saving
+                </span>
+
+            </a>
+
+
+            <a
+                href="./add-transaction.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-right-left w-5"></i>
+
+                <span data-i18n="transaction">
+                    Transaction
+                </span>
+
+            </a>
+
+
+            <a
+                href="./notebook.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-note-sticky w-5"></i>
+
+                <span data-i18n="notebook">
+                    Notebook
+                </span>
+
+            </a>
+
+
+            <a
+                href="./calendar.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-calendar-days w-5"></i>
+
+                <span data-i18n="calendar">
+                    Calendar
+                </span>
+
+            </a>
+
+
+            <a
+                href="./calculate.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-blue-600
+                    text-white
+                "
+            >
+                <i class="fa-solid fa-calculator w-5"></i>
+
+                <span data-i18n="calculator">
+                    Calculator
+                </span>
+
+            </a>
+
+
+            <a
+                href="./account.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-user-circle w-5"></i>
+
+                <span data-i18n="account">
+                    Account
+                </span>
+
+            </a>
+
+
+            <a
+                href="./setting.html"
+                class="
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    rounded-xl
+                    hover:bg-gray-100
+                    dark:hover:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-gear w-5"></i>
+
+                <span data-i18n="settings">
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+</aside>
+
+
+<!-- Main -->
+
+<div class="md:ml-72 min-h-screen">
+
+
+    <!-- Header -->
+
+    <header
+        class="
+            sticky
+            top-0
+            z-30
+            bg-white/90
+            dark:bg-gray-950/90
+            backdrop-blur
+            border-b
+            border-gray-200
+            dark:border-gray-800
+        "
+    >
+
+        <div
+            class="
+                px-4
+                md:px-6
+                py-3
+                flex
+                items-center
+                justify-between
+                gap-3
+            "
+        >
+
+            <div
+                class="
+                    flex
+                    items-center
+                    gap-3
+                "
+            >
+
+                <button
+                    id="menu-btn"
+                    class="
+                        md:hidden
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+
+                <div>
+
+                    <h2
+                        class="
+                            font-bold
+                            text-lg
+                            md:text-xl
+                        "
+                    >
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-calculator
+                                text-blue-500
+                                mr-1
+                            "
+                        ></i>
+
+                        Calculator
+
+                    </h2>
+
+                    <p
+                        id="header-date"
+                        class="
+                            text-xs
+                            text-gray-500
+                        "
+                    ></p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    flex
+                    items-center
+                    gap-2
+                "
+            >
+
+                <button
+                    id="privacy-toggle"
+                    title="Privacy"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+
+                <button
+                    id="language-toggle"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                        text-xs
+                        font-bold
+                    "
+                >
+                    EN
+                </button>
+
+
+                <button
+                    id="theme-toggle"
+                    title="Theme"
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- Content -->
+
+    <main
+        class="
+            p-4
+            md:p-6
+            max-w-7xl
+            mx-auto
+        "
+    >
+
+
+        <!-- Hero -->
+
+        <section
+            class="
+                bg-gradient-to-r
+                from-blue-600
+                to-indigo-600
+                text-white
+                rounded-2xl
+                p-5
+                md:p-6
+                mb-5
+            "
+        >
+
+            <div
+                class="
+                    flex
+                    flex-col
+                    md:flex-row
+                    md:items-center
+                    md:justify-between
+                    gap-4
+                "
+            >
+
+                <div>
+
+                    <p
+                        class="
+                            text-blue-100
+                            text-sm
+                        "
+                    >
+                        Daily Life Tools
+                    </p>
+
+                    <h2
+                        class="
+                            text-2xl
+                            md:text-3xl
+                            font-bold
+                            mt-1
+                        "
+                    >
+                        Smart Calculator Hub
+                    </h2>
+
+                    <p
+                        class="
+                            text-blue-100
+                            text-sm
+                            mt-2
+                            max-w-2xl
+                        "
+                    >
+                        Calculate money, EMI, discount,
+                        profit, interest, bills and dates
+                        quickly from one place.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="
+                        hidden
+                        md:flex
+                        w-16
+                        h-16
+                        rounded-2xl
+                        bg-white/20
+                        items-center
+                        justify-center
+                        text-3xl
+                    "
+                >
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Calculator Tools -->
+
+        <div
+            class="
+                grid
+                grid-cols-2
+                sm:grid-cols-3
+                lg:grid-cols-5
+                gap-3
+                mb-5
+            "
+        >
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="basic"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-blue-100
+                        dark:bg-blue-900/30
+                        text-blue-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Basic
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    + − × ÷
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="percentage"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-purple-100
+                        dark:bg-purple-900/30
+                        text-purple-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-percent"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Percentage
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Percent tools
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="profit"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-green-100
+                        dark:bg-green-900/30
+                        text-green-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Profit / Loss
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Business
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="emi"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-orange-100
+                        dark:bg-orange-900/30
+                        text-orange-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    EMI
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Loan payment
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="discount"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-red-100
+                        dark:bg-red-900/30
+                        text-red-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-tag"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Discount
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Sale price
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="split"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-cyan-100
+                        dark:bg-cyan-900/30
+                        text-cyan-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Split Bill
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Per person
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="currency"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-yellow-100
+                        dark:bg-yellow-900/30
+                        text-yellow-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Currency
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    NPR / INR
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="interest"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-indigo-100
+                        dark:bg-indigo-900/30
+                        text-indigo-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Interest
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Simple / Compound
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="date"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-pink-100
+                        dark:bg-pink-900/30
+                        text-pink-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Date
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Date difference
+                </p>
+
+            </button>
+
+
+            <button
+                class="
+                    tool-card
+                    bg-white
+                    dark:bg-gray-900
+                    border
+                    border-gray-200
+                    dark:border-gray-800
+                    rounded-2xl
+                    p-4
+                    text-left
+                "
+                data-tool="gst"
+            >
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-teal-100
+                        dark:bg-teal-900/30
+                        text-teal-600
+                        flex
+                        items-center
+                        justify-center
+                        mb-3
+                    "
+                >
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+
+                <p class="font-semibold text-sm">
+                    Tax / GST
+                </p>
+
+                <p class="text-[10px] text-gray-500 mt-1">
+                    Add / Remove
+                </p>
+
+            </button>
+
+        </div>
+
+
+        <!-- Tool Workspace -->
+
+        <section
+            class="
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                overflow-hidden
+            "
+        >
+
+            <div
+                class="
+                    p-5
+                    border-b
+                    border-gray-200
+                    dark:border-gray-800
+                    flex
+                    items-center
+                    justify-between
+                "
+            >
+
+                <div>
+
+                    <p
+                        id="tool-category"
+                        class="
+                            text-xs
+                            text-blue-500
+                            font-semibold
+                            uppercase
+                        "
+                    >
+                        Calculator
+                    </p>
+
+                    <h3
+                        id="tool-title"
+                        class="
+                            text-xl
+                            font-bold
+                            mt-1
+                        "
+                    >
+                        Basic Calculator
+                    </h3>
+
+                </div>
+
+
+                <button
+                    id="clear-tool"
+                    class="
+                        px-3
+                        py-2
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                        text-sm
+                    "
+                >
+                    <i class="fa-solid fa-rotate-left mr-1"></i>
+                    Clear
+                </button>
+
+            </div>
+
+
+            <div
+                id="tool-content"
+                class="p-5"
+            ></div>
+
+        </section>
+
+
+        <!-- Quick Tips -->
+
+        <section
+            class="
+                mt-5
+                bg-white
+                dark:bg-gray-900
+                border
+                border-gray-200
+                dark:border-gray-800
+                rounded-2xl
+                p-5
+            "
+        >
+
+            <h3 class="font-bold mb-3">
+
+                <i
+                    class="
+                        fa-solid
+                        fa-lightbulb
+                        text-yellow-500
+                        mr-1
+                    "
+                ></i>
+
+                Daily Calculation Tips
+
+            </h3>
+
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    md:grid-cols-3
+                    gap-3
+                "
+            >
+
+                <div
+                    class="
+                        p-3
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+
+                    <p class="font-semibold text-sm">
+                        Discount
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Original price × discount %
+                        = discount amount.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="
+                        p-3
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+
+                    <p class="font-semibold text-sm">
+                        Profit
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Selling price − cost price
+                        = profit.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="
+                        p-3
+                        rounded-xl
+                        bg-gray-100
+                        dark:bg-gray-800
+                    "
+                >
+
+                    <p class="font-semibold text-sm">
+                        EMI
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Enter loan, annual rate and
+                        months to estimate EMI.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- Profile Modal -->
+
+<div
+    id="profile-modal"
+    class="
+        hidden
+        fixed
+        inset-0
+        z-[80]
+        bg-black/50
+        flex
+        items-center
+        justify-center
+        p-4
+    "
+>
+
+    <div
+        class="
+            w-full
+            max-w-md
+            bg-white
+            dark:bg-gray-900
+            rounded-2xl
+            p-5
+            shadow-2xl
+        "
+    >
+
+        <div
+            class="
+                flex
+                items-center
+                justify-between
+                mb-4
+            "
+        >
+
+            <h3 class="font-bold text-lg">
+                Profile
+            </h3>
+
+            <button
+                id="close-profile"
+                class="
+                    w-9
+                    h-9
+                    rounded-lg
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <div class="space-y-3">
+
+            <input
+                id="input-full-name"
+                type="text"
+                placeholder="Full name"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-address"
+                type="text"
+                placeholder="Address"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-mobile"
+                type="tel"
+                placeholder="Mobile number"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+            <input
+                id="input-email"
+                type="email"
+                placeholder="Email"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                "
+            >
+
+        </div>
+
+
+        <button
+            id="save-profile"
+            class="
+                w-full
+                mt-4
+                py-3
+                rounded-xl
+                bg-blue-600
+                text-white
+                font-semibold
+            "
+        >
+            Save Profile
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initTheme,
+    toggleTheme,
+    getTheme
+} from "./js/theme.js";
+
+import {
+    getLanguage,
+    setLanguage,
+    applyTranslations
+} from "./js/language.js";
+
+
+/* =========================================
+   State
+   ========================================= */
+
+let privacyMode =
+    localStorage.getItem(
+        "privacy_mode"
+    ) === "true";
+
+
+let currentTool =
+    "basic";
+
+
+/* =========================================
+   Elements
+   ========================================= */
+
+const toolContent =
+    document.getElementById(
+        "tool-content"
+    );
+
+
+const toolTitle =
+    document.getElementById(
+        "tool-title"
+    );
+
+
+const toolCategory =
+    document.getElementById(
+        "tool-category"
+    );
+
+
+/* =========================================
+   Helpers
+   ========================================= */
+
+function numberValue(
+    id
+) {
+
+    return Number(
+        document.getElementById(
+            id
+        )?.value
+    ) || 0;
+
+}
+
+
+function money(
+    value
+) {
+
+    if (privacyMode) {
+        return "••••";
+    }
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const container =
+        document.getElementById(
+            "toast-container"
+        );
+
+
+    const toast =
+        document.createElement(
+            "div"
+        );
+
+
+    toast.className = `
+        mb-2
+        px-4
+        py-3
+        rounded-xl
+        shadow-xl
+        text-sm
+        bg-gray-900
+        text-white
+        flex
+        items-center
+        gap-2
+    `;
+
+
+    toast.innerHTML = `
+
+        <i
+            class="
+                fa-solid
+                ${
+                    type === "error"
+                        ? "fa-circle-exclamation"
+                        : "fa-circle-check"
+                }
+            "
+        ></i>
+
+        <span>
+            ${message}
+        </span>
+
+    `;
+
+
+    container.appendChild(
+        toast
+    );
+
+
+    setTimeout(
+        () => toast.remove(),
+        2500
+    );
+
+}
+
+
+function resultBox(
+    title,
+    value,
+    subtitle = ""
+) {
+
+    return `
+
+        <div
+            class="
+                result-box
+                mt-5
+                p-5
+                rounded-2xl
+                bg-blue-50
+                dark:bg-blue-950/30
+                border
+                border-blue-200
+                dark:border-blue-900
+            "
+        >
+
+            <p
+                class="
+                    text-xs
+                    text-blue-600
+                    dark:text-blue-400
+                    font-semibold
+                "
+            >
+                ${title}
+            </p>
+
+            <p
+                class="
+                    text-2xl
+                    md:text-3xl
+                    font-bold
+                    mt-1
+                "
+            >
+                ${value}
+            </p>
+
+            ${
+                subtitle
+                    ? `
+                        <p
+                            class="
+                                text-xs
+                                text-gray-500
+                                mt-2
+                            "
+                        >
+                            ${subtitle}
+                        </p>
+                    `
+                    : ""
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+function field(
+    id,
+    label,
+    placeholder = "",
+    type = "number"
+) {
+
+    return `
+
+        <div>
+
+            <label
+                class="
+                    block
+                    text-sm
+                    font-medium
+                    mb-1
+                "
+            >
+                ${label}
+            </label>
+
+            <input
+                id="${id}"
+                type="${type}"
+                placeholder="${placeholder}"
+                class="
+                    w-full
+                    px-4
+                    py-3
+                    rounded-xl
+                    bg-gray-100
+                    dark:bg-gray-800
+                    border
+                    border-transparent
+                    focus:border-blue-500
+                "
+            >
+
+        </div>
+
+    `;
+
+}
+
+
+function calculateButton(
+    id,
+    text = "Calculate"
+) {
+
+    return `
+
+        <button
+            id="${id}"
+            type="button"
+            class="
+                w-full
+                mt-4
+                py-3
+                rounded-xl
+                bg-blue-600
+                text-white
+                font-semibold
+            "
+        >
+            <i
+                class="
+                    fa-solid
+                    fa-equals
+                    mr-2
+                "
+            ></i>
+
+            ${text}
+
+        </button>
+
+    `;
+
+}
+
+
+/* =========================================
+   Basic Calculator
+   ========================================= */
+
+function renderBasic() {
+
+    toolCategory.textContent =
+        "Calculator";
+
+    toolTitle.textContent =
+        "Basic Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div class="max-w-md mx-auto">
+
+            <div
+                class="
+                    bg-gray-100
+                    dark:bg-gray-800
+                    rounded-2xl
+                    p-4
+                    mb-4
+                "
+            >
+
+                <input
+                    id="calc-display"
+                    type="text"
+                    readonly
+                    value="0"
+                    class="
+                        w-full
+                        text-right
+                        text-3xl
+                        md:text-4xl
+                        font-bold
+                        bg-transparent
+                        outline-none
+                    "
+                >
+
+            </div>
+
+
+            <div
+                class="
+                    grid
+                    grid-cols-4
+                    gap-2
+                "
+            >
+
+                ${basicButton("AC", "clear")}
+
+                ${basicButton("⌫", "back")}
+
+                ${basicButton("%", "percent")}
+
+                ${basicButton("÷", "/")}
+
+
+                ${basicButton("7", "7")}
+
+                ${basicButton("8", "8")}
+
+                ${basicButton("9", "9")}
+
+                ${basicButton("×", "*")}
+
+
+                ${basicButton("4", "4")}
+
+                ${basicButton("5", "5")}
+
+                ${basicButton("6", "6")}
+
+                ${basicButton("−", "-")}
+
+
+                ${basicButton("1", "1")}
+
+                ${basicButton("2", "2")}
+
+                ${basicButton("3", "3")}
+
+                ${basicButton("+", "+")}
+
+
+                ${basicButton("0", "0", "col-span-2")}
+
+                ${basicButton(".", ".")}
+
+                ${basicButton("=", "equals")}
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    let expression = "";
+
+
+    const display =
+        document.getElementById(
+            "calc-display"
+        );
+
+
+    document
+        .querySelectorAll(
+            ".calc-btn"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const value =
+                            button.dataset.value;
+
+
+                        if (
+                            value === "clear"
+                        ) {
+
+                            expression =
+                                "";
+
+                            display.value =
+                                "0";
+
+                            return;
+
+                        }
+
+
+                        if (
+                            value === "back"
+                        ) {
+
+                            expression =
+                                expression.slice(
+                                    0,
+                                    -1
+                                );
+
+                            display.value =
+                                expression || "0";
+
+                            return;
+
+                        }
+
+
+                        if (
+                            value === "equals"
+                        ) {
+
+                            try {
+
+                                if (
+                                    !expression
+                                ) {
+                                    return;
+                                }
+
+
+                                const safe =
+                                    expression
+                                        .replace(
+                                            /[^0-9+\-*/().%]/g,
+                                            ""
+                                        );
+
+
+                                const result =
+                                    Function(
+                                        `"use strict"; return (${safe})`
+                                    )();
+
+
+                                expression =
+                                    String(
+                                        Number(
+                                            result
+                                        ).toFixed(10)
+                                    )
+                                    .replace(
+                                        /\.?0+$/,
+                                        ""
+                                    );
+
+
+                                display.value =
+                                    expression;
+
+                            } catch {
+
+                                display.value =
+                                    "Error";
+
+                                expression =
+                                    "";
+
+                            }
+
+                            return;
+
+                        }
+
+
+                        if (
+                            value === "percent"
+                        ) {
+
+                            try {
+
+                                const result =
+                                    Number(
+                                        expression
+                                    ) / 100;
+
+                                expression =
+                                    String(
+                                        result
+                                    );
+
+                                display.value =
+                                    expression;
+
+                            } catch {
+
+                                display.value =
+                                    "Error";
+
+                            }
+
+                            return;
+
+                        }
+
+
+                        expression +=
+                            value;
+
+                        display.value =
+                            expression;
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+function basicButton(
+    text,
+    value,
+    extra = ""
+) {
+
+    return `
+
+        <button
+            type="button"
+            data-value="${value}"
+            class="
+                calc-btn
+                calculator-button
+                rounded-xl
+                bg-gray-100
+                dark:bg-gray-800
+                font-semibold
+                text-lg
+                hover:bg-gray-200
+                dark:hover:bg-gray-700
+                ${extra}
+            "
+        >
+            ${text}
+        </button>
+
+    `;
+
+}
+
+
+/* =========================================
+   Percentage
+   ========================================= */
+
+function renderPercentage() {
+
+    toolCategory.textContent =
+        "Math";
+
+    toolTitle.textContent =
+        "Percentage Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "percent-number",
+                    "Number",
+                    "e.g. 500"
+                )}
+
+                ${field(
+                    "percent-value",
+                    "Percentage",
+                    "e.g. 15"
+                )}
+
+                ${calculateButton(
+                    "calculate-percent"
+                )}
+
+            </div>
+
+
+            <div id="percent-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-percent"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const number =
+                    numberValue(
+                        "percent-number"
+                    );
+
+                const percent =
+                    numberValue(
+                        "percent-value"
+                    );
+
+
+                const result =
+                    number *
+                    percent /
+                    100;
+
+
+                document.getElementById(
+                    "percent-result"
+                ).innerHTML =
+                    resultBox(
+                        `${percent}% of ${money(number)}`,
+                        money(result)
+                    );
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Profit / Loss
+   ========================================= */
+
+function renderProfit() {
+
+    toolCategory.textContent =
+        "Business";
+
+    toolTitle.textContent =
+        "Profit / Loss Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "cost-price",
+                    "Cost Price",
+                    "e.g. 1000"
+                )}
+
+                ${field(
+                    "selling-price",
+                    "Selling Price",
+                    "e.g. 1250"
+                )}
+
+                ${calculateButton(
+                    "calculate-profit"
+                )}
+
+            </div>
+
+
+            <div id="profit-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-profit"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const cost =
+                    numberValue(
+                        "cost-price"
+                    );
+
+
+                const selling =
+                    numberValue(
+                        "selling-price"
+                    );
+
+
+                if (cost <= 0) {
+
+                    showToast(
+                        "Enter a valid cost price.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const difference =
+                    selling - cost;
+
+
+                const percentage =
+                    difference /
+                    cost *
+                    100;
+
+
+                const isProfit =
+                    difference >= 0;
+
+
+                document.getElementById(
+                    "profit-result"
+                ).innerHTML = `
+
+                    <div
+                        class="
+                            result-box
+                            mt-0
+                            p-5
+                            rounded-2xl
+                            ${
+                                isProfit
+                                    ? "bg-green-50 dark:bg-green-950/30"
+                                    : "bg-red-50 dark:bg-red-950/30"
+                            }
+                        "
+                    >
+
+                        <p class="text-xs text-gray-500">
+                            ${
+                                isProfit
+                                    ? "Profit"
+                                    : "Loss"
+                            }
+                        </p>
+
+                        <p class="text-3xl font-bold mt-1">
+
+                            ${money(
+                                Math.abs(
+                                    difference
+                                )
+                            )}
+
+                        </p>
+
+                        <p class="text-sm mt-2">
+
+                            ${
+                                isProfit
+                                    ? "Profit"
+                                    : "Loss"
+                            }
+                            :
+                            ${Math.abs(
+                                percentage
+                            ).toFixed(2)}%
+
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   EMI
+   ========================================= */
+
+function renderEMI() {
+
+    toolCategory.textContent =
+        "Finance";
+
+    toolTitle.textContent =
+        "EMI Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "emi-loan",
+                    "Loan Amount",
+                    "e.g. 500000"
+                )}
+
+                ${field(
+                    "emi-rate",
+                    "Annual Interest Rate (%)",
+                    "e.g. 10"
+                )}
+
+                ${field(
+                    "emi-months",
+                    "Loan Period (Months)",
+                    "e.g. 60"
+                )}
+
+                ${calculateButton(
+                    "calculate-emi"
+                )}
+
+            </div>
+
+
+            <div id="emi-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-emi"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const principal =
+                    numberValue(
+                        "emi-loan"
+                    );
+
+
+                const annualRate =
+                    numberValue(
+                        "emi-rate"
+                    );
+
+
+                const months =
+                    numberValue(
+                        "emi-months"
+                    );
+
+
+                if (
+                    principal <= 0 ||
+                    months <= 0
+                ) {
+
+                    showToast(
+                        "Enter valid loan details.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const monthlyRate =
+                    annualRate /
+                    12 /
+                    100;
+
+
+                let emi;
+
+
+                if (
+                    monthlyRate === 0
+                ) {
+
+                    emi =
+                        principal /
+                        months;
+
+                } else {
+
+                    emi =
+                        principal *
+                        monthlyRate *
+                        Math.pow(
+                            1 + monthlyRate,
+                            months
+                        ) /
+                        (
+                            Math.pow(
+                                1 + monthlyRate,
+                                months
+                            ) - 1
+                        );
+
+                }
+
+
+                const totalPayment =
+                    emi * months;
+
+
+                const totalInterest =
+                    totalPayment -
+                    principal;
+
+
+                document.getElementById(
+                    "emi-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Monthly EMI",
+                            money(emi)
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    text-sm
+                                    mb-2
+                                "
+                            >
+
+                                <span>
+                                    Total Interest
+                                </span>
+
+                                <strong>
+                                    ${money(
+                                        totalInterest
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    text-sm
+                                "
+                            >
+
+                                <span>
+                                    Total Payment
+                                </span>
+
+                                <strong>
+                                    ${money(
+                                        totalPayment
+                                    )}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Discount
+   ========================================= */
+
+function renderDiscount() {
+
+    toolCategory.textContent =
+        "Shopping";
+
+    toolTitle.textContent =
+        "Discount Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "discount-price",
+                    "Original Price",
+                    "e.g. 2500"
+                )}
+
+                ${field(
+                    "discount-percent",
+                    "Discount (%)",
+                    "e.g. 20"
+                )}
+
+                ${calculateButton(
+                    "calculate-discount"
+                )}
+
+            </div>
+
+
+            <div id="discount-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-discount"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const price =
+                    numberValue(
+                        "discount-price"
+                    );
+
+
+                const percent =
+                    numberValue(
+                        "discount-percent"
+                    );
+
+
+                const discount =
+                    price *
+                    percent /
+                    100;
+
+
+                const finalPrice =
+                    price -
+                    discount;
+
+
+                document.getElementById(
+                    "discount-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Final Price",
+                            money(finalPrice)
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            You save:
+
+                            <strong>
+                                ${money(discount)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Split Bill
+   ========================================= */
+
+function renderSplit() {
+
+    toolCategory.textContent =
+        "Daily Life";
+
+    toolTitle.textContent =
+        "Split Bill Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "bill-total",
+                    "Total Bill",
+                    "e.g. 3000"
+                )}
+
+                ${field(
+                    "bill-people",
+                    "Number of People",
+                    "e.g. 4"
+                )}
+
+                ${field(
+                    "bill-tip",
+                    "Tip (%)",
+                    "e.g. 5"
+                )}
+
+                ${calculateButton(
+                    "calculate-split"
+                )}
+
+            </div>
+
+
+            <div id="split-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-split"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const bill =
+                    numberValue(
+                        "bill-total"
+                    );
+
+
+                const people =
+                    numberValue(
+                        "bill-people"
+                    );
+
+
+                const tip =
+                    numberValue(
+                        "bill-tip"
+                    );
+
+
+                if (
+                    people <= 0
+                ) {
+
+                    showToast(
+                        "Enter number of people.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const tipAmount =
+                    bill *
+                    tip /
+                    100;
+
+
+                const total =
+                    bill +
+                    tipAmount;
+
+
+                const perPerson =
+                    total /
+                    people;
+
+
+                document.getElementById(
+                    "split-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Each Person Pays",
+                            money(perPerson)
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                                text-sm
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                "
+                            >
+
+                                <span>
+                                    Tip
+                                </span>
+
+                                <strong>
+                                    ${money(tipAmount)}
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    mt-2
+                                "
+                            >
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong>
+                                    ${money(total)}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Currency
+   ========================================= */
+
+function renderCurrency() {
+
+    toolCategory.textContent =
+        "Currency";
+
+    toolTitle.textContent =
+        "NPR / INR Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Amount
+                    </label>
+
+                    <input
+                        id="currency-amount"
+                        type="number"
+                        placeholder="e.g. 1000"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Convert
+                    </label>
+
+                    <select
+                        id="currency-direction"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                        <option value="npr-inr">
+                            NPR → INR
+                        </option>
+
+                        <option value="inr-npr">
+                            INR → NPR
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Rate
+                    </label>
+
+                    <input
+                        id="currency-rate"
+                        type="number"
+                        value="1.6"
+                        step="0.01"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                    <p class="text-[10px] text-gray-500 mt-1">
+                        Default follows the existing Digital NoteBook
+                        INR rate.
+                    </p>
+
+                </div>
+
+
+                ${calculateButton(
+                    "calculate-currency"
+                )}
+
+            </div>
+
+
+            <div id="currency-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-currency"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const amount =
+                    numberValue(
+                        "currency-amount"
+                    );
+
+
+                const rate =
+                    numberValue(
+                        "currency-rate"
+                    );
+
+
+                const direction =
+                    document.getElementById(
+                        "currency-direction"
+                    ).value;
+
+
+                let result;
+
+
+                if (
+                    direction === "npr-inr"
+                ) {
+
+                    result =
+                        amount /
+                        rate;
+
+                    document.getElementById(
+                        "currency-result"
+                    ).innerHTML =
+                        resultBox(
+                            "INR",
+                            money(result)
+                        );
+
+                } else {
+
+                    result =
+                        amount *
+                        rate;
+
+                    document.getElementById(
+                        "currency-result"
+                    ).innerHTML =
+                        resultBox(
+                            "NPR",
+                            money(result)
+                        );
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Interest
+   ========================================= */
+
+function renderInterest() {
+
+    toolCategory.textContent =
+        "Finance";
+
+    toolTitle.textContent =
+        "Interest Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "interest-principal",
+                    "Principal Amount",
+                    "e.g. 100000"
+                )}
+
+                ${field(
+                    "interest-rate",
+                    "Annual Rate (%)",
+                    "e.g. 8"
+                )}
+
+                ${field(
+                    "interest-years",
+                    "Time (Years)",
+                    "e.g. 3"
+                )}
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Interest Type
+                    </label>
+
+                    <select
+                        id="interest-type"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                        <option value="simple">
+                            Simple Interest
+                        </option>
+
+                        <option value="compound">
+                            Compound Interest
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                ${calculateButton(
+                    "calculate-interest"
+                )}
+
+            </div>
+
+
+            <div id="interest-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-interest"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const principal =
+                    numberValue(
+                        "interest-principal"
+                    );
+
+
+                const rate =
+                    numberValue(
+                        "interest-rate"
+                    );
+
+
+                const years =
+                    numberValue(
+                        "interest-years"
+                    );
+
+
+                const type =
+                    document.getElementById(
+                        "interest-type"
+                    ).value;
+
+
+                let interest;
+                let total;
+
+
+                if (
+                    type === "simple"
+                ) {
+
+                    interest =
+                        principal *
+                        rate *
+                        years /
+                        100;
+
+                    total =
+                        principal +
+                        interest;
+
+                } else {
+
+                    total =
+                        principal *
+                        Math.pow(
+                            1 + rate / 100,
+                            years
+                        );
+
+                    interest =
+                        total -
+                        principal;
+
+                }
+
+
+                document.getElementById(
+                    "interest-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Total Amount",
+                            money(total)
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            Interest earned:
+
+                            <strong>
+                                ${money(interest)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Date Difference
+   ========================================= */
+
+function renderDate() {
+
+    toolCategory.textContent =
+        "Date & Time";
+
+    toolTitle.textContent =
+        "Date Difference Calculator";
+
+
+    const today =
+        new Date();
+
+
+    const todayString =
+        today
+            .toISOString()
+            .split("T")[0];
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Start Date
+                    </label>
+
+                    <input
+                        id="date-start"
+                        type="date"
+                        value="${todayString}"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        End Date
+                    </label>
+
+                    <input
+                        id="date-end"
+                        type="date"
+                        value="${todayString}"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                </div>
+
+
+                ${calculateButton(
+                    "calculate-date"
+                )}
+
+            </div>
+
+
+            <div id="date-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-date"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const start =
+                    new Date(
+                        document.getElementById(
+                            "date-start"
+                        ).value
+                    );
+
+
+                const end =
+                    new Date(
+                        document.getElementById(
+                            "date-end"
+                        ).value
+                    );
+
+
+                if (
+                    Number.isNaN(
+                        start.getTime()
+                    )
+                    ||
+                    Number.isNaN(
+                        end.getTime()
+                    )
+                ) {
+
+                    showToast(
+                        "Select both dates.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const diff =
+                    Math.abs(
+                        end - start
+                    );
+
+
+                const days =
+                    Math.floor(
+                        diff /
+                        (
+                            1000 *
+                            60 *
+                            60 *
+                            24
+                        )
+                    );
+
+
+                const weeks =
+                    Math.floor(
+                        days / 7
+                    );
+
+
+                const years =
+                    Math.floor(
+                        days / 365.25
+                    );
+
+
+                document.getElementById(
+                    "date-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Difference",
+                            `${days} days`
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            <div class="flex justify-between">
+                                <span>Weeks</span>
+                                <strong>${weeks}</strong>
+                            </div>
+
+                            <div class="flex justify-between mt-2">
+                                <span>Approx. Years</span>
+                                <strong>${years}</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Tax / GST
+   ========================================= */
+
+function renderGST() {
+
+    toolCategory.textContent =
+        "Tax";
+
+    toolTitle.textContent =
+        "Tax / GST Calculator";
+
+
+    toolContent.innerHTML = `
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-4
+            "
+        >
+
+            <div class="space-y-4">
+
+                ${field(
+                    "gst-price",
+                    "Amount",
+                    "e.g. 1000"
+                )}
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Tax Rate (%)
+                    </label>
+
+                    <input
+                        id="gst-rate"
+                        type="number"
+                        value="13"
+                        step="0.01"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-1">
+                        Operation
+                    </label>
+
+                    <select
+                        id="gst-operation"
+                        class="
+                            w-full
+                            px-4
+                            py-3
+                            rounded-xl
+                            bg-gray-100
+                            dark:bg-gray-800
+                        "
+                    >
+
+                        <option value="add">
+                            Add Tax
+                        </option>
+
+                        <option value="remove">
+                            Remove Tax
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                ${calculateButton(
+                    "calculate-gst"
+                )}
+
+            </div>
+
+
+            <div id="gst-result"></div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById(
+            "calculate-gst"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                const amount =
+                    numberValue(
+                        "gst-price"
+                    );
+
+
+                const rate =
+                    numberValue(
+                        "gst-rate"
+                    );
+
+
+                const operation =
+                    document.getElementById(
+                        "gst-operation"
+                    ).value;
+
+
+                let tax;
+                let finalAmount;
+
+
+                if (
+                    operation === "add"
+                ) {
+
+                    tax =
+                        amount *
+                        rate /
+                        100;
+
+                    finalAmount =
+                        amount +
+                        tax;
+
+                } else {
+
+                    finalAmount =
+                        amount /
+                        (
+                            1 +
+                            rate / 100
+                        );
+
+                    tax =
+                        amount -
+                        finalAmount;
+
+                }
+
+
+                document.getElementById(
+                    "gst-result"
+                ).innerHTML = `
+
+                    <div class="space-y-3">
+
+                        ${resultBox(
+                            "Final Amount",
+                            money(finalAmount)
+                        )}
+
+                        <div
+                            class="
+                                p-4
+                                rounded-xl
+                                bg-gray-100
+                                dark:bg-gray-800
+                            "
+                        >
+
+                            Tax amount:
+
+                            <strong>
+                                ${money(tax)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   Tool Switch
+   ========================================= */
+
+const toolRenderers = {
+
+    basic:
+        renderBasic,
+
+    percentage:
+        renderPercentage,
+
+    profit:
+        renderProfit,
+
+    emi:
+        renderEMI,
+
+    discount:
+        renderDiscount,
+
+    split:
+        renderSplit,
+
+    currency:
+        renderCurrency,
+
+    interest:
+        renderInterest,
+
+    date:
+        renderDate,
+
+    gst:
+        renderGST
+
+};
+
+
+document
+    .querySelectorAll(
+        "[data-tool]"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    currentTool =
+                        button.dataset.tool;
+
+                    toolRenderers[
+                        currentTool
+                    ]();
+
+                }
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "clear-tool"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            toolRenderers[
+                currentTool
+            ]();
+
+        }
+    );
+
+
+/* =========================================
+   Theme
+   ========================================= */
+
+initTheme();
+
+
+function updateThemeIcon() {
+
+    document.getElementById(
+        "theme-toggle"
+    ).innerHTML =
+        getTheme() === "dark"
+            ? `<i class="fa-solid fa-sun"></i>`
+            : `<i class="fa-solid fa-moon"></i>`;
+
+}
+
+
+document
+    .getElementById(
+        "theme-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            toggleTheme();
+
+            updateThemeIcon();
+
+        }
+    );
+
+
+updateThemeIcon();
+
+
+/* =========================================
+   Language
+   ========================================= */
+
+let language =
+    getLanguage();
+
+
+setLanguage(
+    language
+);
+
+
+function updateLanguageButton() {
+
+    document.getElementById(
+        "language-toggle"
+    ).textContent =
+        language === "en"
+            ? "EN"
+            : "ने";
+
+}
+
+
+document
+    .getElementById(
+        "language-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            language =
+                language === "en"
+                    ? "ne"
+                    : "en";
+
+            setLanguage(
+                language
+            );
+
+            updateLanguageButton();
+
+        }
+    );
+
+
+updateLanguageButton();
+
+
+/* =========================================
+   Privacy
+   ========================================= */
+
+function updatePrivacyIcon() {
+
+    document.getElementById(
+        "privacy-toggle"
+    ).innerHTML =
+        privacyMode
+            ? `<i class="fa-solid fa-eye-slash"></i>`
+            : `<i class="fa-solid fa-eye"></i>`;
+
+}
+
+
+document
+    .getElementById(
+        "privacy-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            privacyMode =
+                !privacyMode;
+
+            localStorage.setItem(
+                "privacy_mode",
+                String(
+                    privacyMode
+                )
+            );
+
+            updatePrivacyIcon();
+
+            toolRenderers[
+                currentTool
+            ]();
+
+        }
+    );
+
+
+updatePrivacyIcon();
+
+
+/* =========================================
+   Header Date
+   ========================================= */
+
+function updateHeaderDate() {
+
+    const date =
+        new Date();
+
+
+    document.getElementById(
+        "header-date"
+    ).textContent =
+        date.toLocaleString(
+            "en-US",
+            {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+}
+
+
+updateHeaderDate();
+
+
+setInterval(
+    updateHeaderDate,
+    60000
+);
+
+
+/* =========================================
+   Profile
+   ========================================= */
+
+function loadProfile() {
+
+    const name =
+        localStorage.getItem(
+            "profile_name"
+        ) || "User";
+
+
+    const mobile =
+        localStorage.getItem(
+            "profile_mobile"
+        ) || "";
+
+
+    document.getElementById(
+        "sidebar-profile-name"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "sidebar-profile-mobile"
+    ).textContent =
+        mobile ||
+        "Personal Account";
+
+
+    document.getElementById(
+        "input-full-name"
+    ).value =
+        name === "User"
+            ? ""
+            : name;
+
+
+    document.getElementById(
+        "input-address"
+    ).value =
+        localStorage.getItem(
+            "profile_address"
+        ) || "";
+
+
+    document.getElementById(
+        "input-mobile"
+    ).value =
+        mobile;
+
+
+    document.getElementById(
+        "input-email"
+    ).value =
+        localStorage.getItem(
+            "profile_email"
+        ) || "";
+
+
+    const avatar =
+        localStorage.getItem(
+            "profile_avatar"
+        );
+
+
+    if (avatar) {
+
+        document.getElementById(
+            "sidebar-avatar-image"
+        ).src =
+            avatar;
+
+
+        document.getElementById(
+            "sidebar-avatar-image"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        document.getElementById(
+            "sidebar-avatar-letter"
+        ).classList.add(
+            "hidden"
+        );
+
+    } else {
+
+        document.getElementById(
+            "sidebar-avatar-letter"
+        ).textContent =
+            name
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+}
+
+
+loadProfile();
+
+
+document
+    .getElementById(
+        "profile-btn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.remove(
+                    "hidden"
+                );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "close-profile"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "save-profile"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            localStorage.setItem(
+                "profile_name",
+                document.getElementById(
+                    "input-full-name"
+                ).value.trim()
+                || "User"
+            );
+
+
+            localStorage.setItem(
+                "profile_address",
+                document.getElementById(
+                    "input-address"
+                ).value.trim()
+            );
+
+
+            localStorage.setItem(
+                "profile_mobile",
+                document.getElementById(
+                    "input-mobile"
+                ).value.trim()
+            );
+
+
+            localStorage.setItem(
+                "profile_email",
+                document.getElementById(
+                    "input-email"
+                ).value.trim()
+            );
+
+
+            loadProfile();
+
+
+            document
+                .getElementById(
+                    "profile-modal"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+
+            showToast(
+                "Profile saved."
+            );
+
+        }
+    );
+
+
+/* =========================================
+   Mobile Sidebar
+   ========================================= */
+
+const sidebar =
+    document.getElementById(
+        "sidebar"
+    );
+
+
+const overlay =
+    document.getElementById(
+        "sidebar-overlay"
+    );
+
+
+document
+    .getElementById(
+        "menu-btn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.remove(
+                "-translate-x-full"
+            );
+
+            overlay.classList.remove(
+                "hidden"
+            );
+
+        }
+    );
+
+
+overlay.addEventListener(
+    "click",
+    closeSidebar
+);
+
+
+document
+    .querySelectorAll(
+        "#sidebar a"
+    )
+    .forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+    );
+
+
+function closeSidebar() {
+
+    sidebar.classList.add(
+        "-translate-x-full"
+    );
+
+    overlay.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================
+   Start
+   ========================================= */
+
+renderBasic();
+
+</script>
+
+</body>
+
+</html>
