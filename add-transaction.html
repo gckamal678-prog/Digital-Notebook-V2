@@ -12,10 +12,10 @@
 
     <meta
         name="theme-color"
-        content="#111827"
+        content="#0f172a"
     >
 
-    <title>Transaction - Digital Notebook</title>
+    <title>Transactions - Digital NoteBook</title>
 
     <link
         rel="manifest"
@@ -30,8 +30,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-    </script>
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    ></script>
 
     <link
         rel="preconnect"
@@ -55,38 +55,81 @@
             font-family: Poppins, sans-serif;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         .type-card {
-            transition: 0.15s ease;
+            border: 2px solid transparent;
+            transition:
+                border-color .15s ease,
+                background .15s ease,
+                transform .15s ease;
         }
 
         .type-card:active {
-            transform: scale(0.97);
+            transform: scale(.98);
         }
 
-        .selected-type {
+        .type-card.selected {
             border-color: #22c55e !important;
-            background: rgba(34, 197, 94, 0.12) !important;
+            background: rgba(34, 197, 94, .14) !important;
         }
 
-        .person-card {
-            transition: 0.15s ease;
+        .type-card.selected .type-icon {
+            background: #16a34a;
+            color: white;
         }
 
-        .person-card:active {
-            transform: scale(0.99);
+        .type-card.selected .type-check {
+            display: flex;
+        }
+
+        .type-check {
+            display: none;
+        }
+
+        .total-box {
+            transition: .2s ease;
+        }
+
+        .record-row {
+            border-bottom: 1px solid rgba(148,163,184,.12);
+        }
+
+        .record-row:last-child {
+            border-bottom: 0;
+        }
+
+        .person-details {
+            display: none;
+        }
+
+        .person-details.open {
+            display: block;
         }
 
         .pdf-page {
             width: 794px;
             min-height: 1123px;
-            padding: 40px;
             background: #ffffff;
             color: #111827;
+            padding: 35px;
             font-family: Arial, sans-serif;
         }
 
-        .amount-box {
-            transition: 0.2s ease;
+        input,
+        textarea,
+        select {
+            font-family: Poppins, sans-serif;
+        }
+
+        @media (max-width: 640px) {
+
+            .pdf-page {
+                width: 794px;
+            }
+
         }
 
     </style>
@@ -94,33 +137,35 @@
 </head>
 
 
-<body class="bg-gray-950 text-white min-h-screen">
+<body
+    class="min-h-screen bg-slate-950 text-white"
+>
 
 
 <!-- HEADER -->
 
 <header
-    class="sticky top-0 z-30 bg-gray-900/95 backdrop-blur border-b border-gray-800"
+    class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
 >
 
     <div
-        class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3"
+        class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3"
     >
 
         <a
             href="./index.html"
-            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl"
+            class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg"
         >
             ←
         </a>
 
-        <div>
+        <div class="flex-1">
 
-            <h1 class="font-bold text-lg">
-                लेनदेन
+            <h1 class="font-bold text-base">
+                कारोबार र लेनदेन
             </h1>
 
-            <p class="text-xs text-gray-400">
+            <p class="text-[11px] text-slate-400">
                 व्यक्तिअनुसार पूरा हिसाब
             </p>
 
@@ -133,22 +178,22 @@
 
 
 <main
-    class="max-w-3xl mx-auto px-4 py-5 pb-24"
+    class="max-w-4xl mx-auto px-4 py-5 pb-20"
 >
 
 
 <!-- SUMMARY -->
 
-<section
+<div
     class="grid grid-cols-2 gap-3 mb-5"
 >
 
     <div
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+        class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
     >
 
-        <p class="text-xs text-gray-400">
-            कुल लेनदेन
+        <p class="text-[11px] text-slate-400">
+            कुल कारोबार
         </p>
 
         <p
@@ -162,11 +207,11 @@
 
 
     <div
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+        class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
     >
 
-        <p class="text-xs text-gray-400">
-            व्यक्तिहरू
+        <p class="text-[11px] text-slate-400">
+            कुल व्यक्ति
         </p>
 
         <p
@@ -178,314 +223,517 @@
 
     </div>
 
-</section>
+</div>
 
 
 
-<!-- FORM -->
+<!-- ADD FORM -->
 
 <section
-    class="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-6"
+    class="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden"
 >
 
-    <h2 class="font-semibold text-lg mb-4">
-        नयाँ लेनदेन
-    </h2>
-
-
-    <input
-        type="hidden"
-        id="editId"
-    >
-
-
-    <!-- PERSON -->
-
-    <label class="text-sm text-gray-300">
-        व्यक्तिको नाम
-    </label>
-
-    <input
-        id="personName"
-        type="text"
-        autocomplete="off"
-        placeholder="जस्तै: Kamal"
-        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-    >
-
-
-
-    <!-- TYPE -->
-
-    <label class="text-sm text-gray-300">
-        लेनदेनको प्रकार
-    </label>
-
-
     <div
-        class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 mb-5"
+        class="px-4 py-4 border-b border-slate-800"
     >
 
-        <button
-            type="button"
-            class="type-card selected-type bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="expense"
+        <h2
+            id="formTitle"
+            class="font-bold text-base"
         >
-
-            <div class="font-semibold">
-                खर्च
-            </div>
-
-            <div class="text-xs text-gray-400">
-                Expense
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="receivable"
-        >
-
-            <div class="font-semibold">
-                लिनुपर्ने
-            </div>
-
-            <div class="text-xs text-gray-400">
-                Receivable
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="payable"
-        >
-
-            <div class="font-semibold">
-                दिनुपर्ने
-            </div>
-
-            <div class="text-xs text-gray-400">
-                Payable
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="given"
-        >
-
-            <div class="font-semibold">
-                दिएको पैसा
-            </div>
-
-            <div class="text-xs text-gray-400">
-                केही समयका लागि
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="taken"
-        >
-
-            <div class="font-semibold">
-                लिएको पैसा
-            </div>
-
-            <div class="text-xs text-gray-400">
-                केही समयका लागि
-            </div>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
-            data-type="repayment"
-        >
-
-            <div class="font-semibold">
-                फिर्ता
-            </div>
-
-            <div class="text-xs text-gray-400">
-                पैसा फिर्ता
-            </div>
-
-        </button>
+            नयाँ कारोबार थप्नुहोस्
+        </h2>
 
     </div>
 
 
-
-    <!-- NPR -->
-
-    <label class="text-sm text-gray-300">
-        नेपाली रुपैयाँ (NPR)
-    </label>
-
-    <input
-        id="npr"
-        type="number"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        placeholder="0"
-        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+    <form
+        id="transactionForm"
+        class="p-4 space-y-5"
     >
 
 
-
-    <!-- INR -->
-
-    <label class="text-sm text-gray-300">
-        भारतीय रुपैयाँ (INR)
-    </label>
-
-    <input
-        id="inr"
-        type="number"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        placeholder="0"
-        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-    >
+        <input
+            type="hidden"
+            id="editId"
+            value=""
+        >
 
 
 
-    <!-- LIVE TOTAL -->
+        <!-- PERSON -->
 
-    <div
-        class="amount-box rounded-2xl bg-green-500/10 border border-green-500/30 p-4 mb-5"
-    >
+        <div>
 
-        <div class="flex items-center justify-between">
+            <label
+                for="partyName"
+                class="block text-xs font-semibold text-slate-300 mb-2"
+            >
+                व्यक्तिको नाम
+            </label>
+
+            <input
+                id="partyName"
+                type="text"
+                autocomplete="off"
+                required
+                placeholder="व्यक्तिको नाम"
+                class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
+            >
+
+        </div>
+
+
+
+        <!-- TYPE -->
+
+        <div>
+
+            <label
+                class="block text-xs font-semibold text-slate-300 mb-2"
+            >
+                कारोबारको प्रकार
+            </label>
+
+
+            <div
+                id="typeGrid"
+                class="grid grid-cols-2 sm:grid-cols-3 gap-2"
+            >
+
+
+                <!-- EXPENSE -->
+
+                <button
+                    type="button"
+                    class="type-card selected rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Expense"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            💸
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        खर्च
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Expense
+                    </p>
+
+                </button>
+
+
+
+                <!-- RECEIVABLE -->
+
+                <button
+                    type="button"
+                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Receivable"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            📥
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        लिनुपर्ने
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Receivable
+                    </p>
+
+                </button>
+
+
+
+                <!-- PAYABLE -->
+
+                <button
+                    type="button"
+                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Payable"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            📤
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        दिनुपर्ने
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Payable
+                    </p>
+
+                </button>
+
+
+
+                <!-- GIVEN -->
+
+                <button
+                    type="button"
+                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Given"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            🤝
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        दिएको पैसा
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Given
+                    </p>
+
+                </button>
+
+
+
+                <!-- TAKEN -->
+
+                <button
+                    type="button"
+                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Taken"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            💰
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        लिएको पैसा
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Taken
+                    </p>
+
+                </button>
+
+
+
+                <!-- REPAYMENT -->
+
+                <button
+                    type="button"
+                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
+                    data-type="Repayment"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
+                        >
+                            🔄
+                        </div>
+
+                        <div
+                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
+                        >
+                            ✓
+                        </div>
+
+                    </div>
+
+                    <p class="font-semibold text-sm mt-2">
+                        फिर्ता
+                    </p>
+
+                    <p class="text-[10px] text-slate-400">
+                        Repayment
+                    </p>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- AMOUNT -->
+
+        <div>
+
+            <label
+                class="block text-xs font-semibold text-slate-300 mb-2"
+            >
+                रकम
+            </label>
+
+
+            <div
+                class="grid grid-cols-2 gap-2"
+            >
+
+                <div>
+
+                    <label
+                        class="block text-[10px] text-slate-500 mb-1"
+                    >
+                        नेपाली रुपैयाँ (NPR)
+                    </label>
+
+                    <input
+                        id="amountNpr"
+                        type="number"
+                        inputmode="decimal"
+                        min="0"
+                        step="0.01"
+                        placeholder="NPR"
+                        class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none focus:border-green-500"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] text-slate-500 mb-1"
+                    >
+                        भारतीय रुपैयाँ (INR)
+                    </label>
+
+                    <input
+                        id="amountInr"
+                        type="number"
+                        inputmode="decimal"
+                        min="0"
+                        step="0.01"
+                        placeholder="INR"
+                        class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none focus:border-green-500"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- LIVE TOTAL -->
+
+            <div
+                class="total-box mt-3 rounded-2xl border border-green-500/30 bg-green-500/10 p-4"
+            >
+
+                <div
+                    class="flex items-center justify-between gap-3"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-[10px] text-slate-400"
+                        >
+                            जम्मा रकम
+                        </p>
+
+                        <p
+                            id="totalAmount"
+                            class="text-2xl font-bold text-green-400 mt-1"
+                        >
+                            NPR 0.00
+                        </p>
+
+                    </div>
+
+
+                    <div class="text-right">
+
+                        <p class="text-[10px] text-slate-500">
+                            Conversion
+                        </p>
+
+                        <p class="text-xs font-semibold">
+                            1 INR = 1.6 NPR
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p
+                    id="conversionText"
+                    class="text-[10px] text-slate-400 mt-2"
+                >
+                    NPR 0 + INR 0 × 1.6 = NPR 0
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DATE -->
+
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 gap-3"
+        >
 
             <div>
 
-                <p class="text-xs text-gray-400">
-                    जम्मा रकम
-                </p>
-
-                <p
-                    id="liveTotal"
-                    class="text-3xl font-bold text-green-400 mt-1"
+                <label
+                    class="block text-xs font-semibold text-slate-300 mb-2"
                 >
-                    NPR 0.00
-                </p>
+                    मिति
+                </label>
+
+                <input
+                    id="transactionDate"
+                    type="date"
+                    required
+                    class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none"
+                >
 
             </div>
 
-            <div class="text-right">
 
-                <p class="text-xs text-gray-500">
-                    Rate
-                </p>
+            <div>
 
-                <p class="text-sm font-semibold">
-                    1 INR = 1.6 NPR
-                </p>
+                <label
+                    class="block text-xs font-semibold text-slate-300 mb-2"
+                >
+                    फिर्ता / Due Date
+                </label>
+
+                <input
+                    id="dueDate"
+                    type="date"
+                    class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none"
+                >
 
             </div>
 
         </div>
 
 
-        <p
-            id="conversionText"
-            class="text-xs text-gray-400 mt-3"
+
+        <!-- NOTE -->
+
+        <div>
+
+            <label
+                class="block text-xs font-semibold text-slate-300 mb-2"
+            >
+                नोट
+            </label>
+
+            <textarea
+                id="transactionNote"
+                rows="3"
+                placeholder="आवश्यक विवरण"
+                class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
+            ></textarea>
+
+        </div>
+
+
+
+        <!-- BUTTONS -->
+
+        <button
+            id="saveButton"
+            type="submit"
+            class="w-full rounded-xl bg-green-600 hover:bg-green-500 py-3.5 font-bold text-sm transition"
         >
-            NPR 0 + INR 0 × 1.6 = NPR 0
-        </p>
-
-    </div>
+            कारोबार सेभ गर्नुहोस्
+        </button>
 
 
+        <button
+            id="cancelButton"
+            type="button"
+            class="hidden w-full rounded-xl bg-slate-700 py-3 font-semibold text-sm"
+        >
+            Edit बन्द गर्नुहोस्
+        </button>
 
-    <!-- DATE -->
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-        <div>
-
-            <label class="text-sm text-gray-300">
-                लेनदेन मिति
-            </label>
-
-            <input
-                id="date"
-                type="date"
-                class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-            >
-
-        </div>
-
-
-        <div>
-
-            <label class="text-sm text-gray-300">
-                फिर्ता / Due Date
-            </label>
-
-            <input
-                id="dueDate"
-                type="date"
-                class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-            >
-
-        </div>
-
-    </div>
-
-
-
-    <!-- NOTE -->
-
-    <label class="text-sm text-gray-300 block mt-4">
-        नोट
-    </label>
-
-    <textarea
-        id="note"
-        rows="3"
-        placeholder="आवश्यक भएमा विवरण लेख्नुहोस्..."
-        class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-    ></textarea>
-
-
-
-    <!-- SAVE -->
-
-    <button
-        id="saveBtn"
-        type="button"
-        class="w-full mt-4 py-3 rounded-xl bg-green-600 hover:bg-green-500 font-semibold"
-    >
-        लेनदेन सुरक्षित गर्नुहोस्
-    </button>
-
-
-    <button
-        id="cancelEditBtn"
-        type="button"
-        class="hidden w-full mt-2 py-3 rounded-xl bg-gray-700 font-semibold"
-    >
-        Edit बन्द गर्नुहोस्
-    </button>
+    </form>
 
 </section>
 
@@ -493,67 +741,60 @@
 
 <!-- SEARCH -->
 
-<section class="mb-4">
+<section class="mt-6">
 
-    <input
-        id="searchInput"
-        type="search"
-        autocomplete="off"
-        placeholder="व्यक्तिको नाम खोज्नुहोस्..."
-        class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800"
+    <div
+        class="flex items-center justify-between mb-3"
     >
 
-</section>
-
-
-
-<!-- PEOPLE -->
-
-<section>
-
-    <div class="flex items-center justify-between mb-3">
-
-        <h2 class="font-semibold">
+        <h2 class="font-bold text-sm">
             व्यक्तिअनुसार हिसाब
         </h2>
 
         <span
-            id="resultCount"
-            class="text-xs text-gray-400"
+            id="resultText"
+            class="text-[10px] text-slate-500"
         >
         </span>
 
     </div>
 
 
-    <div
-        id="peopleList"
-        class="space-y-3"
-    ></div>
-
-
-    <div
-        id="emptyState"
-        class="hidden text-center py-12 text-gray-500"
+    <input
+        id="searchPerson"
+        type="search"
+        placeholder="व्यक्तिको नाम खोज्नुहोस्"
+        autocomplete="off"
+        class="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
     >
-
-        <p class="text-lg">
-            अहिलेसम्म कुनै लेनदेन छैन।
-        </p>
-
-        <p class="text-sm mt-1">
-            माथिबाट पहिलो लेनदेन थप्नुहोस्।
-        </p>
-
-    </div>
 
 </section>
 
-</main>
+
+
+<!-- PERSON LIST -->
+
+<section
+    id="personList"
+    class="mt-4 space-y-3"
+>
+</section>
+
+
+<div
+    id="emptyMessage"
+    class="hidden text-center py-12 text-slate-500"
+>
+
+    <p class="text-sm">
+        कुनै कारोबार भेटिएन।
+    </p>
+
+</div>
 
 
 
-<!-- PDF -->
+<!-- PDF AREA -->
 
 <div
     id="pdfArea"
@@ -561,53 +802,136 @@
 ></div>
 
 
+</main>
+
+
 
 <script type="module">
 
 import "./js/app.js";
 
-import {
-    getTransactions,
-    addTransaction,
-    updateTransaction,
-    deleteTransaction
-} from "./js/transactions.js";
 
-import {
-    getProfileValue
-} from "./js/storage.js";
+/*
+    Digital Notebook
+    Transaction Page
 
+    Storage:
+    digital_notebook_transactions
 
-const INR_RATE = 1.6;
-
-let selectedType = "expense";
-
-let transactions = getTransactions();
+    NPR + INR conversion:
+    1 INR = 1.6 NPR
+*/
 
 
-
-const $ = (id) =>
-    document.getElementById(id);
-
+const STORAGE_KEY =
+    "digital_notebook_transactions";
 
 
-const personName = $("personName");
-const npr = $("npr");
-const inr = $("inr");
-const date = $("date");
-const dueDate = $("dueDate");
-const note = $("note");
-const editId = $("editId");
-const saveBtn = $("saveBtn");
-const cancelEditBtn = $("cancelEditBtn");
-const liveTotal = $("liveTotal");
-const conversionText = $("conversionText");
-const searchInput = $("searchInput");
-const peopleList = $("peopleList");
+const INR_RATE =
+    1.6;
 
 
+let selectedType =
+    "Expense";
 
-/* TODAY */
+
+let editingId =
+    "";
+
+
+/* ELEMENTS */
+
+const form =
+    document.getElementById(
+        "transactionForm"
+    );
+
+
+const partyName =
+    document.getElementById(
+        "partyName"
+    );
+
+
+const amountNpr =
+    document.getElementById(
+        "amountNpr"
+    );
+
+
+const amountInr =
+    document.getElementById(
+        "amountInr"
+    );
+
+
+const totalAmount =
+    document.getElementById(
+        "totalAmount"
+    );
+
+
+const conversionText =
+    document.getElementById(
+        "conversionText"
+    );
+
+
+const transactionDate =
+    document.getElementById(
+        "transactionDate"
+    );
+
+
+const dueDate =
+    document.getElementById(
+        "dueDate"
+    );
+
+
+const transactionNote =
+    document.getElementById(
+        "transactionNote"
+    );
+
+
+const personList =
+    document.getElementById(
+        "personList"
+    );
+
+
+const searchPerson =
+    document.getElementById(
+        "searchPerson"
+    );
+
+
+const emptyMessage =
+    document.getElementById(
+        "emptyMessage"
+    );
+
+
+const saveButton =
+    document.getElementById(
+        "saveButton"
+    );
+
+
+const cancelButton =
+    document.getElementById(
+        "cancelButton"
+    );
+
+
+const editId =
+    document.getElementById(
+        "editId"
+    );
+
+
+/* DATE */
 
 function today() {
 
@@ -618,71 +942,104 @@ function today() {
 }
 
 
-date.value = today();
+transactionDate.value =
+    today();
 
 
 
-/* TYPE */
+/* TYPE SELECTION */
 
-document
-    .querySelectorAll(".type-card")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(".type-card")
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "selected-type"
-                        );
-
-                    });
+const typeCards =
+    document.querySelectorAll(
+        ".type-card"
+    );
 
 
-                button.classList.add(
-                    "selected-type"
+typeCards.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            selectedType =
+                card.dataset.type;
+
+
+            typeCards.forEach(item => {
+
+                item.classList.remove(
+                    "selected"
                 );
 
+            });
 
-                selectedType =
-                    button.dataset.type;
 
-            }
+            card.classList.add(
+                "selected"
+            );
+
+        }
+    );
+
+});
+
+
+
+/* NUMBER */
+
+function number(value) {
+
+    const n =
+        Number(value);
+
+    if (
+        !Number.isFinite(n)
+    ) {
+        return 0;
+    }
+
+    return n;
+
+}
+
+
+
+/* LIVE TOTAL */
+
+function calculateLiveTotal() {
+
+    const npr =
+        number(
+            amountNpr.value
         );
 
-    });
+
+    const inr =
+        number(
+            amountInr.value
+        );
 
 
-
-/* LIVE CONVERSION */
-
-function calculateTotal() {
-
-    const nprValue =
-        Number(npr.value) || 0;
-
-    const inrValue =
-        Number(inr.value) || 0;
-
-
-    const convertedINR =
-        inrValue * INR_RATE;
+    const converted =
+        inr * INR_RATE;
 
 
     const total =
-        nprValue + convertedINR;
+        npr + converted;
 
 
-    liveTotal.textContent =
-        `NPR ${formatMoney(total)}`;
+    totalAmount.textContent =
+        "NPR " +
+        formatMoney(total);
 
 
     conversionText.textContent =
-        `NPR ${formatMoney(nprValue)} + INR ${formatMoney(inrValue)} × 1.6 = NPR ${formatMoney(total)}`;
+        "NPR " +
+        formatMoney(npr) +
+        " + INR " +
+        formatMoney(inr) +
+        " × 1.6 = NPR " +
+        formatMoney(total);
 
 
     return total;
@@ -690,149 +1047,381 @@ function calculateTotal() {
 }
 
 
-npr.addEventListener(
+amountNpr.addEventListener(
     "input",
-    calculateTotal
+    calculateLiveTotal
 );
 
 
-inr.addEventListener(
+amountInr.addEventListener(
     "input",
-    calculateTotal
+    calculateLiveTotal
 );
+
+
+/*
+    Also update on keyup/change.
+    This makes it reliable on mobile keyboards.
+*/
+
+amountNpr.addEventListener(
+    "keyup",
+    calculateLiveTotal
+);
+
+
+amountInr.addEventListener(
+    "keyup",
+    calculateLiveTotal
+);
+
+
+amountNpr.addEventListener(
+    "change",
+    calculateLiveTotal
+);
+
+
+amountInr.addEventListener(
+    "change",
+    calculateLiveTotal
+);
+
+
+
+/* STORAGE */
+
+function getTransactions() {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if (!raw) {
+            return [];
+        }
+
+
+        const data =
+            JSON.parse(raw);
+
+
+        if (
+            !Array.isArray(data)
+        ) {
+            return [];
+        }
+
+
+        return data;
+
+    } catch (error) {
+
+        console.error(
+            "Transaction read error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+
+function saveTransactions(
+    transactions
+) {
+
+    try {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(
+                transactions
+            )
+        );
+
+
+        /*
+            Keep V2 storage copy too.
+            This helps the newer dashboard
+            read the same transaction data.
+        */
+
+        localStorage.setItem(
+            "digital_notebook_v2_transactions",
+            JSON.stringify(
+                transactions
+            )
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Transaction save error:",
+            error
+        );
+
+        alert(
+            "Data Save हुन सकेन। Browser storage जाँच गर्नुहोस्।"
+        );
+
+        return false;
+
+    }
+
+}
+
+
+
+/* CLEAN NAME */
+
+function cleanName(
+    value
+) {
+
+    return String(
+        value || ""
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            " "
+        );
+
+}
+
+
+
+/* ID */
+
+function createId() {
+
+    return (
+        "transaction_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2, 8)
+    );
+
+}
 
 
 
 /* SAVE */
 
-saveBtn.addEventListener(
-    "click",
-    saveForm
+form.addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+
+        const name =
+            cleanName(
+                partyName.value
+            );
+
+
+        const npr =
+            number(
+                amountNpr.value
+            );
+
+
+        const inr =
+            number(
+                amountInr.value
+            );
+
+
+        const total =
+            npr +
+            (
+                inr *
+                INR_RATE
+            );
+
+
+        if (!name) {
+
+            alert(
+                "व्यक्तिको नाम लेख्नुहोस्।"
+            );
+
+            partyName.focus();
+
+            return;
+
+        }
+
+
+        if (total <= 0) {
+
+            alert(
+                "NPR वा INR रकम लेख्नुहोस्।"
+            );
+
+            if (
+                !npr &&
+                !inr
+            ) {
+
+                amountNpr.focus();
+
+            }
+
+            return;
+
+        }
+
+
+        const item = {
+
+            id:
+                editingId ||
+                createId(),
+
+            party:
+                name,
+
+            partyName:
+                name,
+
+            type:
+                selectedType,
+
+            npr:
+                npr,
+
+            inr:
+                inr,
+
+            total:
+                total,
+
+            amount:
+                total,
+
+            date:
+                transactionDate.value ||
+                today(),
+
+            dueDate:
+                dueDate.value ||
+                "",
+
+            note:
+                transactionNote.value
+                    .trim(),
+
+            createdAt:
+                editingId
+                    ?
+                    getExistingCreatedAt(
+                        editingId
+                    )
+                    :
+                    Date.now(),
+
+            updatedAt:
+                Date.now()
+
+        };
+
+
+        let transactions =
+            getTransactions();
+
+
+        if (editingId) {
+
+            const index =
+                transactions.findIndex(
+                    tx =>
+                        tx.id ===
+                        editingId
+                );
+
+
+            if (
+                index === -1
+            ) {
+
+                alert(
+                    "Update record भेटिएन।"
+                );
+
+                return;
+
+            }
+
+
+            transactions[index] =
+                item;
+
+        } else {
+
+            transactions.unshift(
+                item
+            );
+
+        }
+
+
+        if (
+            saveTransactions(
+                transactions
+            )
+        ) {
+
+            resetForm();
+
+            renderPeople();
+
+            alert(
+                editingId
+                    ?
+                    "कारोबार Update भयो।"
+                    :
+                    "कारोबार सुरक्षित भयो।"
+            );
+
+        }
+
+    }
 );
 
 
-function saveForm() {
 
-    const name =
-        cleanName(
-            personName.value
-        );
+/* CREATED AT */
 
+function getExistingCreatedAt(
+    id
+) {
 
-    const nprValue =
-        Number(npr.value) || 0;
-
-
-    const inrValue =
-        Number(inr.value) || 0;
-
-
-    const total =
-        nprValue +
-        (
-            inrValue * INR_RATE
-        );
-
-
-    if (!name) {
-
-        alert(
-            "व्यक्तिको नाम लेख्नुहोस्।"
-        );
-
-        personName.focus();
-
-        return;
-
-    }
-
-
-    if (total <= 0) {
-
-        alert(
-            "NPR वा INR मा रकम लेख्नुहोस्।"
-        );
-
-        return;
-
-    }
-
-
-    const data = {
-
-        type:
-            selectedType,
-
-        partyName:
-            name,
-
-        npr:
-            nprValue,
-
-        inr:
-            inrValue,
-
-        amount:
-            total,
-
-        date:
-            date.value || today(),
-
-        dueDate:
-            dueDate.value || "",
-
-        note:
-            note.value.trim(),
-
-        status:
-            "pending"
-
-    };
-
-
-    let result;
-
-
-    if (editId.value) {
-
-        result =
-            updateTransaction(
-                editId.value,
-                data
+    const item =
+        getTransactions()
+            .find(
+                tx =>
+                    tx.id === id
             );
 
-    } else {
 
-        result =
-            addTransaction(
-                data
-            );
-
-    }
-
-
-    if (!result) {
-
-        alert(
-            "लेनदेन Save हुन सकेन।"
-        );
-
-        return;
-
-    }
-
-
-    transactions =
-        getTransactions();
-
-
-    resetForm();
-
-    render();
-
-
-    alert(
-        "लेनदेन सुरक्षित भयो।"
+    return (
+        item?.createdAt ||
+        Date.now()
     );
 
 }
@@ -843,542 +1432,60 @@ function saveForm() {
 
 function resetForm() {
 
-    personName.value = "";
-
-    npr.value = "";
-
-    inr.value = "";
-
-    dueDate.value = "";
-
-    note.value = "";
-
-    date.value = today();
-
-    editId.value = "";
-
-    selectedType = "expense";
+    editingId =
+        "";
 
 
-    document
-        .querySelectorAll(".type-card")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "selected-type",
-                button.dataset.type === "expense"
-            );
-
-        });
+    editId.value =
+        "";
 
 
-    saveBtn.textContent =
-        "लेनदेन सुरक्षित गर्नुहोस्";
+    form.reset();
 
 
-    cancelEditBtn.classList.add(
+    transactionDate.value =
+        today();
+
+
+    selectedType =
+        "Expense";
+
+
+    typeCards.forEach(card => {
+
+        card.classList.toggle(
+            "selected",
+            card.dataset.type ===
+                "Expense"
+        );
+
+    });
+
+
+    saveButton.textContent =
+        "कारोबार सेभ गर्नुहोस्";
+
+
+    cancelButton.classList.add(
         "hidden"
     );
 
 
-    calculateTotal();
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "नयाँ कारोबार थप्नुहोस्";
+
+
+    calculateLiveTotal();
 
 }
 
 
-cancelEditBtn.addEventListener(
+cancelButton.addEventListener(
     "click",
     resetForm
 );
-
-
-
-/* SEARCH */
-
-searchInput.addEventListener(
-    "input",
-    render
-);
-
-
-
-/* GROUP PEOPLE */
-
-function getPeopleGroups() {
-
-    const groups = {};
-
-
-    for (
-        const item
-        of transactions
-    ) {
-
-        const name =
-            cleanName(
-                item.partyName
-            );
-
-
-        if (!name) {
-            continue;
-        }
-
-
-        const key =
-            name.toLowerCase();
-
-
-        if (!groups[key]) {
-
-            groups[key] = {
-
-                name: name,
-
-                records: []
-
-            };
-
-        }
-
-
-        groups[key].records.push(
-            item
-        );
-
-    }
-
-
-    return Object.values(groups);
-
-}
-
-
-
-/* RENDER */
-
-function render() {
-
-    transactions =
-        getTransactions();
-
-
-    const groups =
-        getPeopleGroups();
-
-
-    const search =
-        searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-    const filtered =
-        groups.filter(group =>
-            group.name
-                .toLowerCase()
-                .includes(search)
-        );
-
-
-    $("totalRecords").textContent =
-        transactions.length;
-
-
-    $("totalPeople").textContent =
-        groups.length;
-
-
-    $("resultCount").textContent =
-        `${filtered.length} व्यक्ति`;
-
-
-    peopleList.innerHTML = "";
-
-
-    $("emptyState").classList.toggle(
-        "hidden",
-        filtered.length > 0
-    );
-
-
-    filtered.forEach(group => {
-
-        peopleList.appendChild(
-            createPersonCard(group)
-        );
-
-    });
-
-}
-
-
-
-/* PERSON CARD */
-
-function createPersonCard(group) {
-
-    const card =
-        document.createElement("div");
-
-
-    card.className =
-        "person-card bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden";
-
-
-    let expense = 0;
-    let receivable = 0;
-    let payable = 0;
-    let given = 0;
-    let taken = 0;
-    let repayment = 0;
-
-
-    group.records.forEach(item => {
-
-        const amount =
-            Number(item.amount) || 0;
-
-
-        switch (item.type) {
-
-            case "expense":
-                expense += amount;
-                break;
-
-            case "receivable":
-                receivable += amount;
-                break;
-
-            case "payable":
-                payable += amount;
-                break;
-
-            case "given":
-                given += amount;
-                break;
-
-            case "taken":
-                taken += amount;
-                break;
-
-            case "repayment":
-                repayment += amount;
-                break;
-
-        }
-
-    });
-
-
-    const balance =
-        receivable
-        +
-        given
-        -
-        payable
-        -
-        taken
-        -
-        repayment;
-
-
-    const id =
-        getPersonId(group.name);
-
-
-    const header =
-        document.createElement("div");
-
-
-    header.className = "p-4";
-
-
-    header.innerHTML = `
-
-        <div class="flex items-center justify-between gap-3">
-
-            <div>
-
-                <h3 class="font-bold text-lg">
-                    ${escapeHtml(group.name)}
-                </h3>
-
-                <p class="text-xs text-gray-400">
-                    ${group.records.length} वटा लेनदेन
-                </p>
-
-            </div>
-
-
-            <div class="text-right">
-
-                <p class="text-xs text-gray-400">
-                    बाँकी हिसाब
-                </p>
-
-                <p class="font-bold ${
-                    balance >= 0
-                        ? "text-green-400"
-                        : "text-red-400"
-                }">
-
-                    NPR ${formatMoney(
-                        Math.abs(balance)
-                    )}
-
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="grid grid-cols-2 gap-2 mt-4">
-
-            <div class="bg-gray-800 rounded-xl p-3">
-
-                <p class="text-xs text-gray-400">
-                    दिएको
-                </p>
-
-                <p class="font-semibold">
-                    NPR ${formatMoney(given)}
-                </p>
-
-            </div>
-
-
-            <div class="bg-gray-800 rounded-xl p-3">
-
-                <p class="text-xs text-gray-400">
-                    लिएको
-                </p>
-
-                <p class="font-semibold">
-                    NPR ${formatMoney(taken)}
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="grid grid-cols-2 gap-2 mt-2">
-
-            <div class="bg-gray-800 rounded-xl p-3">
-
-                <p class="text-xs text-gray-400">
-                    लिनुपर्ने
-                </p>
-
-                <p class="font-semibold">
-                    NPR ${formatMoney(receivable)}
-                </p>
-
-            </div>
-
-
-            <div class="bg-gray-800 rounded-xl p-3">
-
-                <p class="text-xs text-gray-400">
-                    दिनुपर्ने
-                </p>
-
-                <p class="font-semibold">
-                    NPR ${formatMoney(payable)}
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="flex gap-2 mt-3">
-
-            <button
-                type="button"
-                class="flex-1 bg-green-600 rounded-xl py-2 text-sm font-semibold"
-                onclick="generatePersonPDF(${JSON.stringify(group.name)})"
-            >
-                PDF
-            </button>
-
-
-            <button
-                type="button"
-                class="flex-1 bg-gray-800 rounded-xl py-2 text-sm"
-                onclick="togglePerson(${JSON.stringify(id)})"
-            >
-                विवरण
-            </button>
-
-        </div>
-
-    `;
-
-
-    const details =
-        document.createElement("div");
-
-
-    details.id =
-        `details_${id}`;
-
-
-    details.className =
-        "hidden border-t border-gray-800 p-3 space-y-2";
-
-
-    group.records.forEach(item => {
-
-        details.appendChild(
-            createRecordRow(item)
-        );
-
-    });
-
-
-    card.appendChild(header);
-
-    card.appendChild(details);
-
-
-    return card;
-
-}
-
-
-
-/* RECORD */
-
-function createRecordRow(item) {
-
-    const row =
-        document.createElement("div");
-
-
-    row.className =
-        "bg-gray-800 rounded-xl p-3";
-
-
-    const amount =
-        Number(item.amount) || 0;
-
-
-    row.innerHTML = `
-
-        <div class="flex justify-between gap-3">
-
-            <div>
-
-                <p class="font-semibold">
-                    ${escapeHtml(
-                        getTypeName(item.type)
-                    )}
-                </p>
-
-                <p class="text-xs text-gray-400 mt-1">
-                    ${escapeHtml(
-                        item.date || ""
-                    )}
-                </p>
-
-                ${
-                    item.dueDate
-                    ?
-                    `
-                    <p class="text-xs text-yellow-400 mt-1">
-                        Due: ${escapeHtml(item.dueDate)}
-                    </p>
-                    `
-                    :
-                    ""
-                }
-
-                ${
-                    item.note
-                    ?
-                    `
-                    <p class="text-xs text-gray-400 mt-1">
-                        ${escapeHtml(item.note)}
-                    </p>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-
-
-            <div class="text-right">
-
-                <p class="font-bold">
-                    NPR ${formatMoney(amount)}
-                </p>
-
-                <p class="text-[10px] text-gray-500 mt-1">
-                    NPR ${formatMoney(item.npr || 0)}
-                    +
-                    INR ${formatMoney(item.inr || 0)}
-                </p>
-
-
-                <div class="flex gap-3 justify-end mt-2">
-
-                    <button
-                        type="button"
-                        class="text-xs text-blue-400"
-                        onclick="editTransaction(${JSON.stringify(item.id)})"
-                    >
-                        Edit
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="text-xs text-red-400"
-                        onclick="removeTransaction(${JSON.stringify(item.id)})"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    return row;
-
-}
-
-
-
-/* TOGGLE */
-
-window.togglePerson =
-    function(id) {
-
-        const element =
-            document.getElementById(
-                `details_${id}`
-            );
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.classList.toggle(
-            "hidden"
-        );
-
-    };
 
 
 
@@ -1388,71 +1495,95 @@ window.editTransaction =
     function(id) {
 
         const item =
-            getTransactions().find(
-                record =>
-                    record.id === id
-            );
+            getTransactions()
+                .find(
+                    tx =>
+                        tx.id === id
+                );
 
 
         if (!item) {
+
+            alert(
+                "Record भेटिएन।"
+            );
+
             return;
+
         }
 
 
-        personName.value =
-            item.partyName || "";
-
-
-        npr.value =
-            item.npr || "";
-
-
-        inr.value =
-            item.inr || "";
-
-
-        date.value =
-            item.date || today();
-
-
-        dueDate.value =
-            item.dueDate || "";
-
-
-        note.value =
-            item.note || "";
+        editingId =
+            item.id;
 
 
         editId.value =
             item.id;
 
 
+        partyName.value =
+            item.party ||
+            item.partyName ||
+            "";
+
+
+        amountNpr.value =
+            item.npr ??
+            0;
+
+
+        amountInr.value =
+            item.inr ??
+            0;
+
+
+        transactionDate.value =
+            item.date ||
+            today();
+
+
+        dueDate.value =
+            item.dueDate ||
+            "";
+
+
+        transactionNote.value =
+            item.note ||
+            "";
+
+
         selectedType =
-            item.type || "expense";
+            item.type ||
+            "Expense";
 
 
-        document
-            .querySelectorAll(".type-card")
-            .forEach(button => {
+        typeCards.forEach(card => {
 
-                button.classList.toggle(
-                    "selected-type",
-                    button.dataset.type === selectedType
-                );
+            card.classList.toggle(
+                "selected",
+                card.dataset.type ===
+                    selectedType
+            );
 
-            });
-
-
-        saveBtn.textContent =
-            "लेनदेन Update गर्नुहोस्";
+        });
 
 
-        cancelEditBtn.classList.remove(
+        saveButton.textContent =
+            "कारोबार Update गर्नुहोस्";
+
+
+        cancelButton.classList.remove(
             "hidden"
         );
 
 
-        calculateTotal();
+        document.getElementById(
+            "formTitle"
+        ).textContent =
+            "कारोबार Update गर्नुहोस्";
+
+
+        calculateLiveTotal();
 
 
         window.scrollTo({
@@ -1466,602 +1597,136 @@ window.editTransaction =
 
 /* DELETE */
 
-window.removeTransaction =
+window.deleteTransaction =
     function(id) {
 
-        if (
-            !confirm(
-                "यो लेनदेन हटाउने?"
-            )
-        ) {
-            return;
-        }
-
-
-        const result =
-            deleteTransaction(id);
-
-
-        if (!result) {
-
-            alert(
-                "लेनदेन हटाउन सकिएन।"
-            );
-
-            return;
-
-        }
-
-
-        transactions =
-            getTransactions();
-
-
-        render();
-
-    };
-
-
-
-/* PDF */
-
-window.generatePersonPDF =
-    async function(person) {
-
-        const target =
-            cleanName(person)
-                .toLowerCase();
-
-
-        const records =
+        const item =
             getTransactions()
-                .filter(item =>
-                    cleanName(
-                        item.partyName
-                    ).toLowerCase()
-                    === target
+                .find(
+                    tx =>
+                        tx.id === id
                 );
 
 
-        if (!records.length) {
-
-            alert(
-                "यस व्यक्तिको लेनदेन भेटिएन।"
-            );
-
+        if (!item) {
             return;
-
         }
 
 
-        let totalExpense = 0;
-        let totalReceivable = 0;
-        let totalPayable = 0;
-        let totalGiven = 0;
-        let totalTaken = 0;
-        let totalRepayment = 0;
-
-
-        records.forEach(item => {
-
-            const amount =
-                Number(item.amount) || 0;
-
-
-            if (item.type === "expense")
-                totalExpense += amount;
-
-
-            if (item.type === "receivable")
-                totalReceivable += amount;
-
-
-            if (item.type === "payable")
-                totalPayable += amount;
-
-
-            if (item.type === "given")
-                totalGiven += amount;
-
-
-            if (item.type === "taken")
-                totalTaken += amount;
-
-
-            if (item.type === "repayment")
-                totalRepayment += amount;
-
-        });
-
-
-        const balance =
-            totalReceivable
-            +
-            totalGiven
-            -
-            totalPayable
-            -
-            totalTaken
-            -
-            totalRepayment;
-
-
-        const profileName =
-            getProfileValue(
-                "profile_name",
-                ""
+        const ok =
+            confirm(
+                `${item.party || item.partyName} को यो कारोबार हटाउने?`
             );
 
 
-        const profileMobile =
-            getProfileValue(
-                "profile_mobile",
-                ""
-            );
+        if (!ok) {
+            return;
+        }
 
 
-        const profileAddress =
-            getProfileValue(
-                "profile_address",
-                ""
-            );
+        const updated =
+            getTransactions()
+                .filter(
+                    tx =>
+                        tx.id !== id
+                );
 
 
-        const profileEmail =
-            getProfileValue(
-                "profile_email",
-                ""
-            );
-
-
-        const pdfArea =
-            $("pdfArea");
-
-
-        pdfArea.innerHTML = `
-
-            <div class="pdf-page">
-
-                <h1
-                    style="
-                        font-size:28px;
-                        font-weight:bold;
-                        margin-bottom:5px;
-                    "
-                >
-                    Digital Notebook
-                </h1>
-
-
-                <p
-                    style="
-                        font-size:13px;
-                        color:#666;
-                        margin-bottom:25px;
-                    "
-                >
-                    Personal Financial Record
-                </p>
-
-
-                <div
-                    style="
-                        border:1px solid #ddd;
-                        padding:15px;
-                        margin-bottom:20px;
-                    "
-                >
-
-                    <h2
-                        style="
-                            font-size:20px;
-                            font-weight:bold;
-                            margin-bottom:10px;
-                        "
-                    >
-                        ${escapeHtml(person)}
-                    </h2>
-
-
-                    ${
-                        profileName
-                        ?
-                        `<p><b>नाम:</b> ${escapeHtml(profileName)}</p>`
-                        :
-                        ""
-                    }
-
-
-                    ${
-                        profileMobile
-                        ?
-                        `<p><b>Mobile:</b> ${escapeHtml(profileMobile)}</p>`
-                        :
-                        ""
-                    }
-
-
-                    ${
-                        profileAddress
-                        ?
-                        `<p><b>Address:</b> ${escapeHtml(profileAddress)}</p>`
-                        :
-                        ""
-                    }
-
-
-                    ${
-                        profileEmail
-                        ?
-                        `<p><b>Email:</b> ${escapeHtml(profileEmail)}</p>`
-                        :
-                        ""
-                    }
-
-                </div>
-
-
-
-                <table
-                    style="
-                        width:100%;
-                        border-collapse:collapse;
-                        margin-bottom:25px;
-                        font-size:12px;
-                    "
-                >
-
-                    <thead>
-
-                        <tr>
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:left;
-                                "
-                            >
-                                मिति
-                            </th>
-
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:left;
-                                "
-                            >
-                                प्रकार
-                            </th>
-
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:right;
-                                "
-                            >
-                                NPR
-                            </th>
-
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:right;
-                                "
-                            >
-                                INR
-                            </th>
-
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:right;
-                                "
-                            >
-                                जम्मा NPR
-                            </th>
-
-
-                            <th
-                                style="
-                                    border:1px solid #ccc;
-                                    padding:8px;
-                                    text-align:left;
-                                "
-                            >
-                                Due
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        ${
-                            records.map(item => `
-
-                                <tr>
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                        "
-                                    >
-                                        ${escapeHtml(
-                                            item.date || ""
-                                        )}
-                                    </td>
-
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                        "
-                                    >
-                                        ${escapeHtml(
-                                            getTypeName(item.type)
-                                        )}
-                                    </td>
-
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                            text-align:right;
-                                        "
-                                    >
-                                        ${formatMoney(
-                                            item.npr || 0
-                                        )}
-                                    </td>
-
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                            text-align:right;
-                                        "
-                                    >
-                                        ${formatMoney(
-                                            item.inr || 0
-                                        )}
-                                    </td>
-
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                            text-align:right;
-                                        "
-                                    >
-                                        ${formatMoney(
-                                            item.amount || 0
-                                        )}
-                                    </td>
-
-
-                                    <td
-                                        style="
-                                            border:1px solid #ccc;
-                                            padding:8px;
-                                        "
-                                    >
-                                        ${escapeHtml(
-                                            item.dueDate || "-"
-                                        )}
-                                    </td>
-
-                                </tr>
-
-                            `).join("")
-                        }
-
-                    </tbody>
-
-                </table>
-
-
-
-                <div
-                    style="
-                        border:1px solid #ccc;
-                        padding:15px;
-                    "
-                >
-
-                    <h3
-                        style="
-                            font-size:17px;
-                            font-weight:bold;
-                            margin-bottom:10px;
-                        "
-                    >
-                        कुल सारांश
-                    </h3>
-
-
-                    <p>
-                        कुल खर्च:
-                        <b>
-                            NPR ${formatMoney(totalExpense)}
-                        </b>
-                    </p>
-
-
-                    <p>
-                        लिनुपर्ने:
-                        <b>
-                            NPR ${formatMoney(totalReceivable)}
-                        </b>
-                    </p>
-
-
-                    <p>
-                        दिनुपर्ने:
-                        <b>
-                            NPR ${formatMoney(totalPayable)}
-                        </b>
-                    </p>
-
-
-                    <p>
-                        दिएको पैसा:
-                        <b>
-                            NPR ${formatMoney(totalGiven)}
-                        </b>
-                    </p>
-
-
-                    <p>
-                        लिएको पैसा:
-                        <b>
-                            NPR ${formatMoney(totalTaken)}
-                        </b>
-                    </p>
-
-
-                    <p>
-                        फिर्ता:
-                        <b>
-                            NPR ${formatMoney(totalRepayment)}
-                        </b>
-                    </p>
-
-
-                    <hr
-                        style="
-                            margin:12px 0;
-                            border:0;
-                            border-top:1px solid #ccc;
-                        "
-                    >
-
-
-                    <p
-                        style="
-                            font-size:18px;
-                            font-weight:bold;
-                        "
-                    >
-                        बाँकी हिसाब:
-                        NPR ${formatMoney(
-                            Math.abs(balance)
-                        )}
-                    </p>
-
-                </div>
-
-
-                <p
-                    style="
-                        margin-top:30px;
-                        font-size:10px;
-                        color:#777;
-                    "
-                >
-                    Generated by Digital Notebook
-                </p>
-
-            </div>
-
-        `;
-
-
-        pdfArea.classList.remove(
-            "hidden"
+        saveTransactions(
+            updated
         );
 
 
-        const safeFileName =
-            cleanName(person)
-                .replace(
-                    /[^a-zA-Z0-9\u0900-\u097F]+/g,
-                    "_"
-                );
-
-
-        try {
-
-            await html2pdf()
-                .set({
-
-                    margin: 0,
-
-                    filename:
-                        `${safeFileName}_Transaction_Report.pdf`,
-
-                    image: {
-                        type: "jpeg",
-                        quality: 0.95
-                    },
-
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true
-                    },
-
-                    jsPDF: {
-                        unit: "pt",
-                        format: "a4",
-                        orientation: "portrait"
-                    }
-
-                })
-                .from(pdfArea)
-                .save();
-
-        } catch (error) {
-
-            console.error(
-                "PDF error:",
-                error
-            );
-
-            alert(
-                "PDF बनाउन समस्या भयो।"
-            );
-
-        } finally {
-
-            pdfArea.classList.add(
-                "hidden"
-            );
-
-        }
+        renderPeople();
 
     };
 
 
 
-/* HELPERS */
+/* TYPE NAME */
 
-function cleanName(name) {
+function typeNepali(
+    type
+) {
 
-    return String(name || "")
-        .trim()
-        .replace(/\s+/g, " ");
+    const map = {
+
+        Expense:
+            "खर्च",
+
+        Receivable:
+            "लिनुपर्ने",
+
+        Payable:
+            "दिनुपर्ने",
+
+        Given:
+            "दिएको पैसा",
+
+        Taken:
+            "लिएको पैसा",
+
+        Repayment:
+            "फिर्ता"
+
+    };
+
+
+    return (
+        map[type] ||
+        type ||
+        ""
+    );
 
 }
 
 
-function formatMoney(value) {
 
-    return Number(value || 0)
+/* TYPE COLOR */
+
+function typeColor(
+    type
+) {
+
+    const map = {
+
+        Expense:
+            "text-red-400",
+
+        Receivable:
+            "text-green-400",
+
+        Payable:
+            "text-orange-400",
+
+        Given:
+            "text-blue-400",
+
+        Taken:
+            "text-purple-400",
+
+        Repayment:
+            "text-cyan-400"
+
+    };
+
+
+    return (
+        map[type] ||
+        "text-slate-300"
+    );
+
+}
+
+
+
+/* FORMAT */
+
+function formatMoney(
+    value
+) {
+
+    return number(value)
         .toLocaleString(
             "en-IN",
             {
@@ -2073,73 +1738,1404 @@ function formatMoney(value) {
 }
 
 
-function getTypeName(type) {
 
-    const names = {
+/* GROUP */
 
-        expense:
-            "खर्च",
+function groupPeople(
+    transactions
+) {
 
-        receivable:
-            "लिनुपर्ने",
-
-        payable:
-            "दिनुपर्ने",
-
-        given:
-            "दिएको पैसा",
-
-        taken:
-            "लिएको पैसा",
-
-        repayment:
-            "फिर्ता"
-
-    };
+    const groups = {};
 
 
-    return names[type] || type;
+    transactions.forEach(item => {
+
+        const name =
+            cleanName(
+                item.party ||
+                item.partyName
+            );
+
+
+        if (!name) {
+            return;
+        }
+
+
+        const key =
+            name.toLocaleLowerCase();
+
+
+        if (!groups[key]) {
+
+            groups[key] = {
+
+                name:
+                    name,
+
+                items:
+                    []
+
+            };
+
+        }
+
+
+        groups[key].items.push(
+            item
+        );
+
+    });
+
+
+    return Object.values(
+        groups
+    );
 
 }
 
 
-function getPersonId(name) {
 
-    let hash = 0;
+/* PERSON BALANCE */
 
-    const text =
-        String(name || "")
-            .toLowerCase();
+function calculatePerson(
+    items
+) {
+
+    let receivable = 0;
+    let payable = 0;
+    let given = 0;
+    let taken = 0;
 
 
-    for (
-        let i = 0;
-        i < text.length;
-        i++
+    items.forEach(item => {
+
+        const amount =
+            number(
+                item.total ??
+                item.amount
+            );
+
+
+        if (
+            item.type ===
+            "Receivable"
+        ) {
+
+            receivable +=
+                amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Payable"
+        ) {
+
+            payable +=
+                amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Given"
+        ) {
+
+            given +=
+                amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Taken"
+        ) {
+
+            taken +=
+                amount;
+
+        }
+
+    });
+
+
+    return {
+
+        receivable,
+
+        payable,
+
+        given,
+
+        taken,
+
+        balance:
+            receivable +
+            given -
+            payable -
+            taken
+
+    };
+
+}
+
+
+
+/* RENDER */
+
+function renderPeople() {
+
+    const transactions =
+        getTransactions();
+
+
+    document.getElementById(
+        "totalRecords"
+    ).textContent =
+        transactions.length;
+
+
+    const groups =
+        groupPeople(
+            transactions
+        );
+
+
+    document.getElementById(
+        "totalPeople"
+    ).textContent =
+        groups.length;
+
+
+    const query =
+        searchPerson.value
+            .trim()
+            .toLocaleLowerCase();
+
+
+    const filtered =
+        groups.filter(group =>
+            group.name
+                .toLocaleLowerCase()
+                .includes(query)
+        );
+
+
+    document.getElementById(
+        "resultText"
+    ).textContent =
+        filtered.length +
+        " व्यक्ति";
+
+
+    personList.innerHTML =
+        "";
+
+
+    if (
+        filtered.length === 0
     ) {
 
-        hash =
-            (
-                (
-                    hash << 5
-                )
-                -
-                hash
-                +
-                text.charCodeAt(i)
-            )
-            |
-            0;
+        emptyMessage.classList.remove(
+            "hidden"
+        );
+
+        return;
 
     }
 
 
-    return Math.abs(hash);
+    emptyMessage.classList.add(
+        "hidden"
+    );
+
+
+    filtered.sort(
+        (a, b) =>
+            a.name.localeCompare(
+                b.name
+            )
+    );
+
+
+    filtered.forEach(
+        (group, index) => {
+
+            personList.appendChild(
+                createPersonCard(
+                    group,
+                    index
+                )
+            );
+
+        }
+    );
 
 }
 
 
-function escapeHtml(value) {
+
+/* PERSON CARD */
+
+function createPersonCard(
+    group,
+    index
+) {
+
+    const wrapper =
+        document.createElement(
+            "div"
+        );
+
+
+    wrapper.className =
+        "rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden";
+
+
+    const balance =
+        calculatePerson(
+            group.items
+        );
+
+
+    const personId =
+        "person_" +
+        index +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2, 6);
+
+
+    const header =
+        document.createElement(
+            "div"
+        );
+
+
+    header.className =
+        "p-4";
+
+
+    header.innerHTML = `
+
+        <div class="flex items-start justify-between gap-3">
+
+            <div>
+
+                <h3 class="font-bold text-base">
+                    ${escapeHtml(group.name)}
+                </h3>
+
+                <p class="text-[10px] text-slate-500 mt-1">
+                    ${group.items.length} वटा कारोबार
+                </p>
+
+            </div>
+
+
+            <div class="text-right">
+
+                <p class="text-[10px] text-slate-500">
+                    हिसाब
+                </p>
+
+                <p class="font-bold ${
+                    balance.balance >= 0
+                        ? "text-green-400"
+                        : "text-red-400"
+                }">
+
+                    NPR ${formatMoney(
+                        Math.abs(
+                            balance.balance
+                        )
+                    )}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="grid grid-cols-2 gap-2 mt-4"
+        >
+
+            <div
+                class="rounded-xl bg-slate-800 p-3"
+            >
+
+                <p class="text-[10px] text-slate-500">
+                    दिएको
+                </p>
+
+                <p class="text-xs font-bold text-blue-400 mt-1">
+                    NPR ${formatMoney(
+                        balance.given
+                    )}
+                </p>
+
+            </div>
+
+
+            <div
+                class="rounded-xl bg-slate-800 p-3"
+            >
+
+                <p class="text-[10px] text-slate-500">
+                    लिएको
+                </p>
+
+                <p class="text-xs font-bold text-purple-400 mt-1">
+                    NPR ${formatMoney(
+                        balance.taken
+                    )}
+                </p>
+
+            </div>
+
+
+            <div
+                class="rounded-xl bg-slate-800 p-3"
+            >
+
+                <p class="text-[10px] text-slate-500">
+                    लिनुपर्ने
+                </p>
+
+                <p class="text-xs font-bold text-green-400 mt-1">
+                    NPR ${formatMoney(
+                        balance.receivable
+                    )}
+                </p>
+
+            </div>
+
+
+            <div
+                class="rounded-xl bg-slate-800 p-3"
+            >
+
+                <p class="text-[10px] text-slate-500">
+                    दिनुपर्ने
+                </p>
+
+                <p class="text-xs font-bold text-orange-400 mt-1">
+                    NPR ${formatMoney(
+                        balance.payable
+                    )}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="flex gap-2 mt-3"
+        >
+
+            <button
+                type="button"
+                data-action="details"
+                data-id="${personId}"
+                class="flex-1 rounded-xl bg-slate-800 py-2.5 text-xs font-semibold"
+            >
+                विवरण
+            </button>
+
+
+            <button
+                type="button"
+                data-action="pdf"
+                data-name="${escapeAttribute(group.name)}"
+                class="flex-1 rounded-xl bg-green-600 py-2.5 text-xs font-semibold"
+            >
+                PDF
+            </button>
+
+        </div>
+
+    `;
+
+
+    const details =
+        document.createElement(
+            "div"
+        );
+
+
+    details.id =
+        personId;
+
+
+    details.className =
+        "person-details border-t border-slate-800";
+
+
+    group.items
+        .slice()
+        .sort(
+            (a, b) =>
+                new Date(
+                    b.date
+                ) -
+                new Date(
+                    a.date
+                )
+        )
+        .forEach(item => {
+
+            details.appendChild(
+                createRecordRow(
+                    item
+                )
+            );
+
+        });
+
+
+    header.addEventListener(
+        "click",
+        event => {
+
+            const detailsButton =
+                event.target.closest(
+                    '[data-action="details"]'
+                );
+
+
+            const pdfButton =
+                event.target.closest(
+                    '[data-action="pdf"]'
+                );
+
+
+            if (
+                detailsButton
+            ) {
+
+                details.classList.toggle(
+                    "open"
+                );
+
+            }
+
+
+            if (
+                pdfButton
+            ) {
+
+                generatePersonPDF(
+                    pdfButton.dataset.name
+                );
+
+            }
+
+        }
+    );
+
+
+    wrapper.appendChild(
+        header
+    );
+
+
+    wrapper.appendChild(
+        details
+    );
+
+
+    return wrapper;
+
+}
+
+
+
+/* RECORD ROW */
+
+function createRecordRow(
+    item
+) {
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        "record-row p-3";
+
+
+    const amount =
+        number(
+            item.total ??
+            item.amount
+        );
+
+
+    const npr =
+        number(
+            item.npr
+        );
+
+
+    const inr =
+        number(
+            item.inr
+        );
+
+
+    row.innerHTML = `
+
+        <div
+            class="flex items-start justify-between gap-3"
+        >
+
+            <div class="min-w-0">
+
+                <p
+                    class="font-semibold text-xs ${
+                        typeColor(
+                            item.type
+                        )
+                    }"
+                >
+                    ${escapeHtml(
+                        typeNepali(
+                            item.type
+                        )
+                    )}
+                </p>
+
+
+                <p class="text-[10px] text-slate-500 mt-1">
+                    ${escapeHtml(
+                        item.date ||
+                        ""
+                    )}
+                </p>
+
+
+                ${
+                    item.dueDate
+                    ?
+                    `
+                    <p class="text-[10px] text-yellow-400 mt-1">
+                        Due: ${escapeHtml(
+                            item.dueDate
+                        )}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+
+                ${
+                    item.note
+                    ?
+                    `
+                    <p class="text-[10px] text-slate-400 mt-1 break-words">
+                        ${escapeHtml(
+                            item.note
+                        )}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <div class="text-right shrink-0">
+
+                <p class="font-bold text-xs">
+                    NPR ${formatMoney(
+                        amount
+                    )}
+                </p>
+
+
+                <p class="text-[9px] text-slate-500 mt-1">
+                    NPR ${formatMoney(npr)}
+                    +
+                    INR ${formatMoney(inr)}
+                </p>
+
+
+                <div
+                    class="flex justify-end gap-3 mt-2"
+                >
+
+                    <button
+                        type="button"
+                        class="text-[10px] text-blue-400"
+                        data-edit="${escapeAttribute(
+                            item.id
+                        )}"
+                    >
+                        Edit
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="text-[10px] text-red-400"
+                        data-delete="${escapeAttribute(
+                            item.id
+                        )}"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    row.addEventListener(
+        "click",
+        event => {
+
+            const edit =
+                event.target.closest(
+                    "[data-edit]"
+                );
+
+
+            const del =
+                event.target.closest(
+                    "[data-delete]"
+                );
+
+
+            if (edit) {
+
+                window.editTransaction(
+                    edit.dataset.edit
+                );
+
+            }
+
+
+            if (del) {
+
+                window.deleteTransaction(
+                    del.dataset.delete
+                );
+
+            }
+
+        }
+    );
+
+
+    return row;
+
+}
+
+
+
+/* SEARCH */
+
+searchPerson.addEventListener(
+    "input",
+    renderPeople
+);
+
+
+
+/* PDF */
+
+async function generatePersonPDF(
+    personNameValue
+) {
+
+    const target =
+        cleanName(
+            personNameValue
+        )
+            .toLocaleLowerCase();
+
+
+    const records =
+        getTransactions()
+            .filter(item => {
+
+                const name =
+                    cleanName(
+                        item.party ||
+                        item.partyName
+                    )
+                        .toLocaleLowerCase();
+
+                return (
+                    name === target
+                );
+
+            });
+
+
+    if (
+        records.length === 0
+    ) {
+
+        alert(
+            "यस व्यक्तिको कारोबार भेटिएन।"
+        );
+
+        return;
+
+    }
+
+
+    const profileName =
+        localStorage.getItem(
+            "profile_name"
+        ) ||
+        "";
+
+
+    const profileAddress =
+        localStorage.getItem(
+            "profile_address"
+        ) ||
+        "";
+
+
+    const profileMobile =
+        localStorage.getItem(
+            "profile_mobile"
+        ) ||
+        "";
+
+
+    const profileEmail =
+        localStorage.getItem(
+            "profile_email"
+        ) ||
+        "";
+
+
+    const profileAvatar =
+        localStorage.getItem(
+            "profile_avatar"
+        ) ||
+        "";
+
+
+    const sorted =
+        records
+            .slice()
+            .sort(
+                (a, b) =>
+                    new Date(a.date) -
+                    new Date(b.date)
+            );
+
+
+    let expense = 0;
+    let receivable = 0;
+    let payable = 0;
+    let given = 0;
+    let taken = 0;
+    let repayment = 0;
+
+
+    sorted.forEach(item => {
+
+        const amount =
+            number(
+                item.total ??
+                item.amount
+            );
+
+
+        if (
+            item.type ===
+            "Expense"
+        ) {
+
+            expense += amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Receivable"
+        ) {
+
+            receivable += amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Payable"
+        ) {
+
+            payable += amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Given"
+        ) {
+
+            given += amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Taken"
+        ) {
+
+            taken += amount;
+
+        }
+
+
+        if (
+            item.type ===
+            "Repayment"
+        ) {
+
+            repayment += amount;
+
+        }
+
+    });
+
+
+    const balance =
+        receivable +
+        given -
+        payable -
+        taken -
+        repayment;
+
+
+    const rows =
+        sorted.map(item => {
+
+            const amount =
+                number(
+                    item.total ??
+                    item.amount
+                );
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            item.date ||
+                            ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            typeNepali(
+                                item.type
+                            )
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatMoney(
+                            item.npr
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatMoney(
+                            item.inr
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatMoney(
+                            amount
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.dueDate ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.note ||
+                            "-"
+                        )}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+
+    const avatarHtml =
+        profileAvatar
+        ?
+        `
+        <img
+            src="${escapeAttribute(
+                profileAvatar
+            )}"
+            style="
+                width:70px;
+                height:70px;
+                border-radius:50%;
+                object-fit:cover;
+                border:2px solid #16a34a;
+            "
+        >
+        `
+        :
+        "";
+
+
+    const html = `
+
+        <div class="pdf-page">
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    border-bottom:2px solid #16a34a;
+                    padding-bottom:15px;
+                    margin-bottom:20px;
+                "
+            >
+
+                <div>
+
+                    <div
+                        style="
+                            font-size:24px;
+                            font-weight:bold;
+                            color:#111827;
+                        "
+                    >
+                        Digital NoteBook
+                    </div>
+
+                    <div
+                        style="
+                            font-size:11px;
+                            color:#6b7280;
+                            margin-top:4px;
+                        "
+                    >
+                        Transaction / Party Ledger
+                    </div>
+
+                </div>
+
+
+                ${avatarHtml}
+
+            </div>
+
+
+
+            <div
+                style="
+                    background:#f8fafc;
+                    border:1px solid #e5e7eb;
+                    padding:15px;
+                    border-radius:8px;
+                    margin-bottom:20px;
+                "
+            >
+
+                <div
+                    style="
+                        font-size:20px;
+                        font-weight:bold;
+                        margin-bottom:10px;
+                    "
+                >
+                    ${escapeHtml(
+                        personNameValue
+                    )}
+                </div>
+
+
+                ${
+                    profileName
+                    ?
+                    `<div><b>नाम:</b> ${escapeHtml(profileName)}</div>`
+                    :
+                    ""
+                }
+
+
+                ${
+                    profileAddress
+                    ?
+                    `<div><b>ठेगाना:</b> ${escapeHtml(profileAddress)}</div>`
+                    :
+                    ""
+                }
+
+
+                ${
+                    profileMobile
+                    ?
+                    `<div><b>मोबाइल:</b> ${escapeHtml(profileMobile)}</div>`
+                    :
+                    ""
+                }
+
+
+                ${
+                    profileEmail
+                    ?
+                    `<div><b>Email:</b> ${escapeHtml(profileEmail)}</div>`
+                    :
+                    ""
+                }
+
+            </div>
+
+
+
+            <table
+                style="
+                    width:100%;
+                    border-collapse:collapse;
+                    font-size:10px;
+                "
+            >
+
+                <thead>
+
+                    <tr
+                        style="
+                            background:#f1f5f9;
+                        "
+                    >
+
+                        <th>
+                            मिति
+                        </th>
+
+                        <th>
+                            प्रकार
+                        </th>
+
+                        <th>
+                            NPR
+                        </th>
+
+                        <th>
+                            INR
+                        </th>
+
+                        <th>
+                            जम्मा NPR
+                        </th>
+
+                        <th>
+                            Due
+                        </th>
+
+                        <th>
+                            Note
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+
+            <div
+                style="
+                    margin-top:20px;
+                    display:grid;
+                    grid-template-columns:repeat(2,1fr);
+                    gap:8px;
+                    font-size:11px;
+                "
+            >
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    खर्च:
+                    <b>
+                        NPR ${formatMoney(expense)}
+                    </b>
+                </div>
+
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    लिनुपर्ने:
+                    <b>
+                        NPR ${formatMoney(receivable)}
+                    </b>
+                </div>
+
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    दिनुपर्ने:
+                    <b>
+                        NPR ${formatMoney(payable)}
+                    </b>
+                </div>
+
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    दिएको:
+                    <b>
+                        NPR ${formatMoney(given)}
+                    </b>
+                </div>
+
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    लिएको:
+                    <b>
+                        NPR ${formatMoney(taken)}
+                    </b>
+                </div>
+
+
+                <div
+                    style="
+                        border:1px solid #e5e7eb;
+                        padding:10px;
+                    "
+                >
+                    फिर्ता:
+                    <b>
+                        NPR ${formatMoney(repayment)}
+                    </b>
+                </div>
+
+            </div>
+
+
+
+            <div
+                style="
+                    margin-top:18px;
+                    padding:15px;
+                    background:#f0fdf4;
+                    border:1px solid #bbf7d0;
+                    font-size:17px;
+                    font-weight:bold;
+                    text-align:right;
+                "
+            >
+
+                बाँकी हिसाब:
+                NPR ${formatMoney(
+                    Math.abs(balance)
+                )}
+
+            </div>
+
+
+
+            <div
+                style="
+                    text-align:center;
+                    color:#9ca3af;
+                    font-size:9px;
+                    margin-top:30px;
+                "
+            >
+
+                Generated by Digital NoteBook
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    const pdfArea =
+        document.getElementById(
+            "pdfArea"
+        );
+
+
+    pdfArea.innerHTML =
+        html;
+
+
+    pdfArea.classList.remove(
+        "hidden"
+    );
+
+
+    try {
+
+        await html2pdf()
+            .set({
+
+                margin: 0,
+
+                filename:
+                    sanitizeFileName(
+                        personNameValue
+                    ) +
+                    "_Transaction_Report.pdf",
+
+                image: {
+
+                    type: "jpeg",
+
+                    quality: .95
+
+                },
+
+                html2canvas: {
+
+                    scale: 2,
+
+                    useCORS: true,
+
+                    logging: false
+
+                },
+
+                jsPDF: {
+
+                    unit: "pt",
+
+                    format: "a4",
+
+                    orientation:
+                        "portrait"
+
+                }
+
+            })
+            .from(pdfArea)
+            .save();
+
+    } catch(error) {
+
+        console.error(
+            "PDF error:",
+            error
+        );
+
+
+        alert(
+            "PDF बनाउन समस्या भयो।"
+        );
+
+    } finally {
+
+        pdfArea.classList.add(
+            "hidden"
+        );
+
+        pdfArea.innerHTML =
+            "";
+
+    }
+
+}
+
+
+
+/* MAKE PDF FUNCTION GLOBAL */
+
+window.generatePersonPDF =
+    generatePersonPDF;
+
+
+
+/* FILE NAME */
+
+function sanitizeFileName(
+    value
+) {
+
+    return cleanName(value)
+        .replace(
+            /[^\w\u0900-\u097F-]+/g,
+            "_"
+        );
+
+}
+
+
+
+/* HTML ESCAPE */
+
+function escapeHtml(
+    value
+) {
 
     return String(
         value ?? ""
@@ -2168,12 +3164,39 @@ function escapeHtml(value) {
 }
 
 
+function escapeAttribute(
+    value
+) {
+
+    return escapeHtml(
+        value
+    );
+
+}
+
+
 
 /* START */
 
-render();
+calculateLiveTotal();
 
-calculateTotal();
+renderPeople();
+
+
+/*
+    Make sure Expense is visibly selected
+    when page opens.
+*/
+
+typeCards.forEach(card => {
+
+    card.classList.toggle(
+        "selected",
+        card.dataset.type ===
+            "Expense"
+    );
+
+});
 
 </script>
 
