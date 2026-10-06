@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="ne">
-
+<html lang="en">
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -12,10 +10,10 @@
 
     <meta
         name="theme-color"
-        content="#0f172a"
+        content="#020617"
     >
 
-    <title>Transactions - Digital NoteBook</title>
+    <title>Transaction - Digital Notebook</title>
 
     <link
         rel="manifest"
@@ -29,3178 +27,2062 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-    ></script>
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: [
+                            "Poppins",
+                            "sans-serif"
+                        ]
+                    }
+                }
+            }
+        };
+    </script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet"
     >
 
-    <style>
-
-        body {
-            font-family: Poppins, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .type-card {
-            border: 2px solid transparent;
-            transition:
-                border-color .15s ease,
-                background .15s ease,
-                transform .15s ease;
-        }
-
-        .type-card:active {
-            transform: scale(.98);
-        }
-
-        .type-card.selected {
-            border-color: #22c55e !important;
-            background: rgba(34, 197, 94, .14) !important;
-        }
-
-        .type-card.selected .type-icon {
-            background: #16a34a;
-            color: white;
-        }
-
-        .type-card.selected .type-check {
-            display: flex;
-        }
-
-        .type-check {
-            display: none;
-        }
-
-        .total-box {
-            transition: .2s ease;
-        }
-
-        .record-row {
-            border-bottom: 1px solid rgba(148,163,184,.12);
-        }
-
-        .record-row:last-child {
-            border-bottom: 0;
-        }
-
-        .person-details {
-            display: none;
-        }
-
-        .person-details.open {
-            display: block;
-        }
-
-        .pdf-page {
-            width: 794px;
-            min-height: 1123px;
-            background: #ffffff;
-            color: #111827;
-            padding: 35px;
-            font-family: Arial, sans-serif;
-        }
-
-        input,
-        textarea,
-        select {
-            font-family: Poppins, sans-serif;
-        }
-
-        @media (max-width: 640px) {
-
-            .pdf-page {
-                width: 794px;
-            }
-
-        }
-
-    </style>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
+<body class="bg-slate-950 text-white min-h-screen font-sans">
 
-<body
-    class="min-h-screen bg-slate-950 text-white"
->
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
 
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
 
-<!-- HEADER -->
-
-<header
-    class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
->
-
-    <div
-        class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3"
-    >
-
-        <a
-            href="./index.html"
-            class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg"
-        >
-            ←
-        </a>
-
-        <div class="flex-1">
-
-            <h1 class="font-bold text-base">
-                कारोबार र लेनदेन
-            </h1>
-
-            <p class="text-[11px] text-slate-400">
-                व्यक्तिअनुसार पूरा हिसाब
-            </p>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<main
-    class="max-w-4xl mx-auto px-4 py-5 pb-20"
->
-
-
-<!-- SUMMARY -->
-
-<div
-    class="grid grid-cols-2 gap-3 mb-5"
->
-
-    <div
-        class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
-    >
-
-        <p class="text-[11px] text-slate-400">
-            कुल कारोबार
-        </p>
-
-        <p
-            id="totalRecords"
-            class="text-2xl font-bold mt-1"
-        >
-            0
-        </p>
-
-    </div>
-
-
-    <div
-        class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
-    >
-
-        <p class="text-[11px] text-slate-400">
-            कुल व्यक्ति
-        </p>
-
-        <p
-            id="totalPeople"
-            class="text-2xl font-bold mt-1"
-        >
-            0
-        </p>
-
-    </div>
-
-</div>
-
-
-
-<!-- ADD FORM -->
-
-<section
-    class="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden"
->
-
-    <div
-        class="px-4 py-4 border-b border-slate-800"
-    >
-
-        <h2
-            id="formTitle"
-            class="font-bold text-base"
-        >
-            नयाँ कारोबार थप्नुहोस्
-        </h2>
-
-    </div>
-
-
-    <form
-        id="transactionForm"
-        class="p-4 space-y-5"
-    >
-
-
-        <input
-            type="hidden"
-            id="editId"
-            value=""
-        >
-
-
-
-        <!-- PERSON -->
-
-        <div>
-
-            <label
-                for="partyName"
-                class="block text-xs font-semibold text-slate-300 mb-2"
+            <a
+                href="./index.html"
+                class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-xl shrink-0"
+                aria-label="Back"
             >
-                व्यक्तिको नाम
-            </label>
+                ←
+            </a>
 
-            <input
-                id="partyName"
-                type="text"
-                autocomplete="off"
-                required
-                placeholder="व्यक्तिको नाम"
-                class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
-            >
+            <div class="flex-1 min-w-0">
+                <h1 class="font-bold text-base truncate">
+                    Transaction
+                </h1>
 
-        </div>
-
-
-
-        <!-- TYPE -->
-
-        <div>
-
-            <label
-                class="block text-xs font-semibold text-slate-300 mb-2"
-            >
-                कारोबारको प्रकार
-            </label>
-
+                <p class="text-[11px] text-slate-400">
+                    Person-wise transaction records
+                </p>
+            </div>
 
             <div
-                id="typeGrid"
-                class="grid grid-cols-2 sm:grid-cols-3 gap-2"
+                id="headerAvatar"
+                class="w-10 h-10 rounded-full bg-slate-800 overflow-hidden flex items-center justify-center shrink-0"
             >
-
-
-                <!-- EXPENSE -->
-
-                <button
-                    type="button"
-                    class="type-card selected rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Expense"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            💸
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        खर्च
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Expense
-                    </p>
-
-                </button>
-
-
-
-                <!-- RECEIVABLE -->
-
-                <button
-                    type="button"
-                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Receivable"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            📥
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        लिनुपर्ने
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Receivable
-                    </p>
-
-                </button>
-
-
-
-                <!-- PAYABLE -->
-
-                <button
-                    type="button"
-                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Payable"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            📤
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        दिनुपर्ने
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Payable
-                    </p>
-
-                </button>
-
-
-
-                <!-- GIVEN -->
-
-                <button
-                    type="button"
-                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Given"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            🤝
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        दिएको पैसा
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Given
-                    </p>
-
-                </button>
-
-
-
-                <!-- TAKEN -->
-
-                <button
-                    type="button"
-                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Taken"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            💰
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        लिएको पैसा
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Taken
-                    </p>
-
-                </button>
-
-
-
-                <!-- REPAYMENT -->
-
-                <button
-                    type="button"
-                    class="type-card rounded-xl bg-slate-800 p-3 text-left"
-                    data-type="Repayment"
-                >
-
-                    <div
-                        class="flex items-center justify-between"
-                    >
-
-                        <div
-                            class="type-icon w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center"
-                        >
-                            🔄
-                        </div>
-
-                        <div
-                            class="type-check w-5 h-5 rounded-full bg-green-500 items-center justify-center text-xs"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <p class="font-semibold text-sm mt-2">
-                        फिर्ता
-                    </p>
-
-                    <p class="text-[10px] text-slate-400">
-                        Repayment
-                    </p>
-
-                </button>
-
+                <span class="text-slate-400">👤</span>
             </div>
 
         </div>
 
+    </header>
 
 
-        <!-- AMOUNT -->
+    <main class="max-w-4xl mx-auto px-4 py-5 pb-28">
 
-        <div>
+        <!-- FORM CARD -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
 
-            <label
-                class="block text-xs font-semibold text-slate-300 mb-2"
-            >
-                रकम
-            </label>
-
-
-            <div
-                class="grid grid-cols-2 gap-2"
-            >
+            <div class="flex items-center justify-between gap-3 mb-4">
 
                 <div>
-
-                    <label
-                        class="block text-[10px] text-slate-500 mb-1"
+                    <h2
+                        id="formTitle"
+                        class="font-semibold"
                     >
-                        नेपाली रुपैयाँ (NPR)
-                    </label>
+                        Add Transaction
+                    </h2>
 
-                    <input
-                        id="amountNpr"
-                        type="number"
-                        inputmode="decimal"
-                        min="0"
-                        step="0.01"
-                        placeholder="NPR"
-                        class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none focus:border-green-500"
-                    >
-
+                    <p class="text-xs text-slate-400 mt-1">
+                        Enter amount and transaction type
+                    </p>
                 </div>
 
-
-                <div>
-
-                    <label
-                        class="block text-[10px] text-slate-500 mb-1"
-                    >
-                        भारतीय रुपैयाँ (INR)
-                    </label>
-
-                    <input
-                        id="amountInr"
-                        type="number"
-                        inputmode="decimal"
-                        min="0"
-                        step="0.01"
-                        placeholder="INR"
-                        class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none focus:border-green-500"
-                    >
-
-                </div>
+                <button
+                    id="cancelEditBtn"
+                    type="button"
+                    class="hidden px-3 py-2 rounded-xl bg-slate-800 text-xs"
+                >
+                    Cancel
+                </button>
 
             </div>
 
 
-            <!-- LIVE TOTAL -->
+            <!-- PERSON -->
+            <div class="mb-4">
 
-            <div
-                class="total-box mt-3 rounded-2xl border border-green-500/30 bg-green-500/10 p-4"
-            >
+                <label
+                    for="personName"
+                    class="block text-xs text-slate-400 mb-2"
+                >
+                    Person Name
+                </label>
+
+                <input
+                    id="personName"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Enter person name"
+                    class="w-full h-12 rounded-xl bg-slate-800 border border-slate-700 px-4 text-sm text-white placeholder:text-slate-500"
+                >
+
+            </div>
+
+
+            <!-- TYPE -->
+            <div class="mb-4">
+
+                <label class="block text-xs text-slate-400 mb-2">
+                    Transaction Type
+                </label>
 
                 <div
-                    class="flex items-center justify-between gap-3"
+                    id="typeGrid"
+                    class="grid grid-cols-2 sm:grid-cols-3 gap-2"
                 >
 
-                    <div>
+                    <button
+                        type="button"
+                        data-type="Expense"
+                        class="type-card"
+                    >
+                        <span class="type-icon">−</span>
+                        <span>Expense</span>
+                    </button>
 
-                        <p
-                            class="text-[10px] text-slate-400"
-                        >
-                            जम्मा रकम
-                        </p>
+                    <button
+                        type="button"
+                        data-type="Receivable"
+                        class="type-card"
+                    >
+                        <span class="type-icon">↙</span>
+                        <span>Receivable</span>
+                    </button>
 
-                        <p
-                            id="totalAmount"
-                            class="text-2xl font-bold text-green-400 mt-1"
-                        >
-                            NPR 0.00
-                        </p>
+                    <button
+                        type="button"
+                        data-type="Payable"
+                        class="type-card"
+                    >
+                        <span class="type-icon">↗</span>
+                        <span>Payable</span>
+                    </button>
 
-                    </div>
+                    <button
+                        type="button"
+                        data-type="Given"
+                        class="type-card"
+                    >
+                        <span class="type-icon">↑</span>
+                        <span>Given</span>
+                    </button>
 
+                    <button
+                        type="button"
+                        data-type="Taken"
+                        class="type-card"
+                    >
+                        <span class="type-icon">↓</span>
+                        <span>Taken</span>
+                    </button>
 
-                    <div class="text-right">
-
-                        <p class="text-[10px] text-slate-500">
-                            Conversion
-                        </p>
-
-                        <p class="text-xs font-semibold">
-                            1 INR = 1.6 NPR
-                        </p>
-
-                    </div>
+                    <button
+                        type="button"
+                        data-type="Repayment"
+                        class="type-card"
+                    >
+                        <span class="type-icon">↔</span>
+                        <span>Repayment</span>
+                    </button>
 
                 </div>
 
+                <input
+                    id="transactionType"
+                    type="hidden"
+                    value="Expense"
+                >
+
+            </div>
+
+
+            <!-- NPR / INR -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+
+                <div>
+
+                    <label
+                        for="nprAmount"
+                        class="block text-xs text-slate-400 mb-2"
+                    >
+                        NPR
+                    </label>
+
+                    <input
+                        id="nprAmount"
+                        type="number"
+                        inputmode="decimal"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        class="money-input"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        for="inrAmount"
+                        class="block text-xs text-slate-400 mb-2"
+                    >
+                        INR
+                    </label>
+
+                    <input
+                        id="inrAmount"
+                        type="number"
+                        inputmode="decimal"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        class="money-input"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL -->
+            <div class="rounded-2xl bg-slate-800 border border-slate-700 p-4 mb-4">
+
+                <div class="flex items-center justify-between gap-3">
+
+                    <span class="text-sm text-slate-400">
+                        Total
+                    </span>
+
+                    <strong
+                        id="liveTotal"
+                        class="text-xl font-bold"
+                    >
+                        NPR 0.00
+                    </strong>
+
+                </div>
 
                 <p
                     id="conversionText"
-                    class="text-[10px] text-slate-400 mt-2"
+                    class="text-[11px] text-slate-500 mt-1"
                 >
-                    NPR 0 + INR 0 × 1.6 = NPR 0
+                    1 INR = 1.60 NPR
                 </p>
 
             </div>
 
-        </div>
 
-
-
-        <!-- DATE -->
-
-        <div
-            class="grid grid-cols-1 sm:grid-cols-2 gap-3"
-        >
-
-            <div>
+            <!-- DATE -->
+            <div class="mb-4">
 
                 <label
-                    class="block text-xs font-semibold text-slate-300 mb-2"
+                    for="transactionDate"
+                    class="block text-xs text-slate-400 mb-2"
                 >
-                    मिति
+                    Date
                 </label>
 
                 <input
                     id="transactionDate"
                     type="date"
-                    required
-                    class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none"
+                    class="money-input"
                 >
 
             </div>
 
 
-            <div>
+            <!-- NOTE -->
+            <div class="mb-4">
 
                 <label
-                    class="block text-xs font-semibold text-slate-300 mb-2"
+                    for="transactionNote"
+                    class="block text-xs text-slate-400 mb-2"
                 >
-                    फिर्ता / Due Date
+                    Note
                 </label>
 
+                <textarea
+                    id="transactionNote"
+                    rows="3"
+                    placeholder="Optional note"
+                    class="w-full rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-sm text-white placeholder:text-slate-500 resize-none"
+                ></textarea>
+
+            </div>
+
+
+            <!-- SAVE -->
+            <button
+                id="saveBtn"
+                type="button"
+                class="w-full h-12 rounded-xl bg-white text-slate-950 font-semibold active:scale-[0.98] transition"
+            >
+                Save Transaction
+            </button>
+
+        </section>
+
+
+        <!-- SEARCH -->
+        <section class="mt-5">
+
+            <div class="relative">
+
                 <input
-                    id="dueDate"
-                    type="date"
-                    class="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white outline-none"
+                    id="searchInput"
+                    type="search"
+                    placeholder="Search person..."
+                    class="w-full h-12 rounded-xl bg-slate-900 border border-slate-800 px-4 text-sm text-white placeholder:text-slate-500"
                 >
 
             </div>
 
-        </div>
+        </section>
 
 
-
-        <!-- NOTE -->
-
-        <div>
-
-            <label
-                class="block text-xs font-semibold text-slate-300 mb-2"
-            >
-                नोट
-            </label>
-
-            <textarea
-                id="transactionNote"
-                rows="3"
-                placeholder="आवश्यक विवरण"
-                class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
-            ></textarea>
-
-        </div>
+        <!-- SUMMARY -->
+        <section
+            id="summaryBox"
+            class="grid grid-cols-2 gap-3 mt-4"
+        ></section>
 
 
+        <!-- PEOPLE -->
+        <section class="mt-5">
 
-        <!-- BUTTONS -->
+            <div class="flex items-center justify-between mb-3">
 
-        <button
-            id="saveButton"
-            type="submit"
-            class="w-full rounded-xl bg-green-600 hover:bg-green-500 py-3.5 font-bold text-sm transition"
-        >
-            कारोबार सेभ गर्नुहोस्
-        </button>
+                <h2 class="font-semibold">
+                    People
+                </h2>
+
+                <span
+                    id="recordCount"
+                    class="text-xs text-slate-500"
+                >
+                    0 records
+                </span>
+
+            </div>
+
+            <div
+                id="peopleList"
+                class="space-y-3"
+            ></div>
+
+        </section>
+
+    </main>
 
 
-        <button
-            id="cancelButton"
-            type="button"
-            class="hidden w-full rounded-xl bg-slate-700 py-3 font-semibold text-sm"
-        >
-            Edit बन्द गर्नुहोस्
-        </button>
-
-    </form>
-
-</section>
-
-
-
-<!-- SEARCH -->
-
-<section class="mt-6">
-
+    <!-- PERSON MODAL -->
     <div
-        class="flex items-center justify-between mb-3"
+        id="personModal"
+        class="hidden fixed inset-0 z-50 bg-black/70 p-4 overflow-y-auto"
     >
 
-        <h2 class="font-bold text-sm">
-            व्यक्तिअनुसार हिसाब
-        </h2>
+        <div class="min-h-full flex items-center justify-center">
 
-        <span
-            id="resultText"
-            class="text-[10px] text-slate-500"
-        >
-        </span>
+            <div
+                class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden"
+            >
+
+                <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+
+                    <div class="flex-1 min-w-0">
+
+                        <h3
+                            id="modalPersonName"
+                            class="font-bold truncate"
+                        >
+                            Person
+                        </h3>
+
+                        <p
+                            id="modalPersonSummary"
+                            class="text-xs text-slate-400 mt-1"
+                        ></p>
+
+                    </div>
+
+                    <button
+                        id="closeModalBtn"
+                        type="button"
+                        class="w-10 h-10 rounded-xl bg-slate-800"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="modalRecords"
+                    class="p-4 space-y-3"
+                ></div>
+
+
+                <div class="p-4 border-t border-slate-800">
+
+                    <button
+                        id="personPdfBtn"
+                        type="button"
+                        class="w-full h-11 rounded-xl bg-white text-slate-950 font-semibold"
+                    >
+                        Generate PDF
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <input
-        id="searchPerson"
-        type="search"
-        placeholder="व्यक्तिको नाम खोज्नुहोस्"
-        autocomplete="off"
-        class="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-green-500"
-    >
-
-</section>
-
-
-
-<!-- PERSON LIST -->
-
-<section
-    id="personList"
-    class="mt-4 space-y-3"
->
-</section>
-
-
-<div
-    id="emptyMessage"
-    class="hidden text-center py-12 text-slate-500"
->
-
-    <p class="text-sm">
-        कुनै कारोबार भेटिएन।
-    </p>
-
-</div>
-
-
-
-<!-- PDF AREA -->
-
-<div
-    id="pdfArea"
-    class="hidden"
-></div>
-
-
-</main>
-
-
-
-<script type="module">
-
-import "./js/app.js";
-
-
-/*
-    Digital Notebook
-    Transaction Page
-
-    Storage:
-    digital_notebook_transactions
-
-    NPR + INR conversion:
-    1 INR = 1.6 NPR
-*/
-
-
-const STORAGE_KEY =
-    "digital_notebook_transactions";
-
-
-const INR_RATE =
-    1.6;
-
-
-let selectedType =
-    "Expense";
-
-
-let editingId =
-    "";
-
-
-/* ELEMENTS */
-
-const form =
-    document.getElementById(
-        "transactionForm"
-    );
-
-
-const partyName =
-    document.getElementById(
-        "partyName"
-    );
-
-
-const amountNpr =
-    document.getElementById(
-        "amountNpr"
-    );
-
-
-const amountInr =
-    document.getElementById(
-        "amountInr"
-    );
-
-
-const totalAmount =
-    document.getElementById(
-        "totalAmount"
-    );
-
-
-const conversionText =
-    document.getElementById(
-        "conversionText"
-    );
-
-
-const transactionDate =
-    document.getElementById(
-        "transactionDate"
-    );
-
-
-const dueDate =
-    document.getElementById(
-        "dueDate"
-    );
-
-
-const transactionNote =
-    document.getElementById(
-        "transactionNote"
-    );
-
-
-const personList =
-    document.getElementById(
-        "personList"
-    );
-
-
-const searchPerson =
-    document.getElementById(
-        "searchPerson"
-    );
-
-
-const emptyMessage =
-    document.getElementById(
-        "emptyMessage"
-    );
-
-
-const saveButton =
-    document.getElementById(
-        "saveButton"
-    );
-
-
-const cancelButton =
-    document.getElementById(
-        "cancelButton"
-    );
-
-
-const editId =
-    document.getElementById(
-        "editId"
-    );
-
-
-/* DATE */
-
-function today() {
-
-    return new Date()
-        .toISOString()
-        .split("T")[0];
-
-}
-
-
-transactionDate.value =
-    today();
-
-
-
-/* TYPE SELECTION */
-
-const typeCards =
-    document.querySelectorAll(
-        ".type-card"
-    );
-
-
-typeCards.forEach(card => {
-
-    card.addEventListener(
-        "click",
-        () => {
-
-            selectedType =
-                card.dataset.type;
-
-
-            typeCards.forEach(item => {
-
-                item.classList.remove(
-                    "selected"
+    <!-- PDF AREA -->
+    <div
+        id="pdfArea"
+        class="hidden"
+    ></div>
+
+
+    <style>
+
+        .type-card {
+            min-height: 72px;
+            border-radius: 14px;
+            border: 1px solid rgb(51 65 85);
+            background: rgb(30 41 59);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-direction: column;
+            font-size: 12px;
+            transition: 0.15s ease;
+        }
+
+        .type-card:active {
+            transform: scale(0.97);
+        }
+
+        .type-card.active {
+            border-color: white;
+            background: rgb(51 65 85);
+            box-shadow:
+                0 0 0 1px white inset;
+        }
+
+        .type-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgb(15 23 42);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .money-input {
+            width: 100%;
+            height: 48px;
+            border-radius: 12px;
+            background: rgb(30 41 59);
+            border: 1px solid rgb(51 65 85);
+            padding: 0 14px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .money-input::placeholder {
+            color: rgb(100 116 139);
+        }
+
+        .money-input:focus,
+        textarea:focus,
+        input:focus {
+            border-color: rgb(148 163 184);
+        }
+
+        .person-card {
+            background: rgb(15 23 42);
+            border: 1px solid rgb(30 41 59);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .record-card {
+            background: rgb(30 41 59);
+            border: 1px solid rgb(51 65 85);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+    </style>
+
+
+    <script type="module">
+
+        import {
+            getData,
+            saveData,
+            getProfileValue
+        } from "./js/storage.js";
+
+
+        const STORAGE_KEY =
+            "digital_notebook_v2_transactions";
+
+        const INR_RATE = 1.6;
+
+
+        const personName =
+            document.getElementById(
+                "personName"
+            );
+
+        const transactionType =
+            document.getElementById(
+                "transactionType"
+            );
+
+        const nprAmount =
+            document.getElementById(
+                "nprAmount"
+            );
+
+        const inrAmount =
+            document.getElementById(
+                "inrAmount"
+            );
+
+        const liveTotal =
+            document.getElementById(
+                "liveTotal"
+            );
+
+        const transactionDate =
+            document.getElementById(
+                "transactionDate"
+            );
+
+        const transactionNote =
+            document.getElementById(
+                "transactionNote"
+            );
+
+        const saveBtn =
+            document.getElementById(
+                "saveBtn"
+            );
+
+        const formTitle =
+            document.getElementById(
+                "formTitle"
+            );
+
+        const cancelEditBtn =
+            document.getElementById(
+                "cancelEditBtn"
+            );
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+        const peopleList =
+            document.getElementById(
+                "peopleList"
+            );
+
+        const recordCount =
+            document.getElementById(
+                "recordCount"
+            );
+
+        const summaryBox =
+            document.getElementById(
+                "summaryBox"
+            );
+
+        const personModal =
+            document.getElementById(
+                "personModal"
+            );
+
+        const modalPersonName =
+            document.getElementById(
+                "modalPersonName"
+            );
+
+        const modalPersonSummary =
+            document.getElementById(
+                "modalPersonSummary"
+            );
+
+        const modalRecords =
+            document.getElementById(
+                "modalRecords"
+            );
+
+        const closeModalBtn =
+            document.getElementById(
+                "closeModalBtn"
+            );
+
+        const personPdfBtn =
+            document.getElementById(
+                "personPdfBtn"
+            );
+
+        const headerAvatar =
+            document.getElementById(
+                "headerAvatar"
+            );
+
+
+        let transactions = [];
+        let editingId = null;
+        let openedPerson = null;
+
+
+        function today() {
+
+            return new Date()
+                .toISOString()
+                .split("T")[0];
+
+        }
+
+
+        function money(value) {
+
+            return Number(value || 0)
+                .toLocaleString(
+                    "en-IN",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
                 );
 
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+        function getTransactions() {
+
+            const data =
+                getData(
+                    "transactions",
+                    null
+                );
+
+            if (Array.isArray(data)) {
+                return data;
+            }
+
+            const oldData =
+                getData(
+                    "transactionData",
+                    []
+                );
+
+            return Array.isArray(oldData)
+                ? oldData
+                : [];
+
+        }
+
+
+        function saveTransactions() {
+
+            saveData(
+                "transactions",
+                transactions
+            );
+
+        }
+
+
+        function calculateTotal() {
+
+            const npr =
+                Number(
+                    nprAmount.value
+                ) || 0;
+
+            const inr =
+                Number(
+                    inrAmount.value
+                ) || 0;
+
+            const total =
+                npr + (inr * INR_RATE);
+
+            liveTotal.textContent =
+                `NPR ${money(total)}`;
+
+            return total;
+
+        }
+
+
+        function selectType(type) {
+
+            transactionType.value =
+                type;
+
+            document
+                .querySelectorAll(
+                    ".type-card"
+                )
+                .forEach(button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.type === type
+                    );
+
+                });
+
+        }
+
+
+        function resetForm() {
+
+            editingId = null;
+
+            personName.value = "";
+            nprAmount.value = "";
+            inrAmount.value = "";
+            transactionNote.value = "";
+
+            transactionDate.value =
+                today();
+
+            selectType(
+                "Expense"
+            );
+
+            calculateTotal();
+
+            formTitle.textContent =
+                "Add Transaction";
+
+            saveBtn.textContent =
+                "Save Transaction";
+
+            cancelEditBtn.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        function loadForEdit(item) {
+
+            editingId =
+                item.id;
+
+            personName.value =
+                item.personName || "";
+
+            transactionDate.value =
+                item.date || today();
+
+            transactionNote.value =
+                item.note || "";
+
+            nprAmount.value =
+                item.npr || "";
+
+            inrAmount.value =
+                item.inr || "";
+
+            selectType(
+                item.type || "Expense"
+            );
+
+            calculateTotal();
+
+            formTitle.textContent =
+                "Edit Transaction";
+
+            saveBtn.textContent =
+                "Update Transaction";
+
+            cancelEditBtn.classList.remove(
+                "hidden"
+            );
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
             });
 
-
-            card.classList.add(
-                "selected"
-            );
-
-        }
-    );
-
-});
-
-
-
-/* NUMBER */
-
-function number(value) {
-
-    const n =
-        Number(value);
-
-    if (
-        !Number.isFinite(n)
-    ) {
-        return 0;
-    }
-
-    return n;
-
-}
-
-
-
-/* LIVE TOTAL */
-
-function calculateLiveTotal() {
-
-    const npr =
-        number(
-            amountNpr.value
-        );
-
-
-    const inr =
-        number(
-            amountInr.value
-        );
-
-
-    const converted =
-        inr * INR_RATE;
-
-
-    const total =
-        npr + converted;
-
-
-    totalAmount.textContent =
-        "NPR " +
-        formatMoney(total);
-
-
-    conversionText.textContent =
-        "NPR " +
-        formatMoney(npr) +
-        " + INR " +
-        formatMoney(inr) +
-        " × 1.6 = NPR " +
-        formatMoney(total);
-
-
-    return total;
-
-}
-
-
-amountNpr.addEventListener(
-    "input",
-    calculateLiveTotal
-);
-
-
-amountInr.addEventListener(
-    "input",
-    calculateLiveTotal
-);
-
-
-/*
-    Also update on keyup/change.
-    This makes it reliable on mobile keyboards.
-*/
-
-amountNpr.addEventListener(
-    "keyup",
-    calculateLiveTotal
-);
-
-
-amountInr.addEventListener(
-    "keyup",
-    calculateLiveTotal
-);
-
-
-amountNpr.addEventListener(
-    "change",
-    calculateLiveTotal
-);
-
-
-amountInr.addEventListener(
-    "change",
-    calculateLiveTotal
-);
-
-
-
-/* STORAGE */
-
-function getTransactions() {
-
-    try {
-
-        const raw =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-
-        if (!raw) {
-            return [];
         }
 
 
-        const data =
-            JSON.parse(raw);
+        function createTransaction() {
+
+            const name =
+                personName.value.trim();
+
+            if (!name) {
+                personName.focus();
+                return;
+            }
+
+            const npr =
+                Number(
+                    nprAmount.value
+                ) || 0;
+
+            const inr =
+                Number(
+                    inrAmount.value
+                ) || 0;
+
+            const total =
+                npr + (inr * INR_RATE);
+
+            if (total <= 0) {
+                nprAmount.focus();
+                return;
+            }
 
 
-        if (
-            !Array.isArray(data)
-        ) {
-            return [];
-        }
+            if (editingId) {
 
+                const index =
+                    transactions.findIndex(
+                        item =>
+                            item.id === editingId
+                    );
 
-        return data;
+                if (index !== -1) {
 
-    } catch (error) {
+                    transactions[index] = {
+                        ...transactions[index],
 
-        console.error(
-            "Transaction read error:",
-            error
-        );
+                        personName:
+                            name,
 
-        return [];
+                        type:
+                            transactionType.value,
 
-    }
+                        npr,
+                        inr,
+                        total,
+                        amount: total,
 
-}
+                        date:
+                            transactionDate.value
+                            || today(),
 
+                        note:
+                            transactionNote.value
+                                .trim(),
 
+                        updatedAt:
+                            Date.now()
+                    };
 
-function saveTransactions(
-    transactions
-) {
+                }
 
-    try {
+            } else {
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(
-                transactions
-            )
-        );
+                const newTransaction = {
 
+                    id:
+                        `transaction_${Date.now()}_${Math.random()
+                            .toString(36)
+                            .slice(2, 8)}`,
 
-        /*
-            Keep V2 storage copy too.
-            This helps the newer dashboard
-            read the same transaction data.
-        */
+                    personName:
+                        name,
 
-        localStorage.setItem(
-            "digital_notebook_v2_transactions",
-            JSON.stringify(
-                transactions
-            )
-        );
+                    type:
+                        transactionType.value,
 
+                    npr,
+                    inr,
 
-        return true;
+                    total,
+                    amount: total,
 
-    } catch (error) {
+                    date:
+                        transactionDate.value
+                        || today(),
 
-        console.error(
-            "Transaction save error:",
-            error
-        );
+                    note:
+                        transactionNote.value
+                            .trim(),
 
-        alert(
-            "Data Save हुन सकेन। Browser storage जाँच गर्नुहोस्।"
-        );
+                    createdAt:
+                        Date.now(),
 
-        return false;
+                    updatedAt:
+                        Date.now()
 
-    }
+                };
 
-}
-
-
-
-/* CLEAN NAME */
-
-function cleanName(
-    value
-) {
-
-    return String(
-        value || ""
-    )
-        .trim()
-        .replace(
-            /\s+/g,
-            " "
-        );
-
-}
-
-
-
-/* ID */
-
-function createId() {
-
-    return (
-        "transaction_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 8)
-    );
-
-}
-
-
-
-/* SAVE */
-
-form.addEventListener(
-    "submit",
-    function(event) {
-
-        event.preventDefault();
-
-
-        const name =
-            cleanName(
-                partyName.value
-            );
-
-
-        const npr =
-            number(
-                amountNpr.value
-            );
-
-
-        const inr =
-            number(
-                amountInr.value
-            );
-
-
-        const total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-
-        if (!name) {
-
-            alert(
-                "व्यक्तिको नाम लेख्नुहोस्।"
-            );
-
-            partyName.focus();
-
-            return;
-
-        }
-
-
-        if (total <= 0) {
-
-            alert(
-                "NPR वा INR रकम लेख्नुहोस्।"
-            );
-
-            if (
-                !npr &&
-                !inr
-            ) {
-
-                amountNpr.focus();
+                transactions.unshift(
+                    newTransaction
+                );
 
             }
 
-            return;
+
+            saveTransactions();
+
+            resetForm();
+
+            render();
 
         }
 
 
-        const item = {
+        function deleteTransaction(id) {
 
-            id:
-                editingId ||
-                createId(),
-
-            party:
-                name,
-
-            partyName:
-                name,
-
-            type:
-                selectedType,
-
-            npr:
-                npr,
-
-            inr:
-                inr,
-
-            total:
-                total,
-
-            amount:
-                total,
-
-            date:
-                transactionDate.value ||
-                today(),
-
-            dueDate:
-                dueDate.value ||
-                "",
-
-            note:
-                transactionNote.value
-                    .trim(),
-
-            createdAt:
-                editingId
-                    ?
-                    getExistingCreatedAt(
-                        editingId
-                    )
-                    :
-                    Date.now(),
-
-            updatedAt:
-                Date.now()
-
-        };
-
-
-        let transactions =
-            getTransactions();
-
-
-        if (editingId) {
-
-            const index =
-                transactions.findIndex(
-                    tx =>
-                        tx.id ===
-                        editingId
+            transactions =
+                transactions.filter(
+                    item =>
+                        item.id !== id
                 );
 
+            saveTransactions();
 
-            if (
-                index === -1
-            ) {
+            render();
 
-                alert(
-                    "Update record भेटिएन।"
-                );
+        }
+
+
+        function getPeople() {
+
+            const map =
+                new Map();
+
+            transactions.forEach(
+                item => {
+
+                    const name =
+                        String(
+                            item.personName
+                            || item.person
+                            || ""
+                        ).trim();
+
+                    if (!name) {
+                        return;
+                    }
+
+                    const key =
+                        name.toLowerCase();
+
+                    if (!map.has(key)) {
+
+                        map.set(
+                            key,
+                            {
+                                name,
+                                records: []
+                            }
+                        );
+
+                    }
+
+                    map.get(key)
+                        .records
+                        .push(item);
+
+                }
+            );
+
+            return Array.from(
+                map.values()
+            );
+
+        }
+
+
+        function getFilteredPeople() {
+
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+            const people =
+                getPeople();
+
+            if (!query) {
+                return people;
+            }
+
+            return people.filter(
+                person =>
+                    person.name
+                        .toLowerCase()
+                        .includes(query)
+            );
+
+        }
+
+
+        function renderSummary() {
+
+            let expense = 0;
+            let receivable = 0;
+            let payable = 0;
+            let given = 0;
+            let taken = 0;
+            let repayment = 0;
+
+            transactions.forEach(
+                item => {
+
+                    const amount =
+                        Number(
+                            item.total
+                            ?? item.amount
+                        ) || 0;
+
+                    switch (
+                        String(
+                            item.type
+                        ).toLowerCase()
+                    ) {
+
+                        case "expense":
+                            expense += amount;
+                            break;
+
+                        case "receivable":
+                            receivable += amount;
+                            break;
+
+                        case "payable":
+                            payable += amount;
+                            break;
+
+                        case "given":
+                            given += amount;
+                            break;
+
+                        case "taken":
+                            taken += amount;
+                            break;
+
+                        case "repayment":
+                            repayment += amount;
+                            break;
+
+                    }
+
+                }
+            );
+
+
+            summaryBox.innerHTML = `
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+                    <p class="text-[11px] text-slate-500">Expense</p>
+                    <p class="font-semibold mt-1">
+                        NPR ${money(expense)}
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+                    <p class="text-[11px] text-slate-500">Receivable</p>
+                    <p class="font-semibold mt-1">
+                        NPR ${money(receivable)}
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+                    <p class="text-[11px] text-slate-500">Payable</p>
+                    <p class="font-semibold mt-1">
+                        NPR ${money(payable)}
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+                    <p class="text-[11px] text-slate-500">Given / Taken</p>
+                    <p class="font-semibold mt-1">
+                        NPR ${money(given + taken)}
+                    </p>
+                </div>
+
+            `;
+
+        }
+
+
+        function render() {
+
+            renderSummary();
+
+            const people =
+                getFilteredPeople();
+
+            recordCount.textContent =
+                `${transactions.length} records`;
+
+            if (!people.length) {
+
+                peopleList.innerHTML = `
+
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center">
+
+                        <div class="text-3xl mb-3">
+                            🧾
+                        </div>
+
+                        <p class="text-sm text-slate-400">
+                            No transaction records
+                        </p>
+
+                    </div>
+
+                `;
 
                 return;
 
             }
 
 
-            transactions[index] =
-                item;
+            peopleList.innerHTML =
+                people.map(
+                    person => {
 
-        } else {
-
-            transactions.unshift(
-                item
-            );
-
-        }
-
-
-        if (
-            saveTransactions(
-                transactions
-            )
-        ) {
-
-            resetForm();
-
-            renderPeople();
-
-            alert(
-                editingId
-                    ?
-                    "कारोबार Update भयो।"
-                    :
-                    "कारोबार सुरक्षित भयो।"
-            );
-
-        }
-
-    }
-);
+                        const total =
+                            person.records.reduce(
+                                (
+                                    sum,
+                                    item
+                                ) =>
+                                    sum
+                                    +
+                                    (
+                                        Number(
+                                            item.total
+                                            ?? item.amount
+                                        )
+                                        || 0
+                                    ),
+                                0
+                            );
 
 
-
-/* CREATED AT */
-
-function getExistingCreatedAt(
-    id
-) {
-
-    const item =
-        getTransactions()
-            .find(
-                tx =>
-                    tx.id === id
-            );
+                        const latest =
+                            person.records[0];
 
 
-    return (
-        item?.createdAt ||
-        Date.now()
-    );
+                        return `
 
-}
+                            <button
+                                type="button"
+                                class="person-card w-full text-left"
+                                data-person="${escapeHtml(person.name)}"
+                            >
 
+                                <div class="flex items-center gap-3">
 
+                                    <div class="w-11 h-11 rounded-full bg-slate-800 flex items-center justify-center font-semibold">
+                                        ${escapeHtml(
+                                            person.name
+                                                .charAt(0)
+                                                .toUpperCase()
+                                        )}
+                                    </div>
 
-/* RESET */
+                                    <div class="flex-1 min-w-0">
 
-function resetForm() {
+                                        <p class="font-semibold truncate">
+                                            ${escapeHtml(
+                                                person.name
+                                            )}
+                                        </p>
 
-    editingId =
-        "";
+                                        <p class="text-[11px] text-slate-500 mt-1">
+                                            ${person.records.length} record${person.records.length === 1 ? "" : "s"}
+                                            •
+                                            ${escapeHtml(
+                                                latest.type || ""
+                                            )}
+                                        </p>
 
+                                    </div>
 
-    editId.value =
-        "";
+                                    <div class="text-right">
 
+                                        <p class="font-semibold text-sm">
+                                            NPR ${money(total)}
+                                        </p>
 
-    form.reset();
+                                        <p class="text-[11px] text-slate-500 mt-1">
+                                            View →
+                                        </p>
 
+                                    </div>
 
-    transactionDate.value =
-        today();
+                                </div>
 
+                            </button>
 
-    selectedType =
-        "Expense";
+                        `;
 
-
-    typeCards.forEach(card => {
-
-        card.classList.toggle(
-            "selected",
-            card.dataset.type ===
-                "Expense"
-        );
-
-    });
-
-
-    saveButton.textContent =
-        "कारोबार सेभ गर्नुहोस्";
-
-
-    cancelButton.classList.add(
-        "hidden"
-    );
-
-
-    document.getElementById(
-        "formTitle"
-    ).textContent =
-        "नयाँ कारोबार थप्नुहोस्";
-
-
-    calculateLiveTotal();
-
-}
-
-
-cancelButton.addEventListener(
-    "click",
-    resetForm
-);
-
-
-
-/* EDIT */
-
-window.editTransaction =
-    function(id) {
-
-        const item =
-            getTransactions()
-                .find(
-                    tx =>
-                        tx.id === id
-                );
-
-
-        if (!item) {
-
-            alert(
-                "Record भेटिएन।"
-            );
-
-            return;
+                    }
+                ).join("");
 
         }
 
 
-        editingId =
-            item.id;
-
-
-        editId.value =
-            item.id;
-
-
-        partyName.value =
-            item.party ||
-            item.partyName ||
-            "";
-
-
-        amountNpr.value =
-            item.npr ??
-            0;
-
-
-        amountInr.value =
-            item.inr ??
-            0;
-
-
-        transactionDate.value =
-            item.date ||
-            today();
-
-
-        dueDate.value =
-            item.dueDate ||
-            "";
-
-
-        transactionNote.value =
-            item.note ||
-            "";
-
-
-        selectedType =
-            item.type ||
-            "Expense";
-
-
-        typeCards.forEach(card => {
-
-            card.classList.toggle(
-                "selected",
-                card.dataset.type ===
-                    selectedType
-            );
-
-        });
-
-
-        saveButton.textContent =
-            "कारोबार Update गर्नुहोस्";
-
-
-        cancelButton.classList.remove(
-            "hidden"
-        );
-
-
-        document.getElementById(
-            "formTitle"
-        ).textContent =
-            "कारोबार Update गर्नुहोस्";
-
-
-        calculateLiveTotal();
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    };
-
-
-
-/* DELETE */
-
-window.deleteTransaction =
-    function(id) {
-
-        const item =
-            getTransactions()
-                .find(
-                    tx =>
-                        tx.id === id
-                );
-
-
-        if (!item) {
-            return;
-        }
-
-
-        const ok =
-            confirm(
-                `${item.party || item.partyName} को यो कारोबार हटाउने?`
-            );
-
-
-        if (!ok) {
-            return;
-        }
-
-
-        const updated =
-            getTransactions()
-                .filter(
-                    tx =>
-                        tx.id !== id
-                );
-
-
-        saveTransactions(
-            updated
-        );
-
-
-        renderPeople();
-
-    };
-
-
-
-/* TYPE NAME */
-
-function typeNepali(
-    type
-) {
-
-    const map = {
-
-        Expense:
-            "खर्च",
-
-        Receivable:
-            "लिनुपर्ने",
-
-        Payable:
-            "दिनुपर्ने",
-
-        Given:
-            "दिएको पैसा",
-
-        Taken:
-            "लिएको पैसा",
-
-        Repayment:
-            "फिर्ता"
-
-    };
-
-
-    return (
-        map[type] ||
-        type ||
-        ""
-    );
-
-}
-
-
-
-/* TYPE COLOR */
-
-function typeColor(
-    type
-) {
-
-    const map = {
-
-        Expense:
-            "text-red-400",
-
-        Receivable:
-            "text-green-400",
-
-        Payable:
-            "text-orange-400",
-
-        Given:
-            "text-blue-400",
-
-        Taken:
-            "text-purple-400",
-
-        Repayment:
-            "text-cyan-400"
-
-    };
-
-
-    return (
-        map[type] ||
-        "text-slate-300"
-    );
-
-}
-
-
-
-/* FORMAT */
-
-function formatMoney(
-    value
-) {
-
-    return number(value)
-        .toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+        function openPerson(name) {
+
+            openedPerson =
+                getPeople()
+                    .find(
+                        person =>
+                            person.name
+                                .toLowerCase()
+                            ===
+                            name
+                                .toLowerCase()
+                    );
+
+            if (!openedPerson) {
+                return;
             }
-        );
 
-}
+            modalPersonName.textContent =
+                openedPerson.name;
+
+            const total =
+                openedPerson.records.reduce(
+                    (
+                        sum,
+                        item
+                    ) =>
+                        sum
+                        +
+                        (
+                            Number(
+                                item.total
+                                ?? item.amount
+                            )
+                            || 0
+                        ),
+                    0
+                );
+
+            modalPersonSummary.textContent =
+                `${openedPerson.records.length} records • NPR ${money(total)}`;
 
 
+            modalRecords.innerHTML =
+                openedPerson.records
+                    .map(
+                        item =>
+                            `
 
-/* GROUP */
+                            <div class="record-card">
 
-function groupPeople(
-    transactions
-) {
+                                <div class="flex items-start gap-3">
 
-    const groups = {};
+                                    <div class="flex-1">
+
+                                        <div class="flex items-center gap-2 flex-wrap">
+
+                                            <span class="text-sm font-semibold">
+                                                ${escapeHtml(
+                                                    item.type
+                                                )}
+                                            </span>
+
+                                            <span class="text-[10px] text-slate-500">
+                                                ${escapeHtml(
+                                                    item.date || ""
+                                                )}
+                                            </span>
+
+                                        </div>
+
+                                        <p class="text-lg font-bold mt-2">
+                                            NPR ${money(
+                                                item.total
+                                                ?? item.amount
+                                            )}
+                                        </p>
+
+                                        <p class="text-[11px] text-slate-500 mt-1">
+                                            NPR ${money(item.npr)}
+                                            +
+                                            INR ${money(item.inr)}
+                                        </p>
+
+                                        ${
+                                            item.note
+                                                ? `
+                                                <p class="text-xs text-slate-400 mt-2">
+                                                    ${escapeHtml(
+                                                        item.note
+                                                    )}
+                                                </p>
+                                                `
+                                                : ""
+                                        }
+
+                                    </div>
+
+                                    <div class="flex gap-1">
+
+                                        <button
+                                            type="button"
+                                            class="edit-record w-9 h-9 rounded-lg bg-slate-800 text-xs"
+                                            data-id="${escapeHtml(item.id)}"
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="delete-record w-9 h-9 rounded-lg bg-slate-800 text-xs"
+                                            data-id="${escapeHtml(item.id)}"
+                                        >
+                                            ×
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            `
+                    )
+                    .join("");
 
 
-    transactions.forEach(item => {
-
-        const name =
-            cleanName(
-                item.party ||
-                item.partyName
+            personModal.classList.remove(
+                "hidden"
             );
 
-
-        if (!name) {
-            return;
         }
 
 
-        const key =
-            name.toLocaleLowerCase();
+        function closePerson() {
+
+            personModal.classList.add(
+                "hidden"
+            );
+
+            openedPerson = null;
+
+        }
 
 
-        if (!groups[key]) {
+        function getProfile() {
 
-            groups[key] = {
+            return {
 
                 name:
-                    name,
+                    getProfileValue(
+                        "profile_name",
+                        ""
+                    ),
 
-                items:
-                    []
+                address:
+                    getProfileValue(
+                        "profile_address",
+                        ""
+                    ),
+
+                mobile:
+                    getProfileValue(
+                        "profile_mobile",
+                        ""
+                    ),
+
+                email:
+                    getProfileValue(
+                        "profile_email",
+                        ""
+                    ),
+
+                avatar:
+                    getProfileValue(
+                        "profile_avatar",
+                        ""
+                    )
 
             };
 
         }
 
 
-        groups[key].items.push(
-            item
-        );
+        function loadAvatar() {
 
-    });
+            const profile =
+                getProfile();
 
+            if (profile.avatar) {
 
-    return Object.values(
-        groups
-    );
-
-}
-
-
-
-/* PERSON BALANCE */
-
-function calculatePerson(
-    items
-) {
-
-    let receivable = 0;
-    let payable = 0;
-    let given = 0;
-    let taken = 0;
-
-
-    items.forEach(item => {
-
-        const amount =
-            number(
-                item.total ??
-                item.amount
-            );
-
-
-        if (
-            item.type ===
-            "Receivable"
-        ) {
-
-            receivable +=
-                amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Payable"
-        ) {
-
-            payable +=
-                amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Given"
-        ) {
-
-            given +=
-                amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Taken"
-        ) {
-
-            taken +=
-                amount;
-
-        }
-
-    });
-
-
-    return {
-
-        receivable,
-
-        payable,
-
-        given,
-
-        taken,
-
-        balance:
-            receivable +
-            given -
-            payable -
-            taken
-
-    };
-
-}
-
-
-
-/* RENDER */
-
-function renderPeople() {
-
-    const transactions =
-        getTransactions();
-
-
-    document.getElementById(
-        "totalRecords"
-    ).textContent =
-        transactions.length;
-
-
-    const groups =
-        groupPeople(
-            transactions
-        );
-
-
-    document.getElementById(
-        "totalPeople"
-    ).textContent =
-        groups.length;
-
-
-    const query =
-        searchPerson.value
-            .trim()
-            .toLocaleLowerCase();
-
-
-    const filtered =
-        groups.filter(group =>
-            group.name
-                .toLocaleLowerCase()
-                .includes(query)
-        );
-
-
-    document.getElementById(
-        "resultText"
-    ).textContent =
-        filtered.length +
-        " व्यक्ति";
-
-
-    personList.innerHTML =
-        "";
-
-
-    if (
-        filtered.length === 0
-    ) {
-
-        emptyMessage.classList.remove(
-            "hidden"
-        );
-
-        return;
-
-    }
-
-
-    emptyMessage.classList.add(
-        "hidden"
-    );
-
-
-    filtered.sort(
-        (a, b) =>
-            a.name.localeCompare(
-                b.name
-            )
-    );
-
-
-    filtered.forEach(
-        (group, index) => {
-
-            personList.appendChild(
-                createPersonCard(
-                    group,
-                    index
-                )
-            );
-
-        }
-    );
-
-}
-
-
-
-/* PERSON CARD */
-
-function createPersonCard(
-    group,
-    index
-) {
-
-    const wrapper =
-        document.createElement(
-            "div"
-        );
-
-
-    wrapper.className =
-        "rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden";
-
-
-    const balance =
-        calculatePerson(
-            group.items
-        );
-
-
-    const personId =
-        "person_" +
-        index +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 6);
-
-
-    const header =
-        document.createElement(
-            "div"
-        );
-
-
-    header.className =
-        "p-4";
-
-
-    header.innerHTML = `
-
-        <div class="flex items-start justify-between gap-3">
-
-            <div>
-
-                <h3 class="font-bold text-base">
-                    ${escapeHtml(group.name)}
-                </h3>
-
-                <p class="text-[10px] text-slate-500 mt-1">
-                    ${group.items.length} वटा कारोबार
-                </p>
-
-            </div>
-
-
-            <div class="text-right">
-
-                <p class="text-[10px] text-slate-500">
-                    हिसाब
-                </p>
-
-                <p class="font-bold ${
-                    balance.balance >= 0
-                        ? "text-green-400"
-                        : "text-red-400"
-                }">
-
-                    NPR ${formatMoney(
-                        Math.abs(
-                            balance.balance
-                        )
-                    )}
-
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="grid grid-cols-2 gap-2 mt-4"
-        >
-
-            <div
-                class="rounded-xl bg-slate-800 p-3"
-            >
-
-                <p class="text-[10px] text-slate-500">
-                    दिएको
-                </p>
-
-                <p class="text-xs font-bold text-blue-400 mt-1">
-                    NPR ${formatMoney(
-                        balance.given
-                    )}
-                </p>
-
-            </div>
-
-
-            <div
-                class="rounded-xl bg-slate-800 p-3"
-            >
-
-                <p class="text-[10px] text-slate-500">
-                    लिएको
-                </p>
-
-                <p class="text-xs font-bold text-purple-400 mt-1">
-                    NPR ${formatMoney(
-                        balance.taken
-                    )}
-                </p>
-
-            </div>
-
-
-            <div
-                class="rounded-xl bg-slate-800 p-3"
-            >
-
-                <p class="text-[10px] text-slate-500">
-                    लिनुपर्ने
-                </p>
-
-                <p class="text-xs font-bold text-green-400 mt-1">
-                    NPR ${formatMoney(
-                        balance.receivable
-                    )}
-                </p>
-
-            </div>
-
-
-            <div
-                class="rounded-xl bg-slate-800 p-3"
-            >
-
-                <p class="text-[10px] text-slate-500">
-                    दिनुपर्ने
-                </p>
-
-                <p class="text-xs font-bold text-orange-400 mt-1">
-                    NPR ${formatMoney(
-                        balance.payable
-                    )}
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="flex gap-2 mt-3"
-        >
-
-            <button
-                type="button"
-                data-action="details"
-                data-id="${personId}"
-                class="flex-1 rounded-xl bg-slate-800 py-2.5 text-xs font-semibold"
-            >
-                विवरण
-            </button>
-
-
-            <button
-                type="button"
-                data-action="pdf"
-                data-name="${escapeAttribute(group.name)}"
-                class="flex-1 rounded-xl bg-green-600 py-2.5 text-xs font-semibold"
-            >
-                PDF
-            </button>
-
-        </div>
-
-    `;
-
-
-    const details =
-        document.createElement(
-            "div"
-        );
-
-
-    details.id =
-        personId;
-
-
-    details.className =
-        "person-details border-t border-slate-800";
-
-
-    group.items
-        .slice()
-        .sort(
-            (a, b) =>
-                new Date(
-                    b.date
-                ) -
-                new Date(
-                    a.date
-                )
-        )
-        .forEach(item => {
-
-            details.appendChild(
-                createRecordRow(
-                    item
-                )
-            );
-
-        });
-
-
-    header.addEventListener(
-        "click",
-        event => {
-
-            const detailsButton =
-                event.target.closest(
-                    '[data-action="details"]'
-                );
-
-
-            const pdfButton =
-                event.target.closest(
-                    '[data-action="pdf"]'
-                );
-
-
-            if (
-                detailsButton
-            ) {
-
-                details.classList.toggle(
-                    "open"
-                );
-
-            }
-
-
-            if (
-                pdfButton
-            ) {
-
-                generatePersonPDF(
-                    pdfButton.dataset.name
-                );
-
-            }
-
-        }
-    );
-
-
-    wrapper.appendChild(
-        header
-    );
-
-
-    wrapper.appendChild(
-        details
-    );
-
-
-    return wrapper;
-
-}
-
-
-
-/* RECORD ROW */
-
-function createRecordRow(
-    item
-) {
-
-    const row =
-        document.createElement(
-            "div"
-        );
-
-
-    row.className =
-        "record-row p-3";
-
-
-    const amount =
-        number(
-            item.total ??
-            item.amount
-        );
-
-
-    const npr =
-        number(
-            item.npr
-        );
-
-
-    const inr =
-        number(
-            item.inr
-        );
-
-
-    row.innerHTML = `
-
-        <div
-            class="flex items-start justify-between gap-3"
-        >
-
-            <div class="min-w-0">
-
-                <p
-                    class="font-semibold text-xs ${
-                        typeColor(
-                            item.type
-                        )
-                    }"
-                >
-                    ${escapeHtml(
-                        typeNepali(
-                            item.type
-                        )
-                    )}
-                </p>
-
-
-                <p class="text-[10px] text-slate-500 mt-1">
-                    ${escapeHtml(
-                        item.date ||
-                        ""
-                    )}
-                </p>
-
-
-                ${
-                    item.dueDate
-                    ?
+                headerAvatar.innerHTML =
                     `
-                    <p class="text-[10px] text-yellow-400 mt-1">
-                        Due: ${escapeHtml(
-                            item.dueDate
-                        )}
-                    </p>
-                    `
-                    :
-                    ""
-                }
+                    <img
+                        src="${profile.avatar}"
+                        class="w-full h-full object-cover"
+                        alt="Profile"
+                    >
+                    `;
 
+            } else if (profile.name) {
 
-                ${
-                    item.note
-                    ?
+                headerAvatar.innerHTML =
                     `
-                    <p class="text-[10px] text-slate-400 mt-1 break-words">
+                    <span class="font-semibold">
                         ${escapeHtml(
-                            item.note
+                            profile.name
+                                .charAt(0)
+                                .toUpperCase()
                         )}
-                    </p>
-                    `
-                    :
-                    ""
-                }
+                    </span>
+                    `;
 
-            </div>
+            }
 
-
-            <div class="text-right shrink-0">
-
-                <p class="font-bold text-xs">
-                    NPR ${formatMoney(
-                        amount
-                    )}
-                </p>
+        }
 
 
-                <p class="text-[9px] text-slate-500 mt-1">
-                    NPR ${formatMoney(npr)}
-                    +
-                    INR ${formatMoney(inr)}
-                </p>
+        function buildPdf(person) {
 
+            const profile =
+                getProfile();
+
+            const records =
+                person.records;
+
+
+            const total =
+                records.reduce(
+                    (
+                        sum,
+                        item
+                    ) =>
+                        sum
+                        +
+                        (
+                            Number(
+                                item.total
+                                ?? item.amount
+                            )
+                            || 0
+                        ),
+                    0
+                );
+
+
+            const rows =
+                records.map(
+                    item =>
+                        `
+
+                        <tr>
+
+                            <td style="padding:8px;border:1px solid #ddd;">
+                                ${escapeHtml(
+                                    item.date || ""
+                                )}
+                            </td>
+
+                            <td style="padding:8px;border:1px solid #ddd;">
+                                ${escapeHtml(
+                                    item.type || ""
+                                )}
+                            </td>
+
+                            <td style="padding:8px;border:1px solid #ddd;text-align:right;">
+                                ${money(item.npr)}
+                            </td>
+
+                            <td style="padding:8px;border:1px solid #ddd;text-align:right;">
+                                ${money(item.inr)}
+                            </td>
+
+                            <td style="padding:8px;border:1px solid #ddd;text-align:right;font-weight:bold;">
+                                ${money(
+                                    item.total
+                                    ?? item.amount
+                                )}
+                            </td>
+
+                            <td style="padding:8px;border:1px solid #ddd;">
+                                ${escapeHtml(
+                                    item.note || ""
+                                )}
+                            </td>
+
+                        </tr>
+
+                        `
+                ).join("");
+
+
+            return `
 
                 <div
-                    class="flex justify-end gap-3 mt-2"
+                    style="
+                        width:794px;
+                        background:white;
+                        color:#111;
+                        padding:32px;
+                        font-family:Arial,sans-serif;
+                    "
                 >
 
-                    <button
-                        type="button"
-                        class="text-[10px] text-blue-400"
-                        data-edit="${escapeAttribute(
-                            item.id
-                        )}"
+                    <div
+                        style="
+                            border-bottom:2px solid #111;
+                            padding-bottom:16px;
+                            margin-bottom:20px;
+                        "
                     >
-                        Edit
-                    </button>
+
+                        <h1
+                            style="
+                                margin:0;
+                                font-size:26px;
+                            "
+                        >
+                            Digital Notebook
+                        </h1>
+
+                        <p
+                            style="
+                                margin:5px 0 0;
+                                color:#555;
+                            "
+                        >
+                            Transaction Report
+                        </p>
+
+                    </div>
 
 
-                    <button
-                        type="button"
-                        class="text-[10px] text-red-400"
-                        data-delete="${escapeAttribute(
-                            item.id
-                        )}"
+                    <div
+                        style="
+                            display:flex;
+                            gap:20px;
+                            margin-bottom:24px;
+                        "
                     >
-                        Delete
-                    </button>
+
+                        ${
+                            profile.avatar
+                                ? `
+                                <img
+                                    src="${profile.avatar}"
+                                    style="
+                                        width:80px;
+                                        height:80px;
+                                        object-fit:cover;
+                                        border-radius:50%;
+                                    "
+                                >
+                                `
+                                : ""
+                        }
+
+                        <div>
+
+                            <h2
+                                style="
+                                    margin:0 0 8px;
+                                    font-size:21px;
+                                "
+                            >
+                                ${escapeHtml(
+                                    person.name
+                                )}
+                            </h2>
+
+                            ${
+                                profile.name
+                                    ? `
+                                    <p style="margin:3px 0;">
+                                        Name: ${escapeHtml(
+                                            profile.name
+                                        )}
+                                    </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                profile.mobile
+                                    ? `
+                                    <p style="margin:3px 0;">
+                                        Mobile: ${escapeHtml(
+                                            profile.mobile
+                                        )}
+                                    </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                profile.email
+                                    ? `
+                                    <p style="margin:3px 0;">
+                                        Email: ${escapeHtml(
+                                            profile.email
+                                        )}
+                                    </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                profile.address
+                                    ? `
+                                    <p style="margin:3px 0;">
+                                        Address: ${escapeHtml(
+                                            profile.address
+                                        )}
+                                    </p>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            background:#f1f5f9;
+                            padding:14px;
+                            margin-bottom:20px;
+                        "
+                    >
+
+                        <strong>
+                            Total Transaction Amount:
+                        </strong>
+
+                        <span style="float:right;">
+                            NPR ${money(total)}
+                        </span>
+
+                    </div>
+
+
+                    <table
+                        style="
+                            width:100%;
+                            border-collapse:collapse;
+                            font-size:11px;
+                        "
+                    >
+
+                        <thead>
+
+                            <tr style="background:#f1f5f9;">
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:left;">
+                                    Date
+                                </th>
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:left;">
+                                    Type
+                                </th>
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:right;">
+                                    NPR
+                                </th>
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:right;">
+                                    INR
+                                </th>
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:right;">
+                                    Total
+                                </th>
+
+                                <th style="padding:8px;border:1px solid #ddd;text-align:left;">
+                                    Note
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            ${rows}
+                        </tbody>
+
+                    </table>
+
+
+                    <p
+                        style="
+                            margin-top:24px;
+                            font-size:10px;
+                            color:#777;
+                        "
+                    >
+                        Generated by Digital Notebook
+                    </p>
 
                 </div>
 
-            </div>
-
-        </div>
-
-    `;
-
-
-    row.addEventListener(
-        "click",
-        event => {
-
-            const edit =
-                event.target.closest(
-                    "[data-edit]"
-                );
-
-
-            const del =
-                event.target.closest(
-                    "[data-delete]"
-                );
-
-
-            if (edit) {
-
-                window.editTransaction(
-                    edit.dataset.edit
-                );
-
-            }
-
-
-            if (del) {
-
-                window.deleteTransaction(
-                    del.dataset.delete
-                );
-
-            }
+            `;
 
         }
-    );
 
 
-    return row;
+        async function generatePersonPdf() {
 
-}
-
-
-
-/* SEARCH */
-
-searchPerson.addEventListener(
-    "input",
-    renderPeople
-);
+            if (
+                !openedPerson
+                ||
+                !openedPerson.records.length
+            ) {
+                return;
+            }
 
 
+            const pdfArea =
+                document.getElementById(
+                    "pdfArea"
+                );
 
-/* PDF */
+            pdfArea.innerHTML =
+                buildPdf(
+                    openedPerson
+                );
 
-async function generatePersonPDF(
-    personNameValue
-) {
-
-    const target =
-        cleanName(
-            personNameValue
-        )
-            .toLocaleLowerCase();
+            pdfArea.classList.remove(
+                "hidden"
+            );
 
 
-    const records =
-        getTransactions()
-            .filter(item => {
-
-                const name =
-                    cleanName(
-                        item.party ||
-                        item.partyName
+            const filename =
+                `transaction-${openedPerson.name
+                    .trim()
+                    .replace(
+                        /[^a-z0-9\u0900-\u097F]+/gi,
+                        "-"
                     )
-                        .toLocaleLowerCase();
+                    .replace(
+                        /^-+|-+$/g,
+                        ""
+                    )
+                    || "person"
+                }.pdf`;
 
-                return (
-                    name === target
+
+            await html2pdf()
+                .set({
+
+                    margin: 0,
+
+                    filename,
+
+                    image: {
+                        type: "jpeg",
+                        quality: 0.95
+                    },
+
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: "#ffffff"
+                    },
+
+                    jsPDF: {
+                        unit: "mm",
+                        format: "a4",
+                        orientation: "portrait"
+                    },
+
+                    pagebreak: {
+                        mode: [
+                            "css",
+                            "legacy"
+                        ]
+                    }
+
+                })
+                .from(pdfArea)
+                .save();
+
+
+            pdfArea.classList.add(
+                "hidden"
+            );
+
+            pdfArea.innerHTML = "";
+
+        }
+
+
+        /* TYPE BUTTONS */
+
+        document
+            .querySelectorAll(
+                ".type-card"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        selectType(
+                            button.dataset.type
+                        );
+
+                    }
                 );
 
             });
 
 
-    if (
-        records.length === 0
-    ) {
+        /* LIVE TOTAL */
 
-        alert(
-            "यस व्यक्तिको कारोबार भेटिएन।"
+        nprAmount.addEventListener(
+            "input",
+            calculateTotal
         );
 
-        return;
-
-    }
-
-
-    const profileName =
-        localStorage.getItem(
-            "profile_name"
-        ) ||
-        "";
+        inrAmount.addEventListener(
+            "input",
+            calculateTotal
+        );
 
 
-    const profileAddress =
-        localStorage.getItem(
-            "profile_address"
-        ) ||
-        "";
+        /* SAVE */
+
+        saveBtn.addEventListener(
+            "click",
+            createTransaction
+        );
 
 
-    const profileMobile =
-        localStorage.getItem(
-            "profile_mobile"
-        ) ||
-        "";
+        /* CANCEL EDIT */
+
+        cancelEditBtn.addEventListener(
+            "click",
+            resetForm
+        );
 
 
-    const profileEmail =
-        localStorage.getItem(
-            "profile_email"
-        ) ||
-        "";
+        /* SEARCH */
+
+        searchInput.addEventListener(
+            "input",
+            render
+        );
 
 
-    const profileAvatar =
-        localStorage.getItem(
-            "profile_avatar"
-        ) ||
-        "";
+        /* PERSON CLICK */
 
+        peopleList.addEventListener(
+            "click",
+            event => {
 
-    const sorted =
-        records
-            .slice()
-            .sort(
-                (a, b) =>
-                    new Date(a.date) -
-                    new Date(b.date)
-            );
+                const card =
+                    event.target.closest(
+                        "[data-person]"
+                    );
 
+                if (!card) {
+                    return;
+                }
 
-    let expense = 0;
-    let receivable = 0;
-    let payable = 0;
-    let given = 0;
-    let taken = 0;
-    let repayment = 0;
-
-
-    sorted.forEach(item => {
-
-        const amount =
-            number(
-                item.total ??
-                item.amount
-            );
-
-
-        if (
-            item.type ===
-            "Expense"
-        ) {
-
-            expense += amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Receivable"
-        ) {
-
-            receivable += amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Payable"
-        ) {
-
-            payable += amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Given"
-        ) {
-
-            given += amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Taken"
-        ) {
-
-            taken += amount;
-
-        }
-
-
-        if (
-            item.type ===
-            "Repayment"
-        ) {
-
-            repayment += amount;
-
-        }
-
-    });
-
-
-    const balance =
-        receivable +
-        given -
-        payable -
-        taken -
-        repayment;
-
-
-    const rows =
-        sorted.map(item => {
-
-            const amount =
-                number(
-                    item.total ??
-                    item.amount
+                openPerson(
+                    card.dataset.person
                 );
 
-
-            return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(
-                            item.date ||
-                            ""
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            typeNepali(
-                                item.type
-                            )
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatMoney(
-                            item.npr
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatMoney(
-                            item.inr
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatMoney(
-                            amount
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.dueDate ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.note ||
-                            "-"
-                        )}
-                    </td>
-
-                </tr>
-
-            `;
-
-        }).join("");
+            }
+        );
 
 
-    const avatarHtml =
-        profileAvatar
-        ?
-        `
-        <img
-            src="${escapeAttribute(
-                profileAvatar
-            )}"
-            style="
-                width:70px;
-                height:70px;
-                border-radius:50%;
-                object-fit:cover;
-                border:2px solid #16a34a;
-            "
-        >
-        `
-        :
-        "";
+        /* MODAL CLOSE */
+
+        closeModalBtn.addEventListener(
+            "click",
+            closePerson
+        );
 
 
-    const html = `
+        personModal.addEventListener(
+            "click",
+            event => {
 
-        <div class="pdf-page">
+                if (
+                    event.target ===
+                    personModal
+                ) {
+                    closePerson();
+                }
 
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    border-bottom:2px solid #16a34a;
-                    padding-bottom:15px;
-                    margin-bottom:20px;
-                "
-            >
-
-                <div>
-
-                    <div
-                        style="
-                            font-size:24px;
-                            font-weight:bold;
-                            color:#111827;
-                        "
-                    >
-                        Digital NoteBook
-                    </div>
-
-                    <div
-                        style="
-                            font-size:11px;
-                            color:#6b7280;
-                            margin-top:4px;
-                        "
-                    >
-                        Transaction / Party Ledger
-                    </div>
-
-                </div>
+            }
+        );
 
 
-                ${avatarHtml}
+        /* EDIT / DELETE */
 
-            </div>
+        modalRecords.addEventListener(
+            "click",
+            event => {
 
+                const editButton =
+                    event.target.closest(
+                        ".edit-record"
+                    );
 
+                if (editButton) {
 
-            <div
-                style="
-                    background:#f8fafc;
-                    border:1px solid #e5e7eb;
-                    padding:15px;
-                    border-radius:8px;
-                    margin-bottom:20px;
-                "
-            >
+                    const item =
+                        transactions.find(
+                            transaction =>
+                                transaction.id
+                                ===
+                                editButton.dataset.id
+                        );
 
-                <div
-                    style="
-                        font-size:20px;
-                        font-weight:bold;
-                        margin-bottom:10px;
-                    "
-                >
-                    ${escapeHtml(
-                        personNameValue
-                    )}
-                </div>
+                    if (item) {
 
+                        closePerson();
 
-                ${
-                    profileName
-                    ?
-                    `<div><b>नाम:</b> ${escapeHtml(profileName)}</div>`
-                    :
-                    ""
+                        loadForEdit(
+                            item
+                        );
+
+                    }
+
+                    return;
+
                 }
 
 
-                ${
-                    profileAddress
-                    ?
-                    `<div><b>ठेगाना:</b> ${escapeHtml(profileAddress)}</div>`
-                    :
-                    ""
-                }
+                const deleteButton =
+                    event.target.closest(
+                        ".delete-record"
+                    );
 
+                if (deleteButton) {
 
-                ${
-                    profileMobile
-                    ?
-                    `<div><b>मोबाइल:</b> ${escapeHtml(profileMobile)}</div>`
-                    :
-                    ""
-                }
+                    deleteTransaction(
+                        deleteButton.dataset.id
+                    );
 
+                    if (openedPerson) {
 
-                ${
-                    profileEmail
-                    ?
-                    `<div><b>Email:</b> ${escapeHtml(profileEmail)}</div>`
-                    :
-                    ""
-                }
+                        const updated =
+                            getPeople().find(
+                                person =>
+                                    person.name
+                                        .toLowerCase()
+                                    ===
+                                    openedPerson.name
+                                        .toLowerCase()
+                            );
 
-            </div>
+                        if (updated) {
 
+                            openedPerson =
+                                updated;
 
+                            openPerson(
+                                updated.name
+                            );
 
-            <table
-                style="
-                    width:100%;
-                    border-collapse:collapse;
-                    font-size:10px;
-                "
-            >
+                        } else {
 
-                <thead>
+                            closePerson();
 
-                    <tr
-                        style="
-                            background:#f1f5f9;
-                        "
-                    >
+                        }
 
-                        <th>
-                            मिति
-                        </th>
-
-                        <th>
-                            प्रकार
-                        </th>
-
-                        <th>
-                            NPR
-                        </th>
-
-                        <th>
-                            INR
-                        </th>
-
-                        <th>
-                            जम्मा NPR
-                        </th>
-
-                        <th>
-                            Due
-                        </th>
-
-                        <th>
-                            Note
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    ${rows}
-
-                </tbody>
-
-            </table>
-
-
-
-            <div
-                style="
-                    margin-top:20px;
-                    display:grid;
-                    grid-template-columns:repeat(2,1fr);
-                    gap:8px;
-                    font-size:11px;
-                "
-            >
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    खर्च:
-                    <b>
-                        NPR ${formatMoney(expense)}
-                    </b>
-                </div>
-
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    लिनुपर्ने:
-                    <b>
-                        NPR ${formatMoney(receivable)}
-                    </b>
-                </div>
-
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    दिनुपर्ने:
-                    <b>
-                        NPR ${formatMoney(payable)}
-                    </b>
-                </div>
-
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    दिएको:
-                    <b>
-                        NPR ${formatMoney(given)}
-                    </b>
-                </div>
-
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    लिएको:
-                    <b>
-                        NPR ${formatMoney(taken)}
-                    </b>
-                </div>
-
-
-                <div
-                    style="
-                        border:1px solid #e5e7eb;
-                        padding:10px;
-                    "
-                >
-                    फिर्ता:
-                    <b>
-                        NPR ${formatMoney(repayment)}
-                    </b>
-                </div>
-
-            </div>
-
-
-
-            <div
-                style="
-                    margin-top:18px;
-                    padding:15px;
-                    background:#f0fdf4;
-                    border:1px solid #bbf7d0;
-                    font-size:17px;
-                    font-weight:bold;
-                    text-align:right;
-                "
-            >
-
-                बाँकी हिसाब:
-                NPR ${formatMoney(
-                    Math.abs(balance)
-                )}
-
-            </div>
-
-
-
-            <div
-                style="
-                    text-align:center;
-                    color:#9ca3af;
-                    font-size:9px;
-                    margin-top:30px;
-                "
-            >
-
-                Generated by Digital NoteBook
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    const pdfArea =
-        document.getElementById(
-            "pdfArea"
-        );
-
-
-    pdfArea.innerHTML =
-        html;
-
-
-    pdfArea.classList.remove(
-        "hidden"
-    );
-
-
-    try {
-
-        await html2pdf()
-            .set({
-
-                margin: 0,
-
-                filename:
-                    sanitizeFileName(
-                        personNameValue
-                    ) +
-                    "_Transaction_Report.pdf",
-
-                image: {
-
-                    type: "jpeg",
-
-                    quality: .95
-
-                },
-
-                html2canvas: {
-
-                    scale: 2,
-
-                    useCORS: true,
-
-                    logging: false
-
-                },
-
-                jsPDF: {
-
-                    unit: "pt",
-
-                    format: "a4",
-
-                    orientation:
-                        "portrait"
+                    }
 
                 }
 
-            })
-            .from(pdfArea)
-            .save();
-
-    } catch(error) {
-
-        console.error(
-            "PDF error:",
-            error
+            }
         );
 
 
-        alert(
-            "PDF बनाउन समस्या भयो।"
+        /* PDF */
+
+        personPdfBtn.addEventListener(
+            "click",
+            generatePersonPdf
         );
 
-    } finally {
 
-        pdfArea.classList.add(
-            "hidden"
-        );
+        /* INIT */
 
-        pdfArea.innerHTML =
-            "";
+        transactions =
+            getTransactions();
 
-    }
+        transactionDate.value =
+            today();
 
-}
-
-
-
-/* MAKE PDF FUNCTION GLOBAL */
-
-window.generatePersonPDF =
-    generatePersonPDF;
-
-
-
-/* FILE NAME */
-
-function sanitizeFileName(
-    value
-) {
-
-    return cleanName(value)
-        .replace(
-            /[^\w\u0900-\u097F-]+/g,
-            "_"
-        );
-
-}
-
-
-
-/* HTML ESCAPE */
-
-function escapeHtml(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-function escapeAttribute(
-    value
-) {
-
-    return escapeHtml(
-        value
-    );
-
-}
-
-
-
-/* START */
-
-calculateLiveTotal();
-
-renderPeople();
-
-
-/*
-    Make sure Expense is visibly selected
-    when page opens.
-*/
-
-typeCards.forEach(card => {
-
-    card.classList.toggle(
-        "selected",
-        card.dataset.type ===
+        selectType(
             "Expense"
-    );
+        );
 
-});
+        calculateTotal();
 
-</script>
+        loadAvatar();
 
+        render();
+
+    </script>
 
 </body>
-
 </html>
