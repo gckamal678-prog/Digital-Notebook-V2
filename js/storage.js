@@ -1,15 +1,54 @@
-const PREFIX = "digital_notebook_v2_";
+/* =========================================================
+   DIGITAL NOTEBOOK V2
+   LOCAL STORAGE ENGINE
 
-/*
-|--------------------------------------------------------------------------
-| V2 STORAGE
-|--------------------------------------------------------------------------
-*/
+   Responsibilities:
+   - Local data storage
+   - Local data reading
+   - Legacy V1 migration support
+   - Profile/settings values
+   - Storage information
+   - Safe JSON handling
 
-export function saveData(key, data) {
+   Firebase sync is handled separately by sync.js
+========================================================= */
+
+
+/* =========================================================
+   V2 STORAGE PREFIX
+========================================================= */
+
+const PREFIX =
+    "digital_notebook_v2_";
+
+
+/* =========================================================
+   INTERNAL KEY BUILDER
+========================================================= */
+
+function makeKey(key) {
+
+    return (
+        PREFIX +
+        String(key)
+    );
+
+}
+
+
+/* =========================================================
+   SAVE DATA
+========================================================= */
+
+export function saveData(
+    key,
+    data
+) {
+
     try {
+
         localStorage.setItem(
-            PREFIX + key,
+            makeKey(key),
             JSON.stringify(data)
         );
 
@@ -23,9 +62,15 @@ export function saveData(key, data) {
         );
 
         return false;
+
     }
+
 }
 
+
+/* =========================================================
+   GET DATA
+========================================================= */
 
 export function getData(
     key,
@@ -36,12 +81,16 @@ export function getData(
 
         const raw =
             localStorage.getItem(
-                PREFIX + key
+                makeKey(key)
             );
 
+
         if (raw === null) {
+
             return fallback;
+
         }
+
 
         return JSON.parse(raw);
 
@@ -53,65 +102,110 @@ export function getData(
         );
 
         return fallback;
+
     }
+
 }
 
 
-export function removeData(key) {
+/* =========================================================
+   REMOVE DATA
+========================================================= */
 
-    localStorage.removeItem(
-        PREFIX + key
-    );
+export function removeData(
+    key
+) {
+
+    try {
+
+        localStorage.removeItem(
+            makeKey(key)
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Storage remove error:",
+            error
+        );
+
+        return false;
+
+    }
+
 }
 
 
-export function hasData(key) {
+/* =========================================================
+   CHECK DATA EXISTS
+========================================================= */
+
+export function hasData(
+    key
+) {
 
     return (
         localStorage.getItem(
-            PREFIX + key
+            makeKey(key)
         ) !== null
     );
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| OLD V1 STORAGE
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   READ OLD V1 KEY
+========================================================= */
 
-function readOldKey(key) {
+function readOldKey(
+    key
+) {
 
     try {
 
         const raw =
-            localStorage.getItem(key);
+            localStorage.getItem(
+                key
+            );
+
 
         if (raw === null) {
+
             return null;
+
         }
 
-        return JSON.parse(raw);
+
+        try {
+
+            return JSON.parse(raw);
+
+        } catch {
+
+            return raw;
+
+        }
 
     } catch (error) {
 
         console.warn(
-            "Old storage read error:",
+            "Legacy storage read error:",
             key,
             error
         );
 
         return null;
+
     }
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| GET DATA WITH V1 FALLBACK
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   GET DATA WITH LEGACY MIGRATION
+========================================================= */
 
 export function getDataWithLegacy(
     key,
@@ -119,24 +213,23 @@ export function getDataWithLegacy(
     fallback = []
 ) {
 
-    // First check V2
     const v2Data =
         getData(
             key,
             null
         );
 
+
     if (
-        v2Data !== null
-        &&
+        v2Data !== null &&
         v2Data !== undefined
     ) {
 
         return v2Data;
+
     }
 
 
-    // Then check old V1 keys
     for (
         const legacyKey
         of legacyKeys
@@ -147,32 +240,32 @@ export function getDataWithLegacy(
                 legacyKey
             );
 
+
         if (
-            oldData !== null
-            &&
+            oldData !== null &&
             oldData !== undefined
         ) {
 
-            // Copy old data into V2
             saveData(
                 key,
                 oldData
             );
 
             return oldData;
+
         }
+
     }
 
 
     return fallback;
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE HELPERS
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   PROFILE VALUE
+========================================================= */
 
 export function getProfileValue(
     key,
@@ -185,13 +278,14 @@ export function getProfileValue(
             null
         );
 
+
     if (
-        v2Value !== null
-        &&
+        v2Value !== null &&
         v2Value !== undefined
     ) {
 
         return v2Value;
+
     }
 
 
@@ -200,9 +294,9 @@ export function getProfileValue(
             key
         );
 
+
     if (
-        oldValue !== null
-        &&
+        oldValue !== null &&
         oldValue !== undefined
     ) {
 
@@ -212,12 +306,18 @@ export function getProfileValue(
         );
 
         return oldValue;
+
     }
 
 
     return fallback;
+
 }
 
+
+/* =========================================================
+   SAVE PROFILE VALUE
+========================================================= */
 
 export function saveProfileValue(
     key,
@@ -229,13 +329,31 @@ export function saveProfileValue(
         value
     );
 
-    // V1 compatibility
+
+    /*
+       Keep legacy key temporarily
+       for compatibility with older V1 pages.
+    */
+
     try {
 
-        localStorage.setItem(
-            key,
-            value
-        );
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            localStorage.removeItem(
+                key
+            );
+
+        } else {
+
+            localStorage.setItem(
+                key,
+                String(value)
+            );
+
+        }
 
     } catch (error) {
 
@@ -243,19 +361,97 @@ export function saveProfileValue(
             "Legacy profile save failed:",
             error
         );
+
     }
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| CLEAR V2 DATA
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   REMOVE PROFILE VALUE
+========================================================= */
+
+export function removeProfileValue(
+    key
+) {
+
+    removeData(key);
+
+    try {
+
+        localStorage.removeItem(
+            key
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Legacy profile remove failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GET SETTINGS VALUE
+========================================================= */
+
+export function getSetting(
+    key,
+    fallback = null
+) {
+
+    return getData(
+        `setting_${key}`,
+        fallback
+    );
+
+}
+
+
+/* =========================================================
+   SAVE SETTINGS VALUE
+========================================================= */
+
+export function saveSetting(
+    key,
+    value
+) {
+
+    return saveData(
+        `setting_${key}`,
+        value
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE SETTINGS VALUE
+========================================================= */
+
+export function removeSetting(
+    key
+) {
+
+    return removeData(
+        `setting_${key}`
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR ALL V2 DATA
+========================================================= */
 
 export function clearV2Data() {
 
     const keys = [];
+
 
     for (
         let i = 0;
@@ -266,45 +462,58 @@ export function clearV2Data() {
         const key =
             localStorage.key(i);
 
+
         if (
-            key
-            &&
+            key &&
             key.startsWith(
                 PREFIX
             )
         ) {
 
             keys.push(key);
+
         }
+
     }
 
 
     keys.forEach(
-        key => {
+        (key) => {
 
-            localStorage.removeItem(
-                key
-            );
+            try {
+
+                localStorage.removeItem(
+                    key
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "Storage clear error:",
+                    key,
+                    error
+                );
+
+            }
+
         }
     );
+
+
+    return true;
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| STORAGE DEBUG
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   GET ALL V2 KEYS
+========================================================= */
 
-export function getStorageInfo() {
+export function getV2Keys() {
 
-    const result = {
-        v2: {},
-        legacy: {}
-    };
+    const keys = [];
 
 
-    // V2
     for (
         let i = 0;
         i < localStorage.length;
@@ -314,32 +523,101 @@ export function getStorageInfo() {
         const key =
             localStorage.key(i);
 
+
         if (
-            key
-            &&
+            key &&
             key.startsWith(
                 PREFIX
             )
         ) {
 
-            result.v2[
+            keys.push(
                 key.replace(
                     PREFIX,
                     ""
                 )
-            ] =
-                getData(
-                    key.replace(
-                        PREFIX,
-                        ""
-                    ),
-                    null
-                );
+            );
+
         }
+
     }
 
 
-    // Legacy
+    return keys;
+
+}
+
+
+/* =========================================================
+   GET ALL V2 DATA
+========================================================= */
+
+export function getAllV2Data() {
+
+    const result = {};
+
+    const keys =
+        getV2Keys();
+
+
+    keys.forEach(
+        (key) => {
+
+            result[key] =
+                getData(
+                    key,
+                    null
+                );
+
+        }
+    );
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   STORAGE INFORMATION
+========================================================= */
+
+export function getStorageInfo() {
+
+    const result = {
+
+        v2: {},
+
+        legacy: {}
+
+    };
+
+
+    /*
+       V2 data
+    */
+
+    const v2Keys =
+        getV2Keys();
+
+
+    v2Keys.forEach(
+        (key) => {
+
+            result.v2[key] =
+                getData(
+                    key,
+                    null
+                );
+
+        }
+    );
+
+
+    /*
+       Legacy data
+    */
+
     for (
         let i = 0;
         i < localStorage.length;
@@ -349,14 +627,16 @@ export function getStorageInfo() {
         const key =
             localStorage.key(i);
 
+
         if (
-            !key
-            ||
+            !key ||
             key.startsWith(
                 PREFIX
             )
         ) {
+
             continue;
+
         }
 
 
@@ -365,27 +645,44 @@ export function getStorageInfo() {
                 key
             );
 
+
         if (
-            value
-            &&
-            (
-                value.startsWith("[")
-                ||
-                value.startsWith("{")
-            )
+            value === null
         ) {
 
-            try {
+            continue;
 
-                result.legacy[key] =
-                    JSON.parse(value);
-
-            } catch {
-                // Ignore non-JSON values
-            }
         }
+
+
+        try {
+
+            result.legacy[key] =
+                JSON.parse(value);
+
+        } catch {
+
+            /*
+               Keep simple text values too.
+            */
+
+            result.legacy[key] =
+                value;
+
+        }
+
     }
 
 
     return result;
+
 }
+
+
+/* =========================================================
+   EXPORT STORAGE PREFIX
+========================================================= */
+
+export {
+    PREFIX
+};
