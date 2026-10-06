@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -12,614 +10,60 @@
 
     <meta
         name="theme-color"
-        content="#111827"
-    >
-
-    <meta
-        name="description"
-        content="Digital NoteBook account and profile"
-    >
-
-    <link
-        rel="manifest"
-        href="./manifest.json"
-    >
-
-    <link
-        rel="stylesheet"
-        href="./css/app.css"
-    >
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
+        content="#090d16"
     >
 
     <title>Account - Digital NoteBook</title>
 
-    <style>
+    <link
+        rel="manifest"
+        href="manifest.json"
+    >
 
-        body {
-            font-family: "Poppins", sans-serif;
-        }
-
-        .profile-avatar {
-            position: relative;
-        }
-
-        .avatar-upload {
-            position: absolute;
-            right: -2px;
-            bottom: -2px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #16a34a;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid white;
-            cursor: pointer;
-        }
-
-        .dark .avatar-upload {
-            border-color: #111827;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid #d1d5db;
-            background: white;
-            color: #111827;
-        }
-
-        .dark .form-input {
-            border-color: #374151;
-            background: #1f2937;
-            color: white;
-        }
-
-        .form-input:focus {
-            border-color: #16a34a;
-            box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.12);
-        }
-
-        .account-card {
-            border-radius: 20px;
-        }
-
-    </style>
-
+    <link
+        rel="stylesheet"
+        href="css/app.css"
+    >
 </head>
 
+<body>
 
-<body
-    class="
-        bg-gray-100
-        text-gray-900
-        dark:bg-gray-950
-        dark:text-white
-    "
->
+<header class="app-header">
 
+    <div class="header-left">
 
-<!-- =========================================
-     SIDEBAR OVERLAY
-     ========================================= -->
-
-<div
-    id="sidebar-overlay"
-    class="
-        hidden
-        fixed
-        inset-0
-        bg-black/50
-        z-40
-    "
-></div>
-
-
-<!-- =========================================
-     SIDEBAR
-     ========================================= -->
-
-<aside
-    id="sidebar"
-    class="
-        fixed
-        left-0
-        top-0
-        bottom-0
-        z-50
-        w-72
-        bg-white
-        dark:bg-gray-900
-        border-r
-        border-gray-200
-        dark:border-gray-800
-        transform
-        -translate-x-full
-        md:translate-x-0
-        transition-transform
-        duration-300
-        overflow-y-auto
-    "
->
-
-    <div class="p-5">
-
-        <!-- Logo -->
-
-        <div class="flex items-center gap-3 mb-7">
-
-            <div
-                class="
-                    w-11
-                    h-11
-                    rounded-xl
-                    bg-green-600
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                "
-            >
-                <i class="fa-solid fa-book"></i>
-            </div>
-
-            <div>
-
-                <h1 class="font-bold text-lg">
-                    Digital NoteBook
-                </h1>
-
-                <p class="text-xs text-gray-500">
-                    Personal Finance
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- Sidebar Profile -->
-
-        <div
-            class="
-                rounded-2xl
-                p-4
-                bg-gray-100
-                dark:bg-gray-800
-                mb-6
-            "
+        <a
+            href="index.html"
+            class="back-button"
+            aria-label="Back"
         >
+            ←
+        </a>
 
-            <div class="flex items-center gap-3">
-
-                <div
-                    class="
-                        w-12
-                        h-12
-                        rounded-full
-                        bg-green-600
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                        text-lg
-                        font-bold
-                        overflow-hidden
-                    "
-                >
-
-                    <span id="sidebar-avatar-text">
-                        U
-                    </span>
-
-                    <img
-                        id="sidebar-avatar-image"
-                        class="
-                            hidden
-                            w-full
-                            h-full
-                            object-cover
-                        "
-                        alt="Profile"
-                    >
-
-                </div>
-
-
-                <div class="min-w-0">
-
-                    <p
-                        id="sidebar-profile-name"
-                        class="font-semibold truncate"
-                    >
-                        User
-                    </p>
-
-                    <p
-                        id="sidebar-profile-status"
-                        class="text-xs text-gray-500"
-                    >
-                        Guest
-                    </p>
-
-                </div>
-
+        <div class="header-title">
+            <div class="header-title-main">
+                Account
             </div>
 
+            <div class="header-title-sub">
+                Digital NoteBook
+            </div>
         </div>
-
-
-        <!-- Navigation -->
-
-        <nav class="space-y-2">
-
-            <a
-                href="./index.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-house w-5"></i>
-
-                <span data-i18n="dashboard">
-                    Dashboard
-                </span>
-
-            </a>
-
-
-            <a
-                href="./add-income.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
-
-                <span data-i18n="income">
-                    Income
-                </span>
-
-            </a>
-
-
-            <a
-                href="./add-saving.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-piggy-bank w-5"></i>
-
-                <span data-i18n="saving">
-                    Saving
-                </span>
-
-            </a>
-
-
-            <a
-                href="./add-transaction.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-right-left w-5"></i>
-
-                <span data-i18n="transaction">
-                    Transaction
-                </span>
-
-            </a>
-
-
-            <a
-                href="./notebook.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-note-sticky w-5"></i>
-
-                <span data-i18n="notebook">
-                    Notebook
-                </span>
-
-            </a>
-
-
-            <a
-                href="./calendar.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-calendar-days w-5"></i>
-
-                <span data-i18n="calendar">
-                    Calendar
-                </span>
-
-            </a>
-
-
-            <a
-                href="./calculate.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-calculator w-5"></i>
-
-                <span data-i18n="calculator">
-                    Calculator
-                </span>
-
-            </a>
-
-
-            <a
-                href="./qrscan.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-qrcode w-5"></i>
-
-                <span>
-                    QR Scan
-                </span>
-
-            </a>
-
-
-            <a
-                href="./account.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    bg-green-600
-                    text-white
-                "
-            >
-                <i class="fa-solid fa-user w-5"></i>
-
-                <span data-i18n="account">
-                    Account
-                </span>
-
-            </a>
-
-
-            <a
-                href="./setting.html"
-                class="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-xl
-                    hover:bg-gray-100
-                    dark:hover:bg-gray-800
-                "
-            >
-                <i class="fa-solid fa-gear w-5"></i>
-
-                <span data-i18n="settings">
-                    Settings
-                </span>
-
-            </a>
-
-        </nav>
 
     </div>
 
-</aside>
 
+    <div class="header-right">
 
-<!-- =========================================
-     MAIN
-     ========================================= -->
-
-<main
-    class="
-        min-h-screen
-        md:ml-72
-    "
->
-
-
-<!-- =========================================
-     HEADER
-     ========================================= -->
-
-<header
-    class="
-        sticky
-        top-0
-        z-30
-        bg-white/90
-        dark:bg-gray-950/90
-        backdrop-blur
-        border-b
-        border-gray-200
-        dark:border-gray-800
-    "
->
-
-    <div
-        class="
-            px-4
-            sm:px-6
-            py-3
-            flex
-            items-center
-            justify-between
-            gap-3
-        "
-    >
-
-        <div class="flex items-center gap-3">
-
-            <button
-                id="menu-button"
-                class="
-                    md:hidden
-                    w-10
-                    h-10
-                    rounded-xl
-                    bg-gray-100
-                    dark:bg-gray-800
-                "
+        <div
+            id="header-avatar"
+            class="profile-avatar"
+        >
+            <img
+                id="header-avatar-img"
+                src="assets/N1024.png"
+                alt="Profile"
             >
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
-
-            <div>
-
-                <h2 class="font-bold text-lg">
-                    Account
-                </h2>
-
-                <p
-                    id="current-date"
-                    class="text-xs text-gray-500"
-                ></p>
-
-            </div>
-
-        </div>
-
-
-        <div class="flex items-center gap-2">
-
-            <button
-                id="privacy-button"
-                class="
-                    w-10
-                    h-10
-                    rounded-xl
-                    bg-gray-100
-                    dark:bg-gray-800
-                "
-                title="Privacy"
-            >
-                <i
-                    id="privacy-icon"
-                    class="fa-solid fa-eye"
-                ></i>
-            </button>
-
-
-            <button
-                id="language-button"
-                class="
-                    w-10
-                    h-10
-                    rounded-xl
-                    bg-gray-100
-                    dark:bg-gray-800
-                    text-xs
-                    font-bold
-                "
-            >
-                EN
-            </button>
-
-
-            <button
-                id="theme-button"
-                class="
-                    w-10
-                    h-10
-                    rounded-xl
-                    bg-gray-100
-                    dark:bg-gray-800
-                "
-            >
-                <i
-                    id="theme-icon"
-                    class="fa-solid fa-moon"
-                ></i>
-            </button>
-
         </div>
 
     </div>
@@ -627,525 +71,427 @@
 </header>
 
 
-<!-- =========================================
-     CONTENT
-     ========================================= -->
+<main class="page-container">
 
-<section
-    class="
-        max-w-4xl
-        mx-auto
-        px-4
-        sm:px-6
-        py-6
-    "
->
+    <!-- ================================================
+         PAGE TITLE
+    ================================================= -->
 
+    <section class="page-heading">
 
-    <!-- PAGE TITLE -->
-
-    <div class="mb-6">
-
-        <h1
-            class="
-                text-2xl
-                sm:text-3xl
-                font-bold
-            "
-        >
-            My Account
+        <h1>
+            Account &amp; Backup
         </h1>
 
-        <p class="text-sm text-gray-500 mt-1">
-            Manage your profile information.
+        <p>
+            Manage your account and private cloud data.
         </p>
 
-    </div>
+    </section>
 
 
-    <!-- =====================================
-         PROFILE HEADER
-         ===================================== -->
+    <!-- ================================================
+         AUTH CARD
+    ================================================= -->
 
-    <div
-        class="
-            account-card
-            bg-white
-            dark:bg-gray-900
-            border
-            border-gray-200
-            dark:border-gray-800
-            p-5
-            sm:p-7
-            mb-6
-        "
+    <section
+        id="auth-card"
+        class="card"
     >
 
-        <div
-            class="
-                flex
-                flex-col
-                sm:flex-row
-                sm:items-center
-                gap-5
-            "
-        >
+        <div class="card-header">
 
-            <!-- Avatar -->
+            <div>
 
-            <div
-                class="
-                    profile-avatar
-                    w-28
-                    h-28
-                    mx-auto
-                    sm:mx-0
-                "
+                <h2 id="auth-title">
+                    Login
+                </h2>
+
+                <p id="auth-subtitle">
+                    Login to sync your data securely.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="auth-email">
+                Email
+            </label>
+
+            <input
+                id="auth-email"
+                type="email"
+                autocomplete="email"
+                placeholder="Enter email address"
             >
 
-                <div
-                    class="
-                        w-28
-                        h-28
-                        rounded-full
-                        bg-green-600
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                        text-4xl
-                        font-bold
-                        overflow-hidden
-                    "
-                >
-
-                    <span id="main-avatar-text">
-                        U
-                    </span>
-
-                    <img
-                        id="main-avatar-image"
-                        class="
-                            hidden
-                            w-full
-                            h-full
-                            object-cover
-                        "
-                        alt="Profile photo"
-                    >
-
-                </div>
+        </div>
 
 
-                <label
-                    for="avatar-input"
-                    class="avatar-upload"
-                    title="Change profile photo"
-                >
-                    <i class="fa-solid fa-camera text-sm"></i>
-                </label>
+        <div class="form-group">
+
+            <label for="auth-password">
+                Password
+            </label>
+
+            <input
+                id="auth-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter password"
+            >
+
+        </div>
 
 
-                <input
-                    id="avatar-input"
-                    type="file"
-                    accept="image/*"
-                    class="hidden"
+        <div
+            id="confirm-password-group"
+            class="form-group hidden"
+        >
+
+            <label for="auth-confirm-password">
+                Confirm Password
+            </label>
+
+            <input
+                id="auth-confirm-password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Confirm password"
+            >
+
+        </div>
+
+
+        <div
+            id="display-name-group"
+            class="form-group hidden"
+        >
+
+            <label for="auth-display-name">
+                Name
+            </label>
+
+            <input
+                id="auth-display-name"
+                type="text"
+                autocomplete="name"
+                placeholder="Enter your name"
+            >
+
+        </div>
+
+
+        <div
+            id="auth-error"
+            class="status-box status-danger hidden"
+        ></div>
+
+
+        <button
+            id="auth-submit"
+            class="button button-primary button-block"
+            type="button"
+        >
+            Login
+        </button>
+
+
+        <button
+            id="forgot-password"
+            class="button button-secondary button-block"
+            type="button"
+        >
+            Forgot Password?
+        </button>
+
+
+        <div class="auth-switch">
+
+            <span id="auth-switch-label">
+                Don't have an account?
+            </span>
+
+            <button
+                id="auth-switch"
+                type="button"
+                class="text-button"
+            >
+                Sign Up
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         ACCOUNT DETAILS
+    ================================================= -->
+
+    <section
+        id="account-card"
+        class="card hidden"
+    >
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    My Account
+                </h2>
+
+                <p>
+                    Your Firebase account information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="account-profile">
+
+            <div
+                id="account-avatar"
+                class="profile-avatar profile-avatar-large"
+            >
+
+                <img
+                    id="account-avatar-img"
+                    src="assets/N1024.png"
+                    alt="Profile"
                 >
 
             </div>
 
 
-            <!-- Profile Status -->
+            <div>
 
-            <div
-                class="
-                    text-center
-                    sm:text-left
-                "
-            >
-
-                <h2
-                    id="profile-display-name"
-                    class="
-                        text-xl
-                        sm:text-2xl
-                        font-bold
-                    "
+                <div
+                    id="account-name"
+                    class="profile-name"
                 >
                     User
-                </h2>
-
-                <p
-                    id="profile-display-email"
-                    class="
-                        text-sm
-                        text-gray-500
-                        mt-1
-                    "
-                >
-                    No email added
-                </p>
-
+                </div>
 
                 <div
-                    class="
-                        inline-flex
-                        items-center
-                        gap-2
-                        mt-3
-                        px-3
-                        py-1.5
-                        rounded-full
-                        bg-amber-100
-                        dark:bg-amber-900/30
-                        text-amber-700
-                        dark:text-amber-300
-                        text-xs
-                        font-semibold
-                    "
+                    id="account-email"
+                    class="profile-email"
                 >
-
-                    <span
-                        class="
-                            w-2
-                            h-2
-                            rounded-full
-                            bg-amber-500
-                        "
-                    ></span>
-
-                    Guest Account
-
+                    —
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+
+        <div class="info-list">
+
+            <div class="info-row">
+
+                <span>
+                    User ID
+                </span>
+
+                <strong
+                    id="account-uid"
+                    class="break-text"
+                >
+                    —
+                </strong>
+
+            </div>
 
 
-    <!-- =====================================
-         PROFILE FORM
-         ===================================== -->
+            <div class="info-row">
 
-    <div
-        class="
-            account-card
-            bg-white
-            dark:bg-gray-900
-            border
-            border-gray-200
-            dark:border-gray-800
-            p-5
-            sm:p-7
-            mb-6
-        "
-    >
+                <span>
+                    Email Status
+                </span>
 
-        <div class="mb-5">
+                <strong
+                    id="email-status"
+                >
+                    —
+                </strong>
 
-            <h2 class="text-lg font-bold">
-                Personal Information
-            </h2>
-
-            <p class="text-xs text-gray-500 mt-1">
-                This information is stored on this device for now.
-            </p>
+            </div>
 
         </div>
 
 
-        <form
-            id="profile-form"
-            class="space-y-5"
+        <div
+            id="verification-section"
+            class="status-box status-warning hidden"
         >
 
+            <strong>
+                Email verification required
+            </strong>
 
-            <!-- Full Name -->
+            <p>
+                Please verify your email to secure your account.
+            </p>
 
-            <div>
-
-                <label
-                    for="input-full-name"
-                    class="
-                        block
-                        text-sm
-                        font-semibold
-                        mb-2
-                    "
-                >
-                    Full Name
-                </label>
-
-                <div class="relative">
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-user
-                            absolute
-                            left-4
-                            top-1/2
-                            -translate-y-1/2
-                            text-gray-400
-                        "
-                    ></i>
-
-                    <input
-                        id="input-full-name"
-                        class="form-input pl-11"
-                        type="text"
-                        placeholder="Enter your full name"
-                        autocomplete="name"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <!-- Address -->
-
-            <div>
-
-                <label
-                    for="input-address"
-                    class="
-                        block
-                        text-sm
-                        font-semibold
-                        mb-2
-                    "
-                >
-                    Address
-                </label>
-
-                <div class="relative">
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-location-dot
-                            absolute
-                            left-4
-                            top-4
-                            text-gray-400
-                        "
-                    ></i>
-
-                    <textarea
-                        id="input-address"
-                        class="
-                            form-input
-                            pl-11
-                            min-h-[90px]
-                            resize-none
-                        "
-                        placeholder="Enter your address"
-                        autocomplete="street-address"
-                    ></textarea>
-
-                </div>
-
-            </div>
-
-
-            <!-- Mobile -->
-
-            <div>
-
-                <label
-                    for="input-mobile"
-                    class="
-                        block
-                        text-sm
-                        font-semibold
-                        mb-2
-                    "
-                >
-                    Mobile Number
-                </label>
-
-                <div class="relative">
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-phone
-                            absolute
-                            left-4
-                            top-1/2
-                            -translate-y-1/2
-                            text-gray-400
-                        "
-                    ></i>
-
-                    <input
-                        id="input-mobile"
-                        class="form-input pl-11"
-                        type="tel"
-                        placeholder="Enter mobile number"
-                        autocomplete="tel"
-                        inputmode="tel"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <!-- Email -->
-
-            <div>
-
-                <label
-                    for="input-email"
-                    class="
-                        block
-                        text-sm
-                        font-semibold
-                        mb-2
-                    "
-                >
-                    Email
-                </label>
-
-                <div class="relative">
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-envelope
-                            absolute
-                            left-4
-                            top-1/2
-                            -translate-y-1/2
-                            text-gray-400
-                        "
-                    ></i>
-
-                    <input
-                        id="input-email"
-                        class="form-input pl-11"
-                        type="email"
-                        placeholder="Enter email address"
-                        autocomplete="email"
-                    >
-
-                </div>
-
-                <p class="text-xs text-gray-500 mt-2">
-                    This is currently profile information. Firebase login email will be connected later.
-                </p>
-
-            </div>
-
-
-            <!-- Buttons -->
-
-            <div
-                class="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    gap-3
-                    pt-2
-                "
+            <button
+                id="resend-verification"
+                class="button button-secondary"
+                type="button"
             >
+                Resend Verification Email
+            </button>
 
-                <button
-                    type="submit"
-                    class="
-                        px-5
-                        py-3
-                        rounded-xl
-                        bg-green-600
-                        hover:bg-green-700
-                        text-white
-                        font-semibold
-                    "
-                >
-                    <i class="fa-solid fa-floppy-disk mr-2"></i>
-                    Save Profile
-                </button>
+        </div>
 
 
-                <button
-                    type="button"
-                    id="reset-profile-button"
-                    class="
-                        px-5
-                        py-3
-                        rounded-xl
-                        bg-gray-100
-                        dark:bg-gray-800
-                        font-semibold
-                    "
-                >
-                    <i class="fa-solid fa-rotate-left mr-2"></i>
-                    Reset Form
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
+        <div
+            id="account-message"
+            class="status-box status-success hidden"
+        ></div>
 
 
-    <!-- =====================================
-         ACCOUNT STATUS
-         ===================================== -->
+        <button
+            id="logout-button"
+            class="button button-danger button-block"
+            type="button"
+        >
+            Logout
+        </button>
 
-    <div
-        class="
-            account-card
-            bg-white
-            dark:bg-gray-900
-            border
-            border-gray-200
-            dark:border-gray-800
-            p-5
-            sm:p-7
-            mb-6
-        "
+    </section>
+
+
+    <!-- ================================================
+         LOCAL PROFILE
+    ================================================= -->
+
+    <section
+        id="profile-card"
+        class="card"
     >
 
-        <div class="flex items-start gap-4">
-
-            <div
-                class="
-                    w-12
-                    h-12
-                    rounded-xl
-                    bg-amber-100
-                    dark:bg-amber-900/30
-                    text-amber-600
-                    flex
-                    items-center
-                    justify-center
-                    flex-shrink-0
-                "
-            >
-                <i class="fa-solid fa-user-clock"></i>
-            </div>
-
+        <div class="card-header">
 
             <div>
 
-                <h2 class="font-bold">
-                    Account Status
+                <h2>
+                    Personal Profile
                 </h2>
 
-                <p class="text-sm text-gray-500 mt-1">
-                    You are currently using Digital NoteBook in Guest Mode.
+                <p>
+                    This information is stored locally on this device.
                 </p>
 
-                <p class="text-xs text-gray-500 mt-2">
-                    Your current V2 financial data is stored locally on this device.
-                    Firebase account login and cloud sync will be connected later.
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="profile-name">
+                Full Name
+            </label>
+
+            <input
+                id="profile-name"
+                type="text"
+                placeholder="Enter full name"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="profile-email">
+                Email
+            </label>
+
+            <input
+                id="profile-email"
+                type="email"
+                placeholder="Enter email"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="profile-address">
+                Address
+            </label>
+
+            <input
+                id="profile-address"
+                type="text"
+                placeholder="Enter address"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="profile-mobile">
+                Mobile Number
+            </label>
+
+            <input
+                id="profile-mobile"
+                type="tel"
+                placeholder="Enter mobile number"
+            >
+
+        </div>
+
+
+        <button
+            id="save-profile"
+            class="button button-primary button-block"
+            type="button"
+        >
+            Save Profile
+        </button>
+
+
+        <div
+            id="profile-message"
+            class="status-box status-success hidden"
+        >
+            Profile saved.
+        </div>
+
+    </section>
+
+
+    <!-- ================================================
+         CLOUD BACKUP
+    ================================================= -->
+
+    <section
+        id="cloud-card"
+        class="card"
+    >
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Cloud Backup
+                </h2>
+
+                <p>
+                    Explicitly backup or restore your data.
                 </p>
 
             </div>
@@ -1154,552 +500,442 @@
 
 
         <div
-            class="
-                mt-5
-                p-4
-                rounded-xl
-                bg-gray-100
-                dark:bg-gray-800
-            "
+            id="cloud-login-required"
+            class="status-box status-warning hidden"
         >
-
-            <div class="flex items-center gap-3">
-
-                <i
-                    class="
-                        fa-solid
-                        fa-shield-halved
-                        text-green-600
-                    "
-                ></i>
-
-                <p class="text-sm">
-                    No login is required right now.
-                </p>
-
-            </div>
-
+            Login is required for private Firebase cloud backup.
         </div>
 
-    </div>
+
+        <div
+            id="cloud-status"
+            class="status-box hidden"
+        ></div>
 
 
-    <!-- =====================================
-         FUTURE FIREBASE LOGIN
-         ===================================== -->
+        <div class="button-grid">
 
-    <div
-        class="
-            account-card
-            bg-white
-            dark:bg-gray-900
-            border
-            border-gray-200
-            dark:border-gray-800
-            p-5
-            sm:p-7
-            mb-6
-        "
-    >
-
-        <div class="flex items-start gap-4">
-
-            <div
-                class="
-                    w-12
-                    h-12
-                    rounded-xl
-                    bg-blue-100
-                    dark:bg-blue-900/30
-                    text-blue-600
-                    flex
-                    items-center
-                    justify-center
-                    flex-shrink-0
-                "
+            <button
+                id="backup-button"
+                class="button button-primary"
+                type="button"
             >
-                <i class="fa-solid fa-cloud"></i>
-            </div>
+                Backup to Cloud
+            </button>
 
 
-            <div class="flex-1">
-
-                <h2 class="font-bold">
-                    Cloud Account
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Firebase Email/Password login
-                </p>
-
-                <div
-                    class="
-                        mt-4
-                        p-3
-                        rounded-xl
-                        bg-blue-50
-                        dark:bg-blue-950/30
-                        text-blue-700
-                        dark:text-blue-300
-                        text-xs
-                    "
-                >
-                    <i class="fa-solid fa-circle-info mr-1"></i>
-
-                    Cloud login will be enabled after all V2 pages
-                    are completed and tested.
-                </div>
-
-            </div>
+            <button
+                id="restore-button"
+                class="button button-secondary"
+                type="button"
+            >
+                Restore from Cloud
+            </button>
 
         </div>
 
-    </div>
 
-
-    <!-- =====================================
-         DANGER ZONE
-         ===================================== -->
-
-    <div
-        class="
-            account-card
-            danger-zone
-            bg-white
-            dark:bg-gray-900
-            border
-            p-5
-            sm:p-7
-        "
-    >
-
-        <h2
-            class="
-                font-bold
-                text-red-600
-            "
-        >
-            Account Data
-        </h2>
-
-        <p class="text-xs text-gray-500 mt-1 mb-4">
-            Data deletion is available from Settings.
+        <p class="helper-text">
+            Restore is manual. Your local data will not be automatically replaced when you login.
         </p>
 
-
-        <a
-            href="./setting.html"
-            class="
-                inline-flex
-                items-center
-                gap-2
-                px-4
-                py-3
-                rounded-xl
-                bg-red-100
-                dark:bg-red-900/30
-                text-red-600
-                font-semibold
-                text-sm
-            "
-        >
-            <i class="fa-solid fa-gear"></i>
-            Open Data Settings
-        </a>
-
-    </div>
-
-
-    <!-- Footer -->
-
-    <div
-        class="
-            text-center
-            py-6
-            text-xs
-            text-gray-500
-        "
-    >
-        Digital NoteBook • Version 2.0
-    </div>
-
-</section>
+    </section>
 
 </main>
 
 
-<!-- =========================================
-     TOAST
-     ========================================= -->
-
-<div
-    id="toast-container"
-    class="
-        fixed
-        bottom-5
-        left-1/2
-        -translate-x-1/2
-        z-[100]
-    "
-></div>
-
-
-<!-- =========================================
-     JAVASCRIPT
-     ========================================= -->
-
 <script type="module">
 
     import {
-        initTheme,
-        getTheme,
-        toggleTheme,
-        setTheme
-    } from "./js/theme.js";
+        waitForAuth,
+        getAuthUserData,
+        signIn,
+        signUp,
+        signOut,
+        resendVerificationEmail,
+        refreshUser
+    } from "./js/auth.js";
+
 
     import {
-        getLanguage,
-        setLanguage,
-        applyTranslations
-    } from "./js/language.js";
+        getProfileValue,
+        saveProfileValue
+    } from "./js/storage.js";
 
 
-    /* =====================================
-       INITIALIZE
-       ===================================== */
-
-    initTheme();
-
-    let language =
-        getLanguage();
-
-    applyTranslations(
-        language
-    );
+    import {
+        backupAllLocalData,
+        restoreAllCloudData,
+        getSyncStatus
+    } from "./js/sync.js";
 
 
-    /* =====================================
-       DATE
-       ===================================== */
+    import {
+        initApp
+    } from "./js/app.js";
 
-    function updateDate() {
 
-        const element =
-            document.getElementById(
-                "current-date"
-            );
+    /* =====================================================
+       DOM
+    ===================================================== */
 
-        if (!element) return;
+    const authCard =
+        document.getElementById(
+            "auth-card"
+        );
 
-        element.textContent =
-            new Date().toLocaleDateString(
-                language === "ne"
-                    ? "ne-NP"
-                    : "en-US",
-                {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                }
-            );
+    const accountCard =
+        document.getElementById(
+            "account-card"
+        );
+
+    const authTitle =
+        document.getElementById(
+            "auth-title"
+        );
+
+    const authSubtitle =
+        document.getElementById(
+            "auth-subtitle"
+        );
+
+    const authEmail =
+        document.getElementById(
+            "auth-email"
+        );
+
+    const authPassword =
+        document.getElementById(
+            "auth-password"
+        );
+
+    const confirmPassword =
+        document.getElementById(
+            "auth-confirm-password"
+        );
+
+    const displayName =
+        document.getElementById(
+            "auth-display-name"
+        );
+
+    const confirmPasswordGroup =
+        document.getElementById(
+            "confirm-password-group"
+        );
+
+    const displayNameGroup =
+        document.getElementById(
+            "display-name-group"
+        );
+
+    const authSubmit =
+        document.getElementById(
+            "auth-submit"
+        );
+
+    const forgotPassword =
+        document.getElementById(
+            "forgot-password"
+        );
+
+    const authSwitch =
+        document.getElementById(
+            "auth-switch"
+        );
+
+    const authSwitchLabel =
+        document.getElementById(
+            "auth-switch-label"
+        );
+
+    const authError =
+        document.getElementById(
+            "auth-error"
+        );
+
+    const accountName =
+        document.getElementById(
+            "account-name"
+        );
+
+    const accountEmail =
+        document.getElementById(
+            "account-email"
+        );
+
+    const accountUid =
+        document.getElementById(
+            "account-uid"
+        );
+
+    const emailStatus =
+        document.getElementById(
+            "email-status"
+        );
+
+    const verificationSection =
+        document.getElementById(
+            "verification-section"
+        );
+
+    const accountMessage =
+        document.getElementById(
+            "account-message"
+        );
+
+    const logoutButton =
+        document.getElementById(
+            "logout-button"
+        );
+
+    const profileName =
+        document.getElementById(
+            "profile-name"
+        );
+
+    const profileEmail =
+        document.getElementById(
+            "profile-email"
+        );
+
+    const profileAddress =
+        document.getElementById(
+            "profile-address"
+        );
+
+    const profileMobile =
+        document.getElementById(
+            "profile-mobile"
+        );
+
+    const saveProfileButton =
+        document.getElementById(
+            "save-profile"
+        );
+
+    const profileMessage =
+        document.getElementById(
+            "profile-message"
+        );
+
+    const cloudLoginRequired =
+        document.getElementById(
+            "cloud-login-required"
+        );
+
+    const cloudStatus =
+        document.getElementById(
+            "cloud-status"
+        );
+
+    const backupButton =
+        document.getElementById(
+            "backup-button"
+        );
+
+    const restoreButton =
+        document.getElementById(
+            "restore-button"
+        );
+
+    const resendVerification =
+        document.getElementById(
+            "resend-verification"
+        );
+
+
+    /* =====================================================
+       AUTH MODE
+    ===================================================== */
+
+    let authMode =
+        "login";
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function showElement(
+        element
+    ) {
+
+        element?.classList.remove(
+            "hidden"
+        );
+
     }
 
-    updateDate();
+
+    function hideElement(
+        element
+    ) {
+
+        element?.classList.add(
+            "hidden"
+        );
+
+    }
 
 
-    /* =====================================
-       TOAST
-       ===================================== */
+    function showAuthError(
+        message
+    ) {
 
-    function showToast(
+        if (!authError) return;
+
+        authError.textContent =
+            message || "Something went wrong.";
+
+        showElement(
+            authError
+        );
+
+    }
+
+
+    function clearAuthError() {
+
+        hideElement(
+            authError
+        );
+
+        if (authError) {
+
+            authError.textContent =
+                "";
+
+        }
+
+    }
+
+
+    function showAccountMessage(
         message,
         type = "success"
     ) {
 
-        const container =
-            document.getElementById(
-                "toast-container"
-            );
+        if (!accountMessage) return;
 
-        const toast =
-            document.createElement(
-                "div"
-            );
+        accountMessage.textContent =
+            message;
 
-        const icon =
-            type === "error"
-                ? "fa-circle-exclamation"
-                : "fa-circle-check";
+        accountMessage.className =
+            `status-box status-${type}`;
 
-        toast.className =
-            `
-            mt-2
-            px-5
-            py-3
-            rounded-xl
-            shadow-lg
-            text-sm
-            font-medium
-            bg-gray-900
-            text-white
-            dark:bg-white
-            dark:text-gray-900
-            flex
-            items-center
-            gap-2
-            whitespace-nowrap
-            `;
+        showElement(
+            accountMessage
+        );
 
-        toast.innerHTML =
-            `
-            <i class="fa-solid ${icon}"></i>
-            <span>${escapeHtml(message)}</span>
-            `;
+    }
 
-        container.appendChild(
-            toast
+
+    function showProfileMessage() {
+
+        showElement(
+            profileMessage
         );
 
         setTimeout(
             () => {
-                toast.remove();
+
+                hideElement(
+                    profileMessage
+                );
+
             },
             2500
         );
+
     }
 
 
-    function escapeHtml(value) {
+    function showCloudMessage(
+        message,
+        type = "success"
+    ) {
 
-        return String(value)
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+        if (!cloudStatus) return;
+
+        cloudStatus.textContent =
+            message;
+
+        cloudStatus.className =
+            `status-box status-${type}`;
+
+        showElement(
+            cloudStatus
+        );
+
     }
 
 
-    /* =====================================
-       PROFILE DATA
-       ===================================== */
+    /* =====================================================
+       AUTH MODE UI
+    ===================================================== */
 
-    const profileKeys = {
-        name: "profile_name",
-        address: "profile_address",
-        mobile: "profile_mobile",
-        email: "profile_email",
-        avatar: "profile_avatar"
-    };
+    function updateAuthMode() {
+
+        clearAuthError();
 
 
-    function getProfile() {
+        if (authMode === "login") {
 
-        return {
+            authTitle.textContent =
+                "Login";
 
-            name:
-                localStorage.getItem(
-                    profileKeys.name
-                ) || "",
+            authSubtitle.textContent =
+                "Login to sync your data securely.";
 
-            address:
-                localStorage.getItem(
-                    profileKeys.address
-                ) || "",
+            authSubmit.textContent =
+                "Login";
 
-            mobile:
-                localStorage.getItem(
-                    profileKeys.mobile
-                ) || "",
+            authSwitchLabel.textContent =
+                "Don't have an account?";
 
-            email:
-                localStorage.getItem(
-                    profileKeys.email
-                ) || "",
+            authSwitch.textContent =
+                "Sign Up";
 
-            avatar:
-                localStorage.getItem(
-                    profileKeys.avatar
-                ) || ""
-
-        };
-    }
-
-
-    /* =====================================
-       PROFILE ELEMENTS
-       ===================================== */
-
-    const nameInput =
-        document.getElementById(
-            "input-full-name"
-        );
-
-    const addressInput =
-        document.getElementById(
-            "input-address"
-        );
-
-    const mobileInput =
-        document.getElementById(
-            "input-mobile"
-        );
-
-    const emailInput =
-        document.getElementById(
-            "input-email"
-        );
-
-
-    const mainAvatarText =
-        document.getElementById(
-            "main-avatar-text"
-        );
-
-    const mainAvatarImage =
-        document.getElementById(
-            "main-avatar-image"
-        );
-
-    const sidebarAvatarText =
-        document.getElementById(
-            "sidebar-avatar-text"
-        );
-
-    const sidebarAvatarImage =
-        document.getElementById(
-            "sidebar-avatar-image"
-        );
-
-    const sidebarProfileName =
-        document.getElementById(
-            "sidebar-profile-name"
-        );
-
-    const profileDisplayName =
-        document.getElementById(
-            "profile-display-name"
-        );
-
-    const profileDisplayEmail =
-        document.getElementById(
-            "profile-display-email"
-        );
-
-
-    /* =====================================
-       RENDER PROFILE
-       ===================================== */
-
-    function renderProfile() {
-
-        const profile =
-            getProfile();
-
-
-        nameInput.value =
-            profile.name;
-
-        addressInput.value =
-            profile.address;
-
-        mobileInput.value =
-            profile.mobile;
-
-        emailInput.value =
-            profile.email;
-
-
-        const displayName =
-            profile.name.trim()
-            || "User";
-
-
-        profileDisplayName.textContent =
-            displayName;
-
-
-        profileDisplayEmail.textContent =
-            profile.email
-            || "No email added";
-
-
-        sidebarProfileName.textContent =
-            displayName;
-
-
-        const firstLetter =
-            displayName
-                .charAt(0)
-                .toUpperCase()
-            || "U";
-
-
-        mainAvatarText.textContent =
-            firstLetter;
-
-        sidebarAvatarText.textContent =
-            firstLetter;
-
-
-        if (profile.avatar) {
-
-            mainAvatarImage.src =
-                profile.avatar;
-
-            mainAvatarImage.classList.remove(
-                "hidden"
+            hideElement(
+                confirmPasswordGroup
             );
 
-            mainAvatarText.classList.add(
-                "hidden"
+            hideElement(
+                displayNameGroup
             );
 
-
-            sidebarAvatarImage.src =
-                profile.avatar;
-
-            sidebarAvatarImage.classList.remove(
-                "hidden"
-            );
-
-            sidebarAvatarText.classList.add(
-                "hidden"
+            showElement(
+                forgotPassword
             );
 
         } else {
 
-            mainAvatarImage.classList.add(
-                "hidden"
+            authTitle.textContent =
+                "Create Account";
+
+            authSubtitle.textContent =
+                "Create your secure Digital NoteBook account.";
+
+            authSubmit.textContent =
+                "Sign Up";
+
+            authSwitchLabel.textContent =
+                "Already have an account?";
+
+            authSwitch.textContent =
+                "Login";
+
+            showElement(
+                confirmPasswordGroup
             );
 
-            mainAvatarText.classList.remove(
-                "hidden"
+            showElement(
+                displayNameGroup
             );
 
-
-            sidebarAvatarImage.classList.add(
-                "hidden"
-            );
-
-            sidebarAvatarText.classList.remove(
-                "hidden"
+            hideElement(
+                forgotPassword
             );
 
         }
@@ -1707,495 +943,657 @@
     }
 
 
-    renderProfile();
+    authSwitch.addEventListener(
+        "click",
+        () => {
+
+            authMode =
+                authMode === "login"
+                    ? "signup"
+                    : "login";
+
+            updateAuthMode();
+
+        }
+    );
 
 
-    /* =====================================
-       SAVE PROFILE
-       ===================================== */
+    /* =====================================================
+       AUTH SUBMIT
+    ===================================================== */
 
-    document
-        .getElementById(
-            "profile-form"
-        )
-        .addEventListener(
-            "submit",
-            (event) => {
+    authSubmit.addEventListener(
+        "click",
+        async () => {
 
-                event.preventDefault();
+            clearAuthError();
 
 
-                const name =
-                    nameInput.value.trim();
+            const email =
+                authEmail.value.trim();
 
-                const address =
-                    addressInput.value.trim();
+            const password =
+                authPassword.value;
 
-                const mobile =
-                    mobileInput.value.trim();
-
-                const email =
-                    emailInput.value.trim();
+            const name =
+                displayName.value.trim();
 
 
-                if (!name) {
+            if (!email) {
 
-                    showToast(
-                        "Please enter your name.",
-                        "error"
-                    );
+                showAuthError(
+                    "Please enter your email address."
+                );
 
-                    nameInput.focus();
+                return;
 
-                    return;
-                }
+            }
 
+
+            if (!password) {
+
+                showAuthError(
+                    "Please enter your password."
+                );
+
+                return;
+
+            }
+
+
+            authSubmit.disabled =
+                true;
+
+
+            try {
 
                 if (
-                    email &&
-                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-                        .test(email)
+                    authMode ===
+                    "login"
                 ) {
 
-                    showToast(
-                        "Please enter a valid email.",
-                        "error"
+                    await signIn(
+                        email,
+                        password
                     );
 
-                    emailInput.focus();
+                } else {
 
-                    return;
+                    if (
+                        password !==
+                        confirmPassword.value
+                    ) {
+
+                        throw new Error(
+                            "Passwords do not match."
+                        );
+
+                    }
+
+
+                    await signUp(
+                        email,
+                        password,
+                        name
+                    );
+
                 }
 
 
-                localStorage.setItem(
-                    profileKeys.name,
-                    name
+                authEmail.value =
+                    "";
+
+                authPassword.value =
+                    "";
+
+                confirmPassword.value =
+                    "";
+
+                displayName.value =
+                    "";
+
+                await renderAccount();
+
+            } catch (error) {
+
+                showAuthError(
+                    error.message
                 );
 
-                localStorage.setItem(
-                    profileKeys.address,
-                    address
+            } finally {
+
+                authSubmit.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       FORGOT PASSWORD
+    ===================================================== */
+
+    forgotPassword.addEventListener(
+        "click",
+        async () => {
+
+            clearAuthError();
+
+            const email =
+                authEmail.value.trim();
+
+
+            if (!email) {
+
+                showAuthError(
+                    "Enter your email address first."
                 );
 
-                localStorage.setItem(
-                    profileKeys.mobile,
-                    mobile
-                );
+                return;
 
-                localStorage.setItem(
-                    profileKeys.email,
+            }
+
+
+            try {
+
+                /*
+                   Firebase password reset is intentionally
+                   handled here without exposing auth internals.
+                */
+
+                const {
+                    sendPasswordResetEmail
+                } =
+                    await import(
+                        "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
+                    );
+
+                const {
+                    auth
+                } =
+                    await import(
+                        "./js/firebase.js"
+                    );
+
+
+                await sendPasswordResetEmail(
+                    auth,
                     email
                 );
 
 
-                renderProfile();
-
-
-                showToast(
-                    "Profile saved successfully."
-                );
-
-            }
-        );
-
-
-    /* =====================================
-       RESET FORM
-       ===================================== */
-
-    document
-        .getElementById(
-            "reset-profile-button"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                renderProfile();
-
-                showToast(
-                    "Form reset."
-                );
-
-            }
-        );
-
-
-    /* =====================================
-       AVATAR
-       ===================================== */
-
-    document
-        .getElementById(
-            "avatar-input"
-        )
-        .addEventListener(
-            "change",
-            (event) => {
-
-                const file =
-                    event.target.files?.[0];
-
-
-                if (!file) {
-                    return;
-                }
-
-
-                if (
-                    !file.type.startsWith(
-                        "image/"
-                    )
-                ) {
-
-                    showToast(
-                        "Please select an image.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                /*
-                 * Resize image before saving.
-                 * This helps reduce localStorage usage.
-                 */
-
-                const reader =
-                    new FileReader();
-
-
-                reader.onload =
-                    (loadEvent) => {
-
-                        const image =
-                            new Image();
-
-
-                        image.onload =
-                            () => {
-
-                                const maxSize =
-                                    500;
-
-
-                                let width =
-                                    image.width;
-
-                                let height =
-                                    image.height;
-
-
-                                if (
-                                    width >
-                                        maxSize ||
-                                    height >
-                                        maxSize
-                                ) {
-
-                                    const ratio =
-                                        Math.min(
-                                            maxSize /
-                                                width,
-                                            maxSize /
-                                                height
-                                        );
-
-
-                                    width =
-                                        Math.round(
-                                            width *
-                                                ratio
-                                        );
-
-                                    height =
-                                        Math.round(
-                                            height *
-                                                ratio
-                                        );
-                                }
-
-
-                                const canvas =
-                                    document.createElement(
-                                        "canvas"
-                                    );
-
-
-                                canvas.width =
-                                    width;
-
-                                canvas.height =
-                                    height;
-
-
-                                const context =
-                                    canvas.getContext(
-                                        "2d"
-                                    );
-
-
-                                context.drawImage(
-                                    image,
-                                    0,
-                                    0,
-                                    width,
-                                    height
-                                );
-
-
-                                const compressed =
-                                    canvas.toDataURL(
-                                        "image/jpeg",
-                                        0.82
-                                    );
-
-
-                                localStorage.setItem(
-                                    profileKeys.avatar,
-                                    compressed
-                                );
-
-
-                                renderProfile();
-
-
-                                showToast(
-                                    "Profile photo updated."
-                                );
-
-                            };
-
-
-                        image.src =
-                            loadEvent.target.result;
-
-                    };
-
-
-                reader.readAsDataURL(
-                    file
+                showAuthError(
+                    "Password reset email sent. Please check your inbox."
                 );
 
 
-                event.target.value =
-                    "";
+                authError.className =
+                    "status-box status-success";
+
+
+            } catch (error) {
+
+                showAuthError(
+                    error?.message ||
+                    "Unable to send password reset email."
+                );
 
             }
-        );
 
-
-    /* =====================================
-       SIDEBAR
-       ===================================== */
-
-    const sidebar =
-        document.getElementById(
-            "sidebar"
-        );
-
-    const overlay =
-        document.getElementById(
-            "sidebar-overlay"
-        );
-
-    const menuButton =
-        document.getElementById(
-            "menu-button"
-        );
-
-
-    function openSidebar() {
-
-        sidebar.classList.remove(
-            "-translate-x-full"
-        );
-
-        overlay.classList.remove(
-            "hidden"
-        );
-    }
-
-
-    function closeSidebar() {
-
-        sidebar.classList.add(
-            "-translate-x-full"
-        );
-
-        overlay.classList.add(
-            "hidden"
-        );
-    }
-
-
-    menuButton?.addEventListener(
-        "click",
-        openSidebar
+        }
     );
 
 
-    overlay?.addEventListener(
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    logoutButton.addEventListener(
         "click",
-        closeSidebar
+        async () => {
+
+            logoutButton.disabled =
+                true;
+
+
+            try {
+
+                await signOut();
+
+                await renderAccount();
+
+            } catch (error) {
+
+                showAccountMessage(
+                    error.message,
+                    "danger"
+                );
+
+            } finally {
+
+                logoutButton.disabled =
+                    false;
+
+            }
+
+        }
     );
 
 
-    /* =====================================
-       THEME
-       ===================================== */
+    /* =====================================================
+       VERIFICATION EMAIL
+    ===================================================== */
 
-    function updateThemeIcon() {
+    resendVerification.addEventListener(
+        "click",
+        async () => {
 
-        const theme =
-            getTheme();
+            resendVerification.disabled =
+                true;
 
-        const icon =
-            document.getElementById(
-                "theme-icon"
+
+            try {
+
+                await resendVerificationEmail();
+
+                showAccountMessage(
+                    "Verification email sent.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                showAccountMessage(
+                    error.message,
+                    "danger"
+                );
+
+            } finally {
+
+                resendVerification.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       SAVE LOCAL PROFILE
+    ===================================================== */
+
+    saveProfileButton.addEventListener(
+        "click",
+        () => {
+
+            saveProfileValue(
+                "name",
+                profileName.value.trim()
             );
 
-        if (!icon) {
+            saveProfileValue(
+                "email",
+                profileEmail.value.trim()
+            );
+
+            saveProfileValue(
+                "address",
+                profileAddress.value.trim()
+            );
+
+            saveProfileValue(
+                "mobile",
+                profileMobile.value.trim()
+            );
+
+
+            showProfileMessage();
+
+        }
+    );
+
+
+    /* =====================================================
+       LOAD LOCAL PROFILE
+    ===================================================== */
+
+    function loadLocalProfile() {
+
+        profileName.value =
+            getProfileValue(
+                "name",
+                ""
+            );
+
+        profileEmail.value =
+            getProfileValue(
+                "email",
+                ""
+            );
+
+        profileAddress.value =
+            getProfileValue(
+                "address",
+                ""
+            );
+
+        profileMobile.value =
+            getProfileValue(
+                "mobile",
+                ""
+            );
+
+    }
+
+
+    /* =====================================================
+       RENDER ACCOUNT
+    ===================================================== */
+
+    async function renderAccount() {
+
+        const authData =
+            getAuthUserData();
+
+
+        if (!authData.loggedIn) {
+
+            showElement(
+                authCard
+            );
+
+            hideElement(
+                accountCard
+            );
+
+            showElement(
+                cloudLoginRequired
+            );
+
+            backupButton.disabled =
+                true;
+
+            restoreButton.disabled =
+                true;
+
             return;
+
         }
 
 
-        icon.className =
-            theme === "dark"
-                ? "fa-solid fa-sun"
-                : "fa-solid fa-moon";
-    }
+        hideElement(
+            authCard
+        );
 
+        showElement(
+            accountCard
+        );
 
-    updateThemeIcon();
-
-
-    document
-        .getElementById(
-            "theme-button"
-        )
-        ?.addEventListener(
-            "click",
-            () => {
-
-                toggleTheme();
-
-                updateThemeIcon();
-
-            }
+        hideElement(
+            cloudLoginRequired
         );
 
 
-    /* =====================================
-       LANGUAGE
-       ===================================== */
+        backupButton.disabled =
+            false;
 
-    function updateLanguageButton() {
+        restoreButton.disabled =
+            false;
 
-        const button =
-            document.getElementById(
-                "language-button"
+
+        accountName.textContent =
+            authData.displayName ||
+            "User";
+
+
+        accountEmail.textContent =
+            authData.email ||
+            "—";
+
+
+        accountUid.textContent =
+            authData.uid ||
+            "—";
+
+
+        if (
+            authData.emailVerified
+        ) {
+
+            emailStatus.textContent =
+                "Verified";
+
+            emailStatus.className =
+                "text-success";
+
+            hideElement(
+                verificationSection
             );
 
+        } else {
 
-        button.textContent =
-            language === "ne"
-                ? "ने"
-                : "EN";
-    }
+            emailStatus.textContent =
+                "Not verified";
 
+            emailStatus.className =
+                "text-warning";
 
-    updateLanguageButton();
-
-
-    document
-        .getElementById(
-            "language-button"
-        )
-        ?.addEventListener(
-            "click",
-            () => {
-
-                language =
-                    language === "en"
-                        ? "ne"
-                        : "en";
-
-
-                setLanguage(
-                    language
-                );
-
-
-                applyTranslations(
-                    language
-                );
-
-
-                updateLanguageButton();
-
-                updateDate();
-
-            }
-        );
-
-
-    /* =====================================
-       PRIVACY
-       ===================================== */
-
-    let privacyMode =
-        localStorage.getItem(
-            "privacy_mode"
-        ) === "true";
-
-
-    function updatePrivacyIcon() {
-
-        const icon =
-            document.getElementById(
-                "privacy-icon"
+            showElement(
+                verificationSection
             );
 
+        }
 
-        icon.className =
-            privacyMode
-                ? "fa-solid fa-eye-slash"
-                : "fa-solid fa-eye";
+
+        /*
+           Use Firebase account data as
+           default local profile values.
+        */
+
+        if (
+            !profileName.value &&
+            authData.displayName
+        ) {
+
+            profileName.value =
+                authData.displayName;
+
+        }
+
+
+        if (
+            !profileEmail.value &&
+            authData.email
+        ) {
+
+            profileEmail.value =
+                authData.email;
+
+        }
+
     }
 
 
-    updatePrivacyIcon();
+    /* =====================================================
+       CLOUD BACKUP
+    ===================================================== */
+
+    backupButton.addEventListener(
+        "click",
+        async () => {
+
+            backupButton.disabled =
+                true;
 
 
-    document
-        .getElementById(
-            "privacy-button"
-        )
-        ?.addEventListener(
-            "click",
-            () => {
+            try {
 
-                privacyMode =
-                    !privacyMode;
+                const result =
+                    await backupAllLocalData();
 
 
-                localStorage.setItem(
-                    "privacy_mode",
-                    privacyMode
+                if (
+                    result?.success
+                ) {
+
+                    showCloudMessage(
+                        "Cloud backup completed.",
+                        "success"
+                    );
+
+                } else {
+
+                    showCloudMessage(
+                        result?.message ||
+                        "Cloud backup could not be completed.",
+                        "danger"
+                    );
+
+                }
+
+            } catch (error) {
+
+                showCloudMessage(
+                    error.message ||
+                    "Cloud backup failed.",
+                    "danger"
                 );
 
+            } finally {
 
-                updatePrivacyIcon();
+                backupButton.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CLOUD RESTORE
+    ===================================================== */
+
+    restoreButton.addEventListener(
+        "click",
+        async () => {
+
+            restoreButton.disabled =
+                true;
+
+
+            try {
+
+                const result =
+                    await restoreAllCloudData();
+
+
+                if (
+                    result?.success
+                ) {
+
+                    showCloudMessage(
+                        "Cloud restore completed. Refreshing data...",
+                        "success"
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            location.reload();
+
+                        },
+                        700
+                    );
+
+                } else {
+
+                    showCloudMessage(
+                        result?.message ||
+                        "No cloud data was restored.",
+                        "warning"
+                    );
+
+                }
+
+            } catch (error) {
+
+                showCloudMessage(
+                    error.message ||
+                    "Cloud restore failed.",
+                    "danger"
+                );
+
+            } finally {
+
+                restoreButton.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       AUTH STATE
+    ===================================================== */
+
+    window.addEventListener(
+        "authChanged",
+        async () => {
+
+            await renderAccount();
+
+        }
+    );
+
+
+    /* =====================================================
+       APP START
+    ===================================================== */
+
+    await initApp();
+
+    await waitForAuth();
+
+    loadLocalProfile();
+
+    updateAuthMode();
+
+    await renderAccount();
+
+
+    /* =====================================================
+       SERVICE WORKER
+    ===================================================== */
+
+    if (
+        "serviceWorker" in navigator
+    ) {
+
+        window.addEventListener(
+            "load",
+            () => {
+
+                navigator.serviceWorker
+                    .register(
+                        "./sw.js"
+                    )
+                    .catch(
+                        () => {}
+                    );
 
             }
         );
 
+    }
 
 </script>
-
 
 </body>
 </html>
