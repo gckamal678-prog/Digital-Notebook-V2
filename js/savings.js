@@ -1,14 +1,6 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
    SAVING DATA ENGINE
-
-   Responsibilities:
-   - Saving records
-   - Local storage
-   - Legacy V1 migration
-   - CRUD operations
-   - NPR / INR support
-   - Firebase sync
 ========================================================= */
 
 import {
@@ -17,923 +9,398 @@ import {
 } from "./storage.js";
 
 import {
-    scheduleSync
+    scheduleSync,
+    deleteCloudRecord
 } from "./sync.js";
 
-
-/* =========================================================
-   STORAGE CONFIGURATION
-========================================================= */
-
-const STORAGE_KEY =
-    "savings";
-
+const STORAGE_KEY = "savings";
 
 const LEGACY_KEYS = [
-
     "savings",
-
     "saving",
-
     "savingData",
-
     "savingRecords",
-
     "savingHistory",
-
     "digital_notebook_savings"
-
 ];
-
-
-/* =========================================================
-   INR RATE
-========================================================= */
 
 const INR_RATE = 1.6;
 
+function createId() {
+    return (
+        Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 8)
+    );
+}
 
-/* =========================================================
-   NUMBER HELPER
-========================================================= */
-
-function toNumber(
-    value
-) {
-
-    const number =
-        Number(value);
-
-
+function toNumber(value) {
     if (
-        Number.isFinite(number)
+        value === null ||
+        value === undefined ||
+        value === ""
     ) {
-
-        return number;
-
+        return 0;
     }
 
-
-    return 0;
-
-}
-
-
-/* =========================================================
-   DATE HELPER
-========================================================= */
-
-function getToday() {
-
-    const date =
-        new Date();
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-/* =========================================================
-   ID GENERATOR
-========================================================= */
-
-function createId() {
-
-    return (
-        "saving_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 8)
+    const number = Number(
+        String(value)
+            .replace(/,/g, "")
+            .trim()
     );
 
+    return Number.isFinite(number)
+        ? number
+        : 0;
 }
 
+function nowISO() {
+    return new Date().toISOString();
+}
 
-/* =========================================================
-   NORMALIZE SAVING RECORD
-========================================================= */
+function normalizeSaving(item = {}) {
+    const id =
+        item.id !== undefined &&
+        item.id !== null &&
+        String(item.id).trim() !== ""
+            ? String(item.id)
+            : createId();
 
-function normalizeSaving(
-    record
-) {
-
-    if (
-        !record ||
-        typeof record !== "object"
-    ) {
-
-        return null;
-
-    }
-
-
-    const npr =
-        toNumber(
-            record.npr
-        );
-
+    const npr = toNumber(
+        item.npr ??
+        item.amount ??
+        item.total
+    );
 
     const inr =
-        toNumber(
-            record.inr
-        );
+        item.inr !== undefined &&
+        item.inr !== null &&
+        item.inr !== ""
+            ? toNumber(item.inr)
+            : npr / INR_RATE;
 
-
-    let total =
-        toNumber(
-            record.total
-        );
-
-
-    /*
-       Calculate total when it is missing.
-    */
-
-    if (
-        total === 0 &&
-        (
-            npr !== 0 ||
-            inr !== 0
-        )
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    /*
-       Old records may use amount.
-    */
-
-    if (
-        total === 0 &&
-        record.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                record.amount
-            );
-
-    }
-
-
-    const now =
-        Date.now();
-
+    const total =
+        item.total !== undefined &&
+        item.total !== null &&
+        item.total !== ""
+            ? toNumber(item.total)
+            : npr;
 
     return {
+        id,
 
-        id:
-            record.id ||
-            createId(),
+        title: String(
+            item.title ??
+            item.name ??
+            ""
+        ).trim(),
 
-
-        title:
-            String(
-                record.title ??
-                record.name ??
-                ""
-            ).trim(),
-
-
-        category:
-            String(
-                record.category ??
-                ""
-            ).trim(),
-
+        category: String(
+            item.category ?? ""
+        ).trim(),
 
         date:
-            record.date ||
-            getToday(),
-
+            item.date ||
+            new Date().toISOString().slice(0, 10),
 
         npr,
-
         inr,
-
         total,
+        amount: total,
 
-        amount:
-            total,
-
-
-        note:
-            String(
-                record.note ??
-                ""
-            ).trim(),
-
+        note: String(
+            item.note ?? ""
+        ).trim(),
 
         createdAt:
-            record.createdAt ||
-            now,
-
+            item.createdAt ||
+            nowISO(),
 
         updatedAt:
-            now
-
+            item.updatedAt ||
+            nowISO()
     };
-
 }
 
-
-/* =========================================================
-   GET ALL SAVINGS
-========================================================= */
-
-export function getSavings() {
-
-    const data =
-        getDataWithLegacy(
-            STORAGE_KEY,
-            LEGACY_KEYS,
-            []
-        );
-
-
-    if (
-        !Array.isArray(data)
-    ) {
-
-        return [];
-
-    }
-
-
-    return data
-        .map(
-            normalizeSaving
-        )
-        .filter(
-            Boolean
-        );
-
-}
-
-
-/* =========================================================
-   SAVE ALL SAVINGS
-========================================================= */
-
-export function saveSavings(
-    savings
-) {
-
-    if (
-        !Array.isArray(savings)
-    ) {
-
-        return false;
-
-    }
-
-
-    const normalized =
-        savings
-            .map(
-                normalizeSaving
-            )
-            .filter(
-                Boolean
-            );
-
-
-    const saved =
-        saveData(
-            STORAGE_KEY,
-            normalized
-        );
-
-
-    if (
-        saved
-    ) {
-
-        scheduleSync(
-            STORAGE_KEY,
-            normalized
-        );
-
-    }
-
-
-    return saved;
-
-}
-
-
-/* =========================================================
-   ADD SAVING
-========================================================= */
-
-export function addSaving(
-    savingData = {}
-) {
-
-    const savings =
-        getSavings();
-
-
-    const now =
-        Date.now();
-
-
-    const npr =
-        toNumber(
-            savingData.npr
-        );
-
-
-    const inr =
-        toNumber(
-            savingData.inr
-        );
-
-
-    let total =
-        toNumber(
-            savingData.total
-        );
-
-
-    if (
-        total === 0
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        total === 0 &&
-        savingData.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                savingData.amount
-            );
-
-    }
-
-
-    const saving = {
-
-        id:
-            savingData.id ||
-            createId(),
-
-
-        title:
-            String(
-                savingData.title ??
-                savingData.name ??
-                ""
-            ).trim(),
-
-
-        category:
-            String(
-                savingData.category ??
-                ""
-            ).trim(),
-
-
-        date:
-            savingData.date ||
-            getToday(),
-
-
-        npr,
-
-        inr,
-
-        total,
-
-        amount:
-            total,
-
-
-        note:
-            String(
-                savingData.note ??
-                ""
-            ).trim(),
-
-
-        createdAt:
-            savingData.createdAt ||
-            now,
-
-
-        updatedAt:
-            now
-
-    };
-
-
-    savings.push(
-        saving
+function getSavings() {
+    const result = getDataWithLegacy(
+        STORAGE_KEY,
+        [],
+        LEGACY_KEYS
     );
-
-
-    saveSavings(
-        savings
-    );
-
-
-    return saving;
-
-}
-
-
-/* =========================================================
-   UPDATE SAVING
-========================================================= */
-
-export function updateSaving(
-    id,
-    changes = {}
-) {
-
-    const savings =
-        getSavings();
-
-
-    const index =
-        savings.findIndex(
-            (item) =>
-                item.id === id
-        );
-
-
-    if (
-        index === -1
-    ) {
-
-        return null;
-
-    }
-
-
-    const oldSaving =
-        savings[index];
-
-
-    const updated = {
-
-        ...oldSaving,
-
-        ...changes,
-
-        id:
-            oldSaving.id,
-
-
-        updatedAt:
-            Date.now()
-
-    };
-
-
-    const npr =
-        toNumber(
-            updated.npr
-        );
-
-
-    const inr =
-        toNumber(
-            updated.inr
-        );
-
-
-    let total =
-        toNumber(
-            updated.total
-        );
-
-
-    /*
-       Recalculate when currency
-       values are changed.
-    */
-
-    if (
-        changes.npr !== undefined ||
-        changes.inr !== undefined
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        changes.amount !== undefined &&
-        changes.npr === undefined &&
-        changes.inr === undefined &&
-        changes.total === undefined
-    ) {
-
-        total =
-            toNumber(
-                changes.amount
-            );
-
-    }
-
-
-    updated.npr =
-        npr;
-
-
-    updated.inr =
-        inr;
-
-
-    updated.total =
-        total;
-
-
-    updated.amount =
-        total;
-
-
-    updated.title =
-        String(
-            updated.title ??
-            ""
-        ).trim();
-
-
-    updated.category =
-        String(
-            updated.category ??
-            ""
-        ).trim();
-
-
-    updated.note =
-        String(
-            updated.note ??
-            ""
-        ).trim();
-
-
-    savings[index] =
-        updated;
-
-
-    saveSavings(
-        savings
-    );
-
-
-    return updated;
-
-}
-
-
-/* =========================================================
-   DELETE SAVING
-========================================================= */
-
-export function deleteSaving(
-    id
-) {
-
-    const savings =
-        getSavings();
-
-
-    const filtered =
-        savings.filter(
-            (item) =>
-                item.id !== id
-        );
-
-
-    if (
-        filtered.length ===
-        savings.length
-    ) {
-
-        return false;
-
-    }
-
-
-    saveSavings(
-        filtered
-    );
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   GET SAVING BY ID
-========================================================= */
-
-export function getSavingById(
-    id
-) {
-
-    const savings =
-        getSavings();
-
 
     return (
-        savings.find(
-            (item) =>
-                item.id === id
-        ) ||
-        null
-    );
-
+        Array.isArray(result)
+            ? result
+            : []
+    ).map(normalizeSaving);
 }
 
+function saveSavings(savings) {
+    const normalized =
+        Array.isArray(savings)
+            ? savings.map(normalizeSaving)
+            : [];
 
-/* =========================================================
-   GET TOTAL SAVING
-========================================================= */
+    saveData(
+        STORAGE_KEY,
+        normalized
+    );
 
-export function getTotalSaving() {
+    scheduleSync(
+        STORAGE_KEY,
+        normalized
+    );
 
-    const savings =
-        getSavings();
+    return normalized;
+}
 
+function addSaving(data = {}) {
+    const savings = getSavings();
 
+    const saving = normalizeSaving({
+        ...data,
+        id: data.id || createId(),
+        createdAt:
+            data.createdAt || nowISO(),
+        updatedAt: nowISO()
+    });
+
+    savings.push(saving);
+
+    saveSavings(savings);
+
+    return saving;
+}
+
+function updateSaving(id, data = {}) {
+    const savings = getSavings();
+
+    const index = savings.findIndex(
+        item =>
+            String(item.id) ===
+            String(id)
+    );
+
+    if (index === -1) {
+        return null;
+    }
+
+    const updated = normalizeSaving({
+        ...savings[index],
+        ...data,
+
+        id: savings[index].id,
+
+        createdAt:
+            savings[index].createdAt,
+
+        updatedAt: nowISO()
+    });
+
+    savings[index] = updated;
+
+    saveSavings(savings);
+
+    return updated;
+}
+
+async function deleteSaving(id) {
+    const savings = getSavings();
+
+    const index = savings.findIndex(
+        item =>
+            String(item.id) ===
+            String(id)
+    );
+
+    if (index === -1) {
+        return false;
+    }
+
+    const removed = savings[index];
+
+    savings.splice(index, 1);
+
+    saveData(
+        STORAGE_KEY,
+        savings
+    );
+
+    await deleteCloudRecord(
+        STORAGE_KEY,
+        removed.id
+    );
+
+    scheduleSync(
+        STORAGE_KEY,
+        savings
+    );
+
+    return true;
+}
+
+function getSavingById(id) {
+    return (
+        getSavings().find(
+            item =>
+                String(item.id) ===
+                String(id)
+        ) || null
+    );
+}
+
+function getTotalSaving(
+    savings = getSavings()
+) {
     return savings.reduce(
-        (
-            total,
-            saving
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    saving.total ??
-                    saving.amount
-                )
-            );
-
-        },
+        (sum, item) =>
+            sum +
+            toNumber(
+                item.total ??
+                item.amount ??
+                item.npr
+            ),
         0
     );
-
 }
 
-
-/* =========================================================
-   GET TOTAL NPR
-========================================================= */
-
-export function getTotalSavingNPR() {
-
-    const savings =
-        getSavings();
-
-
+function getTotalSavingNPR(
+    savings = getSavings()
+) {
     return savings.reduce(
-        (
-            total,
-            saving
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    saving.npr
-                )
-            );
-
-        },
+        (sum, item) =>
+            sum + toNumber(item.npr),
         0
     );
-
 }
 
-
-/* =========================================================
-   GET TOTAL INR
-========================================================= */
-
-export function getTotalSavingINR() {
-
-    const savings =
-        getSavings();
-
-
+function getTotalSavingINR(
+    savings = getSavings()
+) {
     return savings.reduce(
-        (
-            total,
-            saving
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    saving.inr
-                )
-            );
-
-        },
+        (sum, item) =>
+            sum + toNumber(item.inr),
         0
     );
-
 }
 
-
-/* =========================================================
-   GET SAVINGS BY DATE
-========================================================= */
-
-export function getSavingsByDate(
-    date
+function filterSavings(
+    savings = getSavings(),
+    filters = {}
 ) {
+    const {
+        startDate,
+        endDate,
+        category,
+        search
+    } = filters;
 
-    return getSavings().filter(
-        (saving) =>
-            saving.date === date
-    );
+    return savings.filter(item => {
+        if (
+            startDate &&
+            item.date < startDate
+        ) {
+            return false;
+        }
 
+        if (
+            endDate &&
+            item.date > endDate
+        ) {
+            return false;
+        }
+
+        if (
+            category &&
+            item.category !== category
+        ) {
+            return false;
+        }
+
+        if (search) {
+            const query =
+                String(search)
+                    .toLowerCase()
+                    .trim();
+
+            const text = [
+                item.title,
+                item.category,
+                item.note,
+                item.date
+            ]
+                .join(" ")
+                .toLowerCase();
+
+            if (!text.includes(query)) {
+                return false;
+            }
+        }
+
+        return true;
+    });
 }
 
-
-/* =========================================================
-   GET SAVINGS BY CATEGORY
-========================================================= */
-
-export function getSavingsByCategory(
-    category
-) {
-
-    const target =
-        String(
-            category || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    return getSavings().filter(
-        (saving) =>
-            String(
-                saving.category || ""
-            )
-            .trim()
-            .toLowerCase() ===
-            target
-    );
-
-}
-
-
-/* =========================================================
-   GET RECENT SAVINGS
-========================================================= */
-
-export function getRecentSavings(
-    limit = 10
-) {
-
-    const count =
-        Math.max(
-            0,
-            Number(limit) || 0
-        );
-
-
-    return getSavings()
+function getRecentSavings(limit = 10) {
+    return [...getSavings()]
         .sort(
-            (
-                a,
-                b
-            ) =>
-                (
-                    Number(
-                        b.createdAt
-                    ) || 0
+            (a, b) =>
+                new Date(
+                    b.date || b.createdAt
                 ) -
-                (
-                    Number(
-                        a.createdAt
-                    ) || 0
+                new Date(
+                    a.date || a.createdAt
                 )
         )
-        .slice(
-            0,
-            count
-        );
-
+        .slice(0, limit);
 }
 
-
-/* =========================================================
-   CLEAR ALL SAVINGS
-========================================================= */
-
-export function clearSavings() {
-
-    saveSavings(
+function clearSavings() {
+    saveData(
+        STORAGE_KEY,
         []
     );
 
+    scheduleSync(
+        STORAGE_KEY,
+        []
+    );
 
     return true;
-
 }
 
-
-/* =========================================================
-   EXPORT RATE
-========================================================= */
-
 export {
-    INR_RATE
+    STORAGE_KEY,
+    getSavings,
+    saveSavings,
+    addSaving,
+    updateSaving,
+    deleteSaving,
+    getSavingById,
+    getTotalSaving,
+    getTotalSavingNPR,
+    getTotalSavingINR,
+    filterSavings,
+    getRecentSavings,
+    clearSavings,
+    normalizeSaving,
+    toNumber
 };
 
-
-/* =========================================================
-   DEFAULT EXPORT
-========================================================= */
-
 export default {
-
+    STORAGE_KEY,
     getSavings,
-
     saveSavings,
-
     addSaving,
-
     updateSaving,
-
     deleteSaving,
-
     getSavingById,
-
     getTotalSaving,
-
     getTotalSavingNPR,
-
     getTotalSavingINR,
-
-    getSavingsByDate,
-
-    getSavingsByCategory,
-
+    filterSavings,
     getRecentSavings,
-
     clearSavings,
-
-    INR_RATE
-
+    normalizeSaving,
+    toNumber
 };
