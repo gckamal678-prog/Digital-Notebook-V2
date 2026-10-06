@@ -14,21 +14,17 @@ const STORAGE_KEY = "transactions";
 const VALID_TYPES = [
     "expense",
     "receivable",
-    "payable"
+    "payable",
+    "given",
+    "taken",
+    "repayment"
 ];
 
-
-/*
-|--------------------------------------------------------------------------
-| GET TRANSACTIONS
-|--------------------------------------------------------------------------
-*/
 
 export function getTransactions() {
 
     return getDataWithLegacy(
         STORAGE_KEY,
-
         [
             "transactions",
             "transaction",
@@ -38,17 +34,11 @@ export function getTransactions() {
             "expenses",
             "expense"
         ],
-
         []
     );
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| SAVE TRANSACTIONS
-|--------------------------------------------------------------------------
-*/
 
 export function saveTransactions(
     transactions
@@ -59,7 +49,6 @@ export function saveTransactions(
         transactions
     );
 
-
     scheduleSync(
         STORAGE_KEY,
         convertArrayToObject(
@@ -67,16 +56,10 @@ export function saveTransactions(
         )
     );
 
-
     return transactions;
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| ADD TRANSACTION
-|--------------------------------------------------------------------------
-*/
 
 export function addTransaction(
     transaction
@@ -118,6 +101,16 @@ export function addTransaction(
                 transaction.amount
             ) || 0,
 
+        npr:
+            Number(
+                transaction.npr
+            ) || 0,
+
+        inr:
+            Number(
+                transaction.inr
+            ) || 0,
+
         partyId:
             transaction.partyId
             ||
@@ -147,6 +140,21 @@ export function addTransaction(
                 .toISOString()
                 .split("T")[0],
 
+        dueDate:
+            transaction.dueDate
+            ||
+            "",
+
+        status:
+            transaction.status
+            ||
+            "pending",
+
+        relatedId:
+            transaction.relatedId
+            ||
+            null,
+
         createdAt:
             transaction.createdAt
             ||
@@ -168,14 +176,9 @@ export function addTransaction(
 
 
     return newTransaction;
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| UPDATE TRANSACTION
-|--------------------------------------------------------------------------
-*/
 
 export function updateTransaction(
     id,
@@ -198,6 +201,7 @@ export function updateTransaction(
     ) {
 
         return null;
+
     }
 
 
@@ -215,6 +219,7 @@ export function updateTransaction(
         );
 
         return null;
+
     }
 
 
@@ -229,14 +234,35 @@ export function updateTransaction(
         ...changes,
 
         amount:
-            Number(
-                changes.amount
-                ??
-                current.amount
-            ) || 0,
+            changes.amount !== undefined
+                ? Number(
+                    changes.amount
+                ) || 0
+                : Number(
+                    current.amount
+                ) || 0,
+
+        npr:
+            changes.npr !== undefined
+                ? Number(
+                    changes.npr
+                ) || 0
+                : Number(
+                    current.npr
+                ) || 0,
+
+        inr:
+            changes.inr !== undefined
+                ? Number(
+                    changes.inr
+                ) || 0
+                : Number(
+                    current.inr
+                ) || 0,
 
         updatedAt:
             Date.now()
+
     };
 
 
@@ -246,14 +272,9 @@ export function updateTransaction(
 
 
     return transactions[index];
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| DELETE TRANSACTION
-|--------------------------------------------------------------------------
-*/
 
 export function deleteTransaction(
     id
@@ -276,14 +297,9 @@ export function deleteTransaction(
 
 
     return true;
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| GET ONE TRANSACTION
-|--------------------------------------------------------------------------
-*/
 
 export function getTransactionById(
     id
@@ -301,56 +317,63 @@ export function getTransactionById(
         ||
         null
     );
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| TOTAL EXPENSE
-|--------------------------------------------------------------------------
-*/
 
 export function getTotalExpense() {
 
     return getTypeTotal(
         "expense"
     );
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| TOTAL RECEIVABLE
-|--------------------------------------------------------------------------
-*/
 
 export function getTotalReceivable() {
 
     return getTypeTotal(
         "receivable"
     );
+
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| TOTAL PAYABLE
-|--------------------------------------------------------------------------
-*/
 
 export function getTotalPayable() {
 
     return getTypeTotal(
         "payable"
     );
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| TOTAL BY TYPE
-|--------------------------------------------------------------------------
-*/
+export function getTotalGiven() {
+
+    return getTypeTotal(
+        "given"
+    );
+
+}
+
+
+export function getTotalTaken() {
+
+    return getTypeTotal(
+        "taken"
+    );
+
+}
+
+
+export function getTotalRepayment() {
+
+    return getTypeTotal(
+        "repayment"
+    );
+
+}
+
 
 function getTypeTotal(
     type
@@ -371,6 +394,7 @@ function getTypeTotal(
             ) {
 
                 return total;
+
             }
 
 
@@ -387,17 +411,114 @@ function getTypeTotal(
             );
 
         },
-
         0
     );
+
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| ARRAY → FIREBASE OBJECT
-|--------------------------------------------------------------------------
-*/
+export function getPersonTransactions(
+    personName
+) {
+
+    const transactions =
+        getTransactions();
+
+
+    const target =
+        normalizeName(
+            personName
+        );
+
+
+    return transactions.filter(
+        item =>
+            normalizeName(
+                item.partyName
+            ) === target
+    );
+
+}
+
+
+export function getPersonBalance(
+    personName
+) {
+
+    const records =
+        getPersonTransactions(
+            personName
+        );
+
+
+    let balance = 0;
+
+
+    for (
+        const item
+        of records
+    ) {
+
+        const amount =
+            Number(
+                item.amount
+            ) || 0;
+
+
+        if (
+            item.type === "receivable"
+            ||
+            item.type === "given"
+        ) {
+
+            balance += amount;
+
+        }
+
+
+        if (
+            item.type === "payable"
+            ||
+            item.type === "taken"
+        ) {
+
+            balance -= amount;
+
+        }
+
+
+        if (
+            item.type === "repayment"
+        ) {
+
+            balance -= amount;
+
+        }
+
+    }
+
+
+    return balance;
+
+}
+
+
+function normalizeName(
+    name
+) {
+
+    return String(
+        name || ""
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .toLowerCase();
+
+}
+
 
 function convertArrayToObject(
     items
@@ -416,14 +537,17 @@ function convertArrayToObject(
         ) {
 
             continue;
+
         }
 
 
         result[
             item.id
         ] = item;
+
     }
 
 
     return result;
+
 }
