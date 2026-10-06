@@ -3,136 +3,133 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="theme-color"
-    content="#111827"
->
+    <meta
+        name="theme-color"
+        content="#111827"
+    >
 
-<title>Transactions - Digital Notebook</title>
+    <title>Transaction - Digital Notebook</title>
 
+    <link
+        rel="manifest"
+        href="./manifest.json"
+    >
 
-<link
-    rel="manifest"
-    href="./manifest.json"
->
+    <link
+        rel="stylesheet"
+        href="./css/app.css"
+    >
 
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<link
-    rel="stylesheet"
-    href="./css/app.css"
->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
 
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
-</script>
+    <style>
 
+        body {
+            font-family: Poppins, sans-serif;
+        }
 
-<link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
+        .type-card {
+            transition: 0.15s ease;
+        }
 
+        .type-card:active {
+            transform: scale(0.97);
+        }
 
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
+        .selected-type {
+            border-color: #22c55e !important;
+            background: rgba(34, 197, 94, 0.12) !important;
+        }
 
+        .person-card {
+            transition: 0.15s ease;
+        }
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
->
+        .person-card:active {
+            transform: scale(0.99);
+        }
 
+        .pdf-page {
+            width: 794px;
+            min-height: 1123px;
+            padding: 40px;
+            background: #ffffff;
+            color: #111827;
+            font-family: Arial, sans-serif;
+        }
 
-<style>
+        .amount-box {
+            transition: 0.2s ease;
+        }
 
-body {
-    font-family: Poppins, sans-serif;
-}
-
-.type-card {
-    transition: .2s;
-}
-
-.type-card:active {
-    transform: scale(.97);
-}
-
-.selected-type {
-    outline: 2px solid #22c55e;
-    background: rgba(34,197,94,.12);
-}
-
-.transaction-card {
-    transition: .2s;
-}
-
-.transaction-card:active {
-    transform: scale(.99);
-}
-
-.pdf-page {
-    width: 794px;
-    min-height: 1123px;
-    padding: 40px;
-    background: white;
-    color: #111827;
-}
-
-</style>
+    </style>
 
 </head>
 
 
-<body
-    class="bg-gray-950 text-white min-h-screen"
->
+<body class="bg-gray-950 text-white min-h-screen">
 
+
+<!-- HEADER -->
 
 <header
     class="sticky top-0 z-30 bg-gray-900/95 backdrop-blur border-b border-gray-800"
 >
 
-<div
-    class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3"
->
+    <div
+        class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3"
+    >
 
-<a
-    href="./index.html"
-    class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center"
->
-    ←
-</a>
+        <a
+            href="./index.html"
+            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl"
+        >
+            ←
+        </a>
 
+        <div>
 
-<div>
+            <h1 class="font-bold text-lg">
+                लेनदेन
+            </h1>
 
-<h1 class="font-bold text-lg">
-    लेनदेन
-</h1>
+            <p class="text-xs text-gray-400">
+                व्यक्तिअनुसार पूरा हिसाब
+            </p>
 
-<p class="text-xs text-gray-400">
-    व्यक्तिअनुसार पूरा हिसाब
-</p>
+        </div>
 
-</div>
-
-</div>
+    </div>
 
 </header>
+
 
 
 <main
@@ -146,40 +143,40 @@ body {
     class="grid grid-cols-2 gap-3 mb-5"
 >
 
-<div
-    class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
->
+    <div
+        class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+    >
 
-<p class="text-xs text-gray-400">
-    कुल लेनदेन
-</p>
+        <p class="text-xs text-gray-400">
+            कुल लेनदेन
+        </p>
 
-<p
-    id="totalRecords"
-    class="text-2xl font-bold mt-1"
->
-0
-</p>
+        <p
+            id="totalRecords"
+            class="text-2xl font-bold mt-1"
+        >
+            0
+        </p>
 
-</div>
+    </div>
 
 
-<div
-    class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
->
+    <div
+        class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+    >
 
-<p class="text-xs text-gray-400">
-    व्यक्तिहरू
-</p>
+        <p class="text-xs text-gray-400">
+            व्यक्तिहरू
+        </p>
 
-<p
-    id="totalPeople"
-    class="text-2xl font-bold mt-1"
->
-0
-</p>
+        <p
+            id="totalPeople"
+            class="text-2xl font-bold mt-1"
+        >
+            0
+        </p>
 
-</div>
+    </div>
 
 </section>
 
@@ -191,278 +188,304 @@ body {
     class="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-6"
 >
 
-<h2 class="font-semibold mb-4">
-    नयाँ लेनदेन
-</h2>
+    <h2 class="font-semibold text-lg mb-4">
+        नयाँ लेनदेन
+    </h2>
 
 
-<input
-    type="hidden"
-    id="editId"
->
+    <input
+        type="hidden"
+        id="editId"
+    >
 
 
-<!-- PERSON -->
+    <!-- PERSON -->
 
-<label class="text-sm text-gray-300">
-    व्यक्ति
-</label>
+    <label class="text-sm text-gray-300">
+        व्यक्तिको नाम
+    </label>
 
-<input
-    id="personName"
-    type="text"
-    placeholder="जस्तै: Kamal"
-    class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
->
+    <input
+        id="personName"
+        type="text"
+        autocomplete="off"
+        placeholder="जस्तै: Kamal"
+        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+    >
 
 
 
-<!-- TYPE -->
+    <!-- TYPE -->
 
-<label class="text-sm text-gray-300">
-    प्रकार
-</label>
+    <label class="text-sm text-gray-300">
+        लेनदेनको प्रकार
+    </label>
 
 
-<div
-    class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 mb-4"
->
+    <div
+        class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 mb-5"
+    >
 
+        <button
+            type="button"
+            class="type-card selected-type bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="expense"
+        >
 
-<button
-    type="button"
-    class="type-card selected-type bg-gray-800 rounded-xl p-3 text-left"
-    data-type="expense"
->
+            <div class="font-semibold">
+                खर्च
+            </div>
 
-<div class="font-semibold">
-    खर्च
-</div>
+            <div class="text-xs text-gray-400">
+                Expense
+            </div>
 
-<div class="text-xs text-gray-400">
-    Expense
-</div>
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="receivable"
+        >
 
-<button
-    type="button"
-    class="type-card bg-gray-800 rounded-xl p-3 text-left"
-    data-type="receivable"
->
+            <div class="font-semibold">
+                लिनुपर्ने
+            </div>
 
-<div class="font-semibold">
-    लिनुपर्ने
-</div>
+            <div class="text-xs text-gray-400">
+                Receivable
+            </div>
 
-<div class="text-xs text-gray-400">
-    Receivable
-</div>
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="payable"
+        >
 
-<button
-    type="button"
-    class="type-card bg-gray-800 rounded-xl p-3 text-left"
-    data-type="payable"
->
+            <div class="font-semibold">
+                दिनुपर्ने
+            </div>
 
-<div class="font-semibold">
-    दिनुपर्ने
-</div>
+            <div class="text-xs text-gray-400">
+                Payable
+            </div>
 
-<div class="text-xs text-gray-400">
-    Payable
-</div>
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="given"
+        >
 
-<button
-    type="button"
-    class="type-card bg-gray-800 rounded-xl p-3 text-left"
-    data-type="given"
->
+            <div class="font-semibold">
+                दिएको पैसा
+            </div>
 
-<div class="font-semibold">
-    दिएको पैसा
-</div>
+            <div class="text-xs text-gray-400">
+                केही समयका लागि
+            </div>
 
-<div class="text-xs text-gray-400">
-    केही समयका लागि
-</div>
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="taken"
+        >
 
-<button
-    type="button"
-    class="type-card bg-gray-800 rounded-xl p-3 text-left"
-    data-type="taken"
->
+            <div class="font-semibold">
+                लिएको पैसा
+            </div>
 
-<div class="font-semibold">
-    लिएको पैसा
-</div>
+            <div class="text-xs text-gray-400">
+                केही समयका लागि
+            </div>
 
-<div class="text-xs text-gray-400">
-    केही समयका लागि
-</div>
+        </button>
 
-</button>
 
+        <button
+            type="button"
+            class="type-card bg-gray-800 border border-gray-700 rounded-xl p-3 text-left"
+            data-type="repayment"
+        >
 
-<button
-    type="button"
-    class="type-card bg-gray-800 rounded-xl p-3 text-left"
-    data-type="repayment"
->
+            <div class="font-semibold">
+                फिर्ता
+            </div>
 
-<div class="font-semibold">
-    फिर्ता
-</div>
+            <div class="text-xs text-gray-400">
+                पैसा फिर्ता
+            </div>
 
-<div class="text-xs text-gray-400">
-    पैसा फिर्ता
-</div>
+        </button>
 
-</button>
+    </div>
 
-</div>
 
 
+    <!-- NPR -->
 
-<!-- NPR -->
+    <label class="text-sm text-gray-300">
+        नेपाली रुपैयाँ (NPR)
+    </label>
 
-<label class="text-sm text-gray-300">
-    नेपाली रुपैयाँ (NPR)
-</label>
+    <input
+        id="npr"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="0"
+        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+    >
 
-<input
-    id="npr"
-    type="number"
-    inputmode="decimal"
-    placeholder="0"
-    class="w-full mt-2 mb-3 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-/>
 
 
+    <!-- INR -->
 
-<!-- INR -->
+    <label class="text-sm text-gray-300">
+        भारतीय रुपैयाँ (INR)
+    </label>
 
-<label class="text-sm text-gray-300">
-    भारतीय रुपैयाँ (INR)
-</label>
+    <input
+        id="inr"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="0"
+        class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+    >
 
-<input
-    id="inr"
-    type="number"
-    inputmode="decimal"
-    placeholder="0"
-    class="w-full mt-2 mb-3 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-/>
 
 
+    <!-- LIVE TOTAL -->
 
-<!-- TOTAL -->
+    <div
+        class="amount-box rounded-2xl bg-green-500/10 border border-green-500/30 p-4 mb-5"
+    >
 
-<div
-    class="rounded-2xl bg-green-500/10 border border-green-500/30 p-4 mb-4"
->
+        <div class="flex items-center justify-between">
 
-<p class="text-sm text-gray-400">
-    जम्मा रकम
-</p>
+            <div>
 
-<p
-    id="liveTotal"
-    class="text-3xl font-bold text-green-400"
->
-NPR 0.00
-</p>
+                <p class="text-xs text-gray-400">
+                    जम्मा रकम
+                </p>
 
-<p
-    id="conversionText"
-    class="text-xs text-gray-400 mt-1"
->
-1 INR = 1.6 NPR
-</p>
+                <p
+                    id="liveTotal"
+                    class="text-3xl font-bold text-green-400 mt-1"
+                >
+                    NPR 0.00
+                </p>
 
-</div>
+            </div>
 
+            <div class="text-right">
 
+                <p class="text-xs text-gray-500">
+                    Rate
+                </p>
 
-<!-- DATE -->
+                <p class="text-sm font-semibold">
+                    1 INR = 1.6 NPR
+                </p>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            </div>
 
-<div>
+        </div>
 
-<label class="text-sm text-gray-300">
-    मिति
-</label>
 
-<input
-    id="date"
-    type="date"
-    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-/>
+        <p
+            id="conversionText"
+            class="text-xs text-gray-400 mt-3"
+        >
+            NPR 0 + INR 0 × 1.6 = NPR 0
+        </p>
 
-</div>
+    </div>
 
 
-<div>
 
-<label class="text-sm text-gray-300">
-    फिर्ता / Due Date
-</label>
+    <!-- DATE -->
 
-<input
-    id="dueDate"
-    type="date"
-    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-/>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-</div>
+        <div>
 
-</div>
+            <label class="text-sm text-gray-300">
+                लेनदेन मिति
+            </label>
 
+            <input
+                id="date"
+                type="date"
+                class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+            >
 
+        </div>
 
-<!-- NOTE -->
 
-<label class="text-sm text-gray-300 block mt-4">
-    नोट
-</label>
+        <div>
 
-<textarea
-    id="note"
-    rows="3"
-    placeholder="आवश्यक भएमा विवरण लेख्नुहोस्"
-    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
-></textarea>
+            <label class="text-sm text-gray-300">
+                फिर्ता / Due Date
+            </label>
 
+            <input
+                id="dueDate"
+                type="date"
+                class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+            >
 
+        </div>
 
-<!-- BUTTON -->
+    </div>
 
-<button
-    id="saveBtn"
-    class="w-full mt-4 py-3 rounded-xl bg-green-600 hover:bg-green-500 font-semibold"
->
-लेनदेन सुरक्षित गर्नुहोस्
-</button>
 
 
-<button
-    id="cancelEditBtn"
-    class="hidden w-full mt-2 py-3 rounded-xl bg-gray-700 font-semibold"
->
-Edit बन्द गर्नुहोस्
-</button>
+    <!-- NOTE -->
 
+    <label class="text-sm text-gray-300 block mt-4">
+        नोट
+    </label>
+
+    <textarea
+        id="note"
+        rows="3"
+        placeholder="आवश्यक भएमा विवरण लेख्नुहोस्..."
+        class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+    ></textarea>
+
+
+
+    <!-- SAVE -->
+
+    <button
+        id="saveBtn"
+        type="button"
+        class="w-full mt-4 py-3 rounded-xl bg-green-600 hover:bg-green-500 font-semibold"
+    >
+        लेनदेन सुरक्षित गर्नुहोस्
+    </button>
+
+
+    <button
+        id="cancelEditBtn"
+        type="button"
+        class="hidden w-full mt-2 py-3 rounded-xl bg-gray-700 font-semibold"
+    >
+        Edit बन्द गर्नुहोस्
+    </button>
 
 </section>
 
@@ -472,12 +495,13 @@ Edit बन्द गर्नुहोस्
 
 <section class="mb-4">
 
-<input
-    id="searchInput"
-    type="search"
-    placeholder="व्यक्तिको नाम खोज्नुहोस्..."
-    class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800"
-/>
+    <input
+        id="searchInput"
+        type="search"
+        autocomplete="off"
+        placeholder="व्यक्तिको नाम खोज्नुहोस्..."
+        class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800"
+    >
 
 </section>
 
@@ -487,50 +511,49 @@ Edit बन्द गर्नुहोस्
 
 <section>
 
-<div class="flex items-center justify-between mb-3">
+    <div class="flex items-center justify-between mb-3">
 
-<h2 class="font-semibold">
-    व्यक्तिअनुसार हिसाब
-</h2>
+        <h2 class="font-semibold">
+            व्यक्तिअनुसार हिसाब
+        </h2>
 
-<span
-    id="resultCount"
-    class="text-xs text-gray-400"
->
-</span>
+        <span
+            id="resultCount"
+            class="text-xs text-gray-400"
+        >
+        </span>
 
-</div>
-
-
-<div
-    id="peopleList"
-    class="space-y-3"
-></div>
+    </div>
 
 
-<div
-    id="emptyState"
-    class="hidden text-center py-12 text-gray-500"
->
+    <div
+        id="peopleList"
+        class="space-y-3"
+    ></div>
 
-<p class="text-lg">
-    अहिलेसम्म कुनै लेनदेन छैन।
-</p>
 
-<p class="text-sm mt-1">
-    माथिबाट पहिलो लेनदेन थप्नुहोस्।
-</p>
+    <div
+        id="emptyState"
+        class="hidden text-center py-12 text-gray-500"
+    >
 
-</div>
+        <p class="text-lg">
+            अहिलेसम्म कुनै लेनदेन छैन।
+        </p>
+
+        <p class="text-sm mt-1">
+            माथिबाट पहिलो लेनदेन थप्नुहोस्।
+        </p>
+
+    </div>
 
 </section>
-
 
 </main>
 
 
 
-<!-- PDF AREA -->
+<!-- PDF -->
 
 <div
     id="pdfArea"
@@ -541,7 +564,7 @@ Edit बन्द गर्नुहोस्
 
 <script type="module">
 
-import "../js/app.js";
+import "./js/app.js";
 
 import {
     getTransactions,
@@ -557,185 +580,125 @@ import {
 
 const INR_RATE = 1.6;
 
-
 let selectedType = "expense";
 
-
-let transactions =
-    getTransactions();
+let transactions = getTransactions();
 
 
 
-const personName =
-    document.getElementById(
-        "personName"
-    );
-
-
-const npr =
-    document.getElementById(
-        "npr"
-    );
-
-
-const inr =
-    document.getElementById(
-        "inr"
-    );
-
-
-const date =
-    document.getElementById(
-        "date"
-    );
-
-
-const dueDate =
-    document.getElementById(
-        "dueDate"
-    );
-
-
-const note =
-    document.getElementById(
-        "note"
-    );
-
-
-const liveTotal =
-    document.getElementById(
-        "liveTotal"
-    );
-
-
-const saveBtn =
-    document.getElementById(
-        "saveBtn"
-    );
-
-
-const editId =
-    document.getElementById(
-        "editId"
-    );
-
-
-const cancelEditBtn =
-    document.getElementById(
-        "cancelEditBtn"
-    );
-
-
-const peopleList =
-    document.getElementById(
-        "peopleList"
-    );
-
-
-const searchInput =
-    document.getElementById(
-        "searchInput"
-    );
+const $ = (id) =>
+    document.getElementById(id);
 
 
 
-date.value =
-    new Date()
+const personName = $("personName");
+const npr = $("npr");
+const inr = $("inr");
+const date = $("date");
+const dueDate = $("dueDate");
+const note = $("note");
+const editId = $("editId");
+const saveBtn = $("saveBtn");
+const cancelEditBtn = $("cancelEditBtn");
+const liveTotal = $("liveTotal");
+const conversionText = $("conversionText");
+const searchInput = $("searchInput");
+const peopleList = $("peopleList");
+
+
+
+/* TODAY */
+
+function today() {
+
+    return new Date()
         .toISOString()
         .split("T")[0];
+
+}
+
+
+date.value = today();
 
 
 
 /* TYPE */
 
 document
-    .querySelectorAll(
-        ".type-card"
-    )
-    .forEach(
-        button => {
+    .querySelectorAll(".type-card")
+    .forEach(button => {
 
-            button.addEventListener(
-                "click",
-                () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-                    document
-                        .querySelectorAll(
-                            ".type-card"
-                        )
-                        .forEach(
-                            item =>
-                                item.classList.remove(
-                                    "selected-type"
-                                )
+                document
+                    .querySelectorAll(".type-card")
+                    .forEach(item => {
+
+                        item.classList.remove(
+                            "selected-type"
                         );
 
-
-                    button.classList.add(
-                        "selected-type"
-                    );
+                    });
 
 
-                    selectedType =
-                        button.dataset.type;
-
-                }
-            );
-
-        }
-    );
+                button.classList.add(
+                    "selected-type"
+                );
 
 
+                selectedType =
+                    button.dataset.type;
 
-/* LIVE TOTAL */
+            }
+        );
 
-function updateTotal() {
+    });
+
+
+
+/* LIVE CONVERSION */
+
+function calculateTotal() {
 
     const nprValue =
-        Number(
-            npr.value
-        ) || 0;
-
+        Number(npr.value) || 0;
 
     const inrValue =
-        Number(
-            inr.value
-        ) || 0;
+        Number(inr.value) || 0;
 
 
-    const converted =
-        inrValue
-        *
-        INR_RATE;
+    const convertedINR =
+        inrValue * INR_RATE;
 
 
     const total =
-        nprValue
-        +
-        converted;
+        nprValue + convertedINR;
 
 
     liveTotal.textContent =
         `NPR ${formatMoney(total)}`;
 
 
-    document.getElementById(
-        "conversionText"
-    ).textContent =
-        `INR ${formatMoney(inrValue)} × 1.6 = NPR ${formatMoney(converted)}`;
+    conversionText.textContent =
+        `NPR ${formatMoney(nprValue)} + INR ${formatMoney(inrValue)} × 1.6 = NPR ${formatMoney(total)}`;
+
+
+    return total;
 
 }
 
 
 npr.addEventListener(
     "input",
-    updateTotal
+    calculateTotal
 );
 
 
 inr.addEventListener(
     "input",
-    updateTotal
+    calculateTotal
 );
 
 
@@ -744,251 +707,139 @@ inr.addEventListener(
 
 saveBtn.addEventListener(
     "click",
-    () => {
-
-        const name =
-            cleanName(
-                personName.value
-            );
+    saveForm
+);
 
 
-        const nprValue =
-            Number(
-                npr.value
-            ) || 0;
+function saveForm() {
+
+    const name =
+        cleanName(
+            personName.value
+        );
 
 
-        const inrValue =
-            Number(
-                inr.value
-            ) || 0;
+    const nprValue =
+        Number(npr.value) || 0;
 
 
-        const total =
-            nprValue
-            +
-            (
-                inrValue
-                *
-                INR_RATE
-            );
+    const inrValue =
+        Number(inr.value) || 0;
 
 
-        if (!name) {
-
-            alert(
-                "व्यक्तिको नाम लेख्नुहोस्।"
-            );
-
-            personName.focus();
-
-            return;
-
-        }
+    const total =
+        nprValue +
+        (
+            inrValue * INR_RATE
+        );
 
 
-        if (
-            total <= 0
-        ) {
+    if (!name) {
 
-            alert(
-                "रकम लेख्नुहोस्।"
-            );
+        alert(
+            "व्यक्तिको नाम लेख्नुहोस्।"
+        );
 
-            return;
+        personName.focus();
 
-        }
+        return;
 
-
-        const data = {
-
-            type:
-                selectedType,
-
-            partyName:
-                name,
-
-            npr:
-                nprValue,
-
-            inr:
-                inrValue,
-
-            amount:
-                total,
-
-            date:
-                date.value,
-
-            dueDate:
-                dueDate.value,
-
-            note:
-                note.value.trim(),
-
-            status:
-                "pending"
-
-        };
+    }
 
 
-        if (
-            editId.value
-        ) {
+    if (total <= 0) {
 
+        alert(
+            "NPR वा INR मा रकम लेख्नुहोस्।"
+        );
+
+        return;
+
+    }
+
+
+    const data = {
+
+        type:
+            selectedType,
+
+        partyName:
+            name,
+
+        npr:
+            nprValue,
+
+        inr:
+            inrValue,
+
+        amount:
+            total,
+
+        date:
+            date.value || today(),
+
+        dueDate:
+            dueDate.value || "",
+
+        note:
+            note.value.trim(),
+
+        status:
+            "pending"
+
+    };
+
+
+    let result;
+
+
+    if (editId.value) {
+
+        result =
             updateTransaction(
                 editId.value,
                 data
             );
 
-        } else {
+    } else {
 
+        result =
             addTransaction(
                 data
             );
 
-        }
+    }
 
 
-        transactions =
-            getTransactions();
+    if (!result) {
 
+        alert(
+            "लेनदेन Save हुन सकेन।"
+        );
 
-        resetForm();
-
-        render();
+        return;
 
     }
-);
+
+
+    transactions =
+        getTransactions();
+
+
+    resetForm();
+
+    render();
+
+
+    alert(
+        "लेनदेन सुरक्षित भयो।"
+    );
+
+}
 
 
 
-/* EDIT */
-
-window.editTransaction =
-    function(id) {
-
-        const item =
-            transactions.find(
-                x =>
-                    x.id === id
-            );
-
-
-        if (!item) {
-            return;
-        }
-
-
-        personName.value =
-            item.partyName || "";
-
-
-        npr.value =
-            item.npr || "";
-
-
-        inr.value =
-            item.inr || "";
-
-
-        date.value =
-            item.date || "";
-
-
-        dueDate.value =
-            item.dueDate || "";
-
-
-        note.value =
-            item.note || "";
-
-
-        editId.value =
-            item.id;
-
-
-        selectedType =
-            item.type;
-
-
-        document
-            .querySelectorAll(
-                ".type-card"
-            )
-            .forEach(
-                button => {
-
-                    button.classList.toggle(
-                        "selected-type",
-                        button.dataset.type ===
-                        item.type
-                    );
-
-                }
-            );
-
-
-        saveBtn.textContent =
-            "लेनदेन Update गर्नुहोस्";
-
-
-        cancelEditBtn.classList.remove(
-            "hidden"
-        );
-
-
-        updateTotal();
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    };
-
-
-
-/* DELETE */
-
-window.deleteTransaction =
-    function(id) {
-
-        if (
-            !confirm(
-                "यो लेनदेन हटाउने?"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        deleteTransaction(
-            id
-        );
-
-
-        transactions =
-            getTransactions();
-
-
-        render();
-
-    };
-
-
-
-/* CANCEL EDIT */
-
-cancelEditBtn.addEventListener(
-    "click",
-    resetForm
-);
-
-
+/* RESET */
 
 function resetForm() {
 
@@ -998,36 +849,27 @@ function resetForm() {
 
     inr.value = "";
 
-    note.value = "";
-
     dueDate.value = "";
 
-    date.value =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+    note.value = "";
+
+    date.value = today();
 
     editId.value = "";
 
-    selectedType =
-        "expense";
+    selectedType = "expense";
 
 
     document
-        .querySelectorAll(
-            ".type-card"
-        )
-        .forEach(
-            button => {
+        .querySelectorAll(".type-card")
+        .forEach(button => {
 
-                button.classList.toggle(
-                    "selected-type",
-                    button.dataset.type ===
-                    "expense"
-                );
+            button.classList.toggle(
+                "selected-type",
+                button.dataset.type === "expense"
+            );
 
-            }
-        );
+        });
 
 
     saveBtn.textContent =
@@ -1039,9 +881,15 @@ function resetForm() {
     );
 
 
-    updateTotal();
+    calculateTotal();
 
 }
+
+
+cancelEditBtn.addEventListener(
+    "click",
+    resetForm
+);
 
 
 
@@ -1054,9 +902,9 @@ searchInput.addEventListener(
 
 
 
-/* GROUP */
+/* GROUP PEOPLE */
 
-function groupPeople() {
+function getPeopleGroups() {
 
     const groups = {};
 
@@ -1085,7 +933,7 @@ function groupPeople() {
 
             groups[key] = {
 
-                name,
+                name: name,
 
                 records: []
 
@@ -1101,9 +949,7 @@ function groupPeople() {
     }
 
 
-    return Object.values(
-        groups
-    );
+    return Object.values(groups);
 
 }
 
@@ -1118,7 +964,7 @@ function render() {
 
 
     const groups =
-        groupPeople();
+        getPeopleGroups();
 
 
     const search =
@@ -1128,127 +974,101 @@ function render() {
 
 
     const filtered =
-        groups.filter(
-            group =>
-                group.name
-                    .toLowerCase()
-                    .includes(
-                        search
-                    )
+        groups.filter(group =>
+            group.name
+                .toLowerCase()
+                .includes(search)
         );
 
 
-    document.getElementById(
-        "totalRecords"
-    ).textContent =
+    $("totalRecords").textContent =
         transactions.length;
 
 
-    document.getElementById(
-        "totalPeople"
-    ).textContent =
+    $("totalPeople").textContent =
         groups.length;
 
 
-    document.getElementById(
-        "resultCount"
-    ).textContent =
+    $("resultCount").textContent =
         `${filtered.length} व्यक्ति`;
 
 
     peopleList.innerHTML = "";
 
 
-    document.getElementById(
-        "emptyState"
-    ).classList.toggle(
+    $("emptyState").classList.toggle(
         "hidden",
-        filtered.length !== 0
+        filtered.length > 0
     );
 
 
-    filtered.forEach(
-        group => {
+    filtered.forEach(group => {
 
-            peopleList.appendChild(
-                createPersonCard(
-                    group
-                )
-            );
+        peopleList.appendChild(
+            createPersonCard(group)
+        );
 
-        }
-    );
+    });
 
 }
 
 
 
-function createPersonCard(
-    group
-) {
+/* PERSON CARD */
+
+function createPersonCard(group) {
 
     const card =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     card.className =
-        "transaction-card bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden";
+        "person-card bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden";
 
 
-    const records =
-        group.records;
-
-
-    let given = 0;
-    let taken = 0;
     let expense = 0;
     let receivable = 0;
     let payable = 0;
+    let given = 0;
+    let taken = 0;
     let repayment = 0;
 
 
-    records.forEach(
-        item => {
+    group.records.forEach(item => {
 
-            const amount =
-                Number(
-                    item.amount
-                ) || 0;
+        const amount =
+            Number(item.amount) || 0;
 
 
-            if (
-                item.type === "given"
-            ) given += amount;
+        switch (item.type) {
 
+            case "expense":
+                expense += amount;
+                break;
 
-            if (
-                item.type === "taken"
-            ) taken += amount;
+            case "receivable":
+                receivable += amount;
+                break;
 
+            case "payable":
+                payable += amount;
+                break;
 
-            if (
-                item.type === "expense"
-            ) expense += amount;
+            case "given":
+                given += amount;
+                break;
 
+            case "taken":
+                taken += amount;
+                break;
 
-            if (
-                item.type === "receivable"
-            ) receivable += amount;
-
-
-            if (
-                item.type === "payable"
-            ) payable += amount;
-
-
-            if (
-                item.type === "repayment"
-            ) repayment += amount;
+            case "repayment":
+                repayment += amount;
+                break;
 
         }
-    );
+
+    });
 
 
     const balance =
@@ -1263,14 +1083,15 @@ function createPersonCard(
         repayment;
 
 
+    const id =
+        getPersonId(group.name);
+
+
     const header =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
-    header.className =
-        "p-4";
+    header.className = "p-4";
 
 
     header.innerHTML = `
@@ -1284,7 +1105,7 @@ function createPersonCard(
                 </h3>
 
                 <p class="text-xs text-gray-400">
-                    ${records.length} वटा लेनदेन
+                    ${group.records.length} वटा लेनदेन
                 </p>
 
             </div>
@@ -1293,7 +1114,7 @@ function createPersonCard(
             <div class="text-right">
 
                 <p class="text-xs text-gray-400">
-                    हिसाब
+                    बाँकी हिसाब
                 </p>
 
                 <p class="font-bold ${
@@ -1343,19 +1164,51 @@ function createPersonCard(
         </div>
 
 
+        <div class="grid grid-cols-2 gap-2 mt-2">
+
+            <div class="bg-gray-800 rounded-xl p-3">
+
+                <p class="text-xs text-gray-400">
+                    लिनुपर्ने
+                </p>
+
+                <p class="font-semibold">
+                    NPR ${formatMoney(receivable)}
+                </p>
+
+            </div>
+
+
+            <div class="bg-gray-800 rounded-xl p-3">
+
+                <p class="text-xs text-gray-400">
+                    दिनुपर्ने
+                </p>
+
+                <p class="font-semibold">
+                    NPR ${formatMoney(payable)}
+                </p>
+
+            </div>
+
+        </div>
+
+
         <div class="flex gap-2 mt-3">
 
             <button
+                type="button"
                 class="flex-1 bg-green-600 rounded-xl py-2 text-sm font-semibold"
-                onclick="generatePersonPDF('${escapeAttr(group.name)}')"
+                onclick="generatePersonPDF(${JSON.stringify(group.name)})"
             >
                 PDF
             </button>
 
 
             <button
+                type="button"
                 class="flex-1 bg-gray-800 rounded-xl py-2 text-sm"
-                onclick="togglePerson('${escapeAttr(group.name)}')"
+                onclick="togglePerson(${JSON.stringify(id)})"
             >
                 विवरण
             </button>
@@ -1366,40 +1219,29 @@ function createPersonCard(
 
 
     const details =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     details.id =
-        `person_${safeId(group.name)}`;
+        `details_${id}`;
 
 
     details.className =
         "hidden border-t border-gray-800 p-3 space-y-2";
 
 
-    records.forEach(
-        item => {
+    group.records.forEach(item => {
 
-            details.appendChild(
-                createRecordRow(
-                    item
-                )
-            );
+        details.appendChild(
+            createRecordRow(item)
+        );
 
-        }
-    );
+    });
 
 
-    card.appendChild(
-        header
-    );
+    card.appendChild(header);
 
-
-    card.appendChild(
-        details
-    );
+    card.appendChild(details);
 
 
     return card;
@@ -1408,32 +1250,20 @@ function createPersonCard(
 
 
 
-/* RECORD ROW */
+/* RECORD */
 
-function createRecordRow(
-    item
-) {
+function createRecordRow(item) {
 
     const row =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     row.className =
         "bg-gray-800 rounded-xl p-3";
 
 
-    const type =
-        getTypeName(
-            item.type
-        );
-
-
     const amount =
-        Number(
-            item.amount
-        ) || 0;
+        Number(item.amount) || 0;
 
 
     row.innerHTML = `
@@ -1443,10 +1273,12 @@ function createRecordRow(
             <div>
 
                 <p class="font-semibold">
-                    ${type}
+                    ${escapeHtml(
+                        getTypeName(item.type)
+                    )}
                 </p>
 
-                <p class="text-xs text-gray-400">
+                <p class="text-xs text-gray-400 mt-1">
                     ${escapeHtml(
                         item.date || ""
                     )}
@@ -1455,9 +1287,11 @@ function createRecordRow(
                 ${
                     item.dueDate
                     ?
-                    `<p class="text-xs text-yellow-400 mt-1">
+                    `
+                    <p class="text-xs text-yellow-400 mt-1">
                         Due: ${escapeHtml(item.dueDate)}
-                    </p>`
+                    </p>
+                    `
                     :
                     ""
                 }
@@ -1465,9 +1299,11 @@ function createRecordRow(
                 ${
                     item.note
                     ?
-                    `<p class="text-xs text-gray-400 mt-1">
+                    `
+                    <p class="text-xs text-gray-400 mt-1">
                         ${escapeHtml(item.note)}
-                    </p>`
+                    </p>
+                    `
                     :
                     ""
                 }
@@ -1481,18 +1317,28 @@ function createRecordRow(
                     NPR ${formatMoney(amount)}
                 </p>
 
-                <div class="flex gap-2 mt-2">
+                <p class="text-[10px] text-gray-500 mt-1">
+                    NPR ${formatMoney(item.npr || 0)}
+                    +
+                    INR ${formatMoney(item.inr || 0)}
+                </p>
+
+
+                <div class="flex gap-3 justify-end mt-2">
 
                     <button
+                        type="button"
                         class="text-xs text-blue-400"
-                        onclick="editTransaction('${item.id}')"
+                        onclick="editTransaction(${JSON.stringify(item.id)})"
                     >
                         Edit
                     </button>
 
+
                     <button
+                        type="button"
                         class="text-xs text-red-400"
-                        onclick="deleteTransaction('${item.id}')"
+                        onclick="removeTransaction(${JSON.stringify(item.id)})"
                     >
                         Delete
                     </button>
@@ -1515,11 +1361,11 @@ function createRecordRow(
 /* TOGGLE */
 
 window.togglePerson =
-    function(name) {
+    function(id) {
 
         const element =
             document.getElementById(
-                `person_${safeId(name)}`
+                `details_${id}`
             );
 
 
@@ -1536,29 +1382,110 @@ window.togglePerson =
 
 
 
-/* PDF */
+/* EDIT */
 
-window.generatePersonPDF =
-    async function(name) {
+window.editTransaction =
+    function(id) {
 
-        const records =
-            getTransactions()
-                .filter(
-                    item =>
-                        cleanName(
-                            item.partyName
-                        ).toLowerCase()
-                        ===
-                        cleanName(
-                            name
-                        ).toLowerCase()
+        const item =
+            getTransactions().find(
+                record =>
+                    record.id === id
+            );
+
+
+        if (!item) {
+            return;
+        }
+
+
+        personName.value =
+            item.partyName || "";
+
+
+        npr.value =
+            item.npr || "";
+
+
+        inr.value =
+            item.inr || "";
+
+
+        date.value =
+            item.date || today();
+
+
+        dueDate.value =
+            item.dueDate || "";
+
+
+        note.value =
+            item.note || "";
+
+
+        editId.value =
+            item.id;
+
+
+        selectedType =
+            item.type || "expense";
+
+
+        document
+            .querySelectorAll(".type-card")
+            .forEach(button => {
+
+                button.classList.toggle(
+                    "selected-type",
+                    button.dataset.type === selectedType
                 );
 
+            });
 
-        if (!records.length) {
+
+        saveBtn.textContent =
+            "लेनदेन Update गर्नुहोस्";
+
+
+        cancelEditBtn.classList.remove(
+            "hidden"
+        );
+
+
+        calculateTotal();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    };
+
+
+
+/* DELETE */
+
+window.removeTransaction =
+    function(id) {
+
+        if (
+            !confirm(
+                "यो लेनदेन हटाउने?"
+            )
+        ) {
+            return;
+        }
+
+
+        const result =
+            deleteTransaction(id);
+
+
+        if (!result) {
 
             alert(
-                "यस व्यक्तिको कुनै लेनदेन भेटिएन।"
+                "लेनदेन हटाउन सकिएन।"
             );
 
             return;
@@ -1566,88 +1493,85 @@ window.generatePersonPDF =
         }
 
 
-        const profileName =
-            getProfileValue(
-                "profile_name",
-                ""
+        transactions =
+            getTransactions();
+
+
+        render();
+
+    };
+
+
+
+/* PDF */
+
+window.generatePersonPDF =
+    async function(person) {
+
+        const target =
+            cleanName(person)
+                .toLowerCase();
+
+
+        const records =
+            getTransactions()
+                .filter(item =>
+                    cleanName(
+                        item.partyName
+                    ).toLowerCase()
+                    === target
+                );
+
+
+        if (!records.length) {
+
+            alert(
+                "यस व्यक्तिको लेनदेन भेटिएन।"
             );
 
+            return;
 
-        const profileAddress =
-            getProfileValue(
-                "profile_address",
-                ""
-            );
-
-
-        const profileMobile =
-            getProfileValue(
-                "profile_mobile",
-                ""
-            );
-
-
-        const profileEmail =
-            getProfileValue(
-                "profile_email",
-                ""
-            );
+        }
 
 
         let totalExpense = 0;
-        let totalGiven = 0;
-        let totalTaken = 0;
         let totalReceivable = 0;
         let totalPayable = 0;
+        let totalGiven = 0;
+        let totalTaken = 0;
         let totalRepayment = 0;
 
 
-        records.forEach(
-            item => {
+        records.forEach(item => {
 
-                const amount =
-                    Number(
-                        item.amount
-                    ) || 0;
+            const amount =
+                Number(item.amount) || 0;
 
 
-                if (
-                    item.type === "expense"
-                )
-                    totalExpense += amount;
+            if (item.type === "expense")
+                totalExpense += amount;
 
 
-                if (
-                    item.type === "given"
-                )
-                    totalGiven += amount;
+            if (item.type === "receivable")
+                totalReceivable += amount;
 
 
-                if (
-                    item.type === "taken"
-                )
-                    totalTaken += amount;
+            if (item.type === "payable")
+                totalPayable += amount;
 
 
-                if (
-                    item.type === "receivable"
-                )
-                    totalReceivable += amount;
+            if (item.type === "given")
+                totalGiven += amount;
 
 
-                if (
-                    item.type === "payable"
-                )
-                    totalPayable += amount;
+            if (item.type === "taken")
+                totalTaken += amount;
 
 
-                if (
-                    item.type === "repayment"
-                )
-                    totalRepayment += amount;
+            if (item.type === "repayment")
+                totalRepayment += amount;
 
-            }
-        );
+        });
 
 
         const balance =
@@ -1662,10 +1586,36 @@ window.generatePersonPDF =
             totalRepayment;
 
 
-        const pdfArea =
-            document.getElementById(
-                "pdfArea"
+        const profileName =
+            getProfileValue(
+                "profile_name",
+                ""
             );
+
+
+        const profileMobile =
+            getProfileValue(
+                "profile_mobile",
+                ""
+            );
+
+
+        const profileAddress =
+            getProfileValue(
+                "profile_address",
+                ""
+            );
+
+
+        const profileEmail =
+            getProfileValue(
+                "profile_email",
+                ""
+            );
+
+
+        const pdfArea =
+            $("pdfArea");
 
 
         pdfArea.innerHTML = `
@@ -1676,7 +1626,7 @@ window.generatePersonPDF =
                     style="
                         font-size:28px;
                         font-weight:bold;
-                        margin-bottom:8px;
+                        margin-bottom:5px;
                     "
                 >
                     Digital Notebook
@@ -1685,12 +1635,12 @@ window.generatePersonPDF =
 
                 <p
                     style="
-                        font-size:18px;
-                        font-weight:bold;
-                        margin-bottom:20px;
+                        font-size:13px;
+                        color:#666;
+                        margin-bottom:25px;
                     "
                 >
-                    ${escapeHtml(name)} — पूरा हिसाब
+                    Personal Financial Record
                 </p>
 
 
@@ -1702,6 +1652,17 @@ window.generatePersonPDF =
                     "
                 >
 
+                    <h2
+                        style="
+                            font-size:20px;
+                            font-weight:bold;
+                            margin-bottom:10px;
+                        "
+                    >
+                        ${escapeHtml(person)}
+                    </h2>
+
+
                     ${
                         profileName
                         ?
@@ -1709,6 +1670,7 @@ window.generatePersonPDF =
                         :
                         ""
                     }
+
 
                     ${
                         profileMobile
@@ -1718,6 +1680,7 @@ window.generatePersonPDF =
                         ""
                     }
 
+
                     ${
                         profileAddress
                         ?
@@ -1725,6 +1688,7 @@ window.generatePersonPDF =
                         :
                         ""
                     }
+
 
                     ${
                         profileEmail
@@ -1737,22 +1701,13 @@ window.generatePersonPDF =
                 </div>
 
 
-                <h2
-                    style="
-                        font-size:20px;
-                        font-weight:bold;
-                        margin-bottom:12px;
-                    "
-                >
-                    ${escapeHtml(name)}
-                </h2>
-
 
                 <table
                     style="
                         width:100%;
                         border-collapse:collapse;
                         margin-bottom:25px;
+                        font-size:12px;
                     "
                 >
 
@@ -1760,19 +1715,68 @@ window.generatePersonPDF =
 
                         <tr>
 
-                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:left;
+                                "
+                            >
                                 मिति
                             </th>
 
-                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:left;
+                                "
+                            >
                                 प्रकार
                             </th>
 
-                            <th style="border:1px solid #ccc;padding:8px;text-align:right;">
-                                रकम
+
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:right;
+                                "
+                            >
+                                NPR
                             </th>
 
-                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:right;
+                                "
+                            >
+                                INR
+                            </th>
+
+
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:right;
+                                "
+                            >
+                                जम्मा NPR
+                            </th>
+
+
+                            <th
+                                style="
+                                    border:1px solid #ccc;
+                                    padding:8px;
+                                    text-align:left;
+                                "
+                            >
                                 Due
                             </th>
 
@@ -1783,35 +1787,94 @@ window.generatePersonPDF =
 
                     <tbody>
 
-                        ${records.map(
-                            item => `
+                        ${
+                            records.map(item => `
 
-                            <tr>
+                                <tr>
 
-                                <td style="border:1px solid #ccc;padding:8px;">
-                                    ${escapeHtml(item.date || "")}
-                                </td>
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            item.date || ""
+                                        )}
+                                    </td>
 
-                                <td style="border:1px solid #ccc;padding:8px;">
-                                    ${getTypeName(item.type)}
-                                </td>
 
-                                <td style="border:1px solid #ccc;padding:8px;text-align:right;">
-                                    NPR ${formatMoney(item.amount)}
-                                </td>
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            getTypeName(item.type)
+                                        )}
+                                    </td>
 
-                                <td style="border:1px solid #ccc;padding:8px;">
-                                    ${escapeHtml(item.dueDate || "-")}
-                                </td>
 
-                            </tr>
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                            text-align:right;
+                                        "
+                                    >
+                                        ${formatMoney(
+                                            item.npr || 0
+                                        )}
+                                    </td>
 
-                            `
-                        ).join("")}
+
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                            text-align:right;
+                                        "
+                                    >
+                                        ${formatMoney(
+                                            item.inr || 0
+                                        )}
+                                    </td>
+
+
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                            text-align:right;
+                                        "
+                                    >
+                                        ${formatMoney(
+                                            item.amount || 0
+                                        )}
+                                    </td>
+
+
+                                    <td
+                                        style="
+                                            border:1px solid #ccc;
+                                            padding:8px;
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            item.dueDate || "-"
+                                        )}
+                                    </td>
+
+                                </tr>
+
+                            `).join("")
+                        }
 
                     </tbody>
 
                 </table>
+
 
 
                 <div
@@ -1821,35 +1884,64 @@ window.generatePersonPDF =
                     "
                 >
 
-                    <p>
-                        <b>कुल खर्च:</b>
-                        NPR ${formatMoney(totalExpense)}
-                    </p>
+                    <h3
+                        style="
+                            font-size:17px;
+                            font-weight:bold;
+                            margin-bottom:10px;
+                        "
+                    >
+                        कुल सारांश
+                    </h3>
+
 
                     <p>
-                        <b>दिएको पैसा:</b>
-                        NPR ${formatMoney(totalGiven)}
+                        कुल खर्च:
+                        <b>
+                            NPR ${formatMoney(totalExpense)}
+                        </b>
                     </p>
 
-                    <p>
-                        <b>लिएको पैसा:</b>
-                        NPR ${formatMoney(totalTaken)}
-                    </p>
 
                     <p>
-                        <b>लिनुपर्ने:</b>
-                        NPR ${formatMoney(totalReceivable)}
+                        लिनुपर्ने:
+                        <b>
+                            NPR ${formatMoney(totalReceivable)}
+                        </b>
                     </p>
 
-                    <p>
-                        <b>दिनुपर्ने:</b>
-                        NPR ${formatMoney(totalPayable)}
-                    </p>
 
                     <p>
-                        <b>फिर्ता:</b>
-                        NPR ${formatMoney(totalRepayment)}
+                        दिनुपर्ने:
+                        <b>
+                            NPR ${formatMoney(totalPayable)}
+                        </b>
                     </p>
+
+
+                    <p>
+                        दिएको पैसा:
+                        <b>
+                            NPR ${formatMoney(totalGiven)}
+                        </b>
+                    </p>
+
+
+                    <p>
+                        लिएको पैसा:
+                        <b>
+                            NPR ${formatMoney(totalTaken)}
+                        </b>
+                    </p>
+
+
+                    <p>
+                        फिर्ता:
+                        <b>
+                            NPR ${formatMoney(totalRepayment)}
+                        </b>
+                    </p>
+
 
                     <hr
                         style="
@@ -1858,6 +1950,7 @@ window.generatePersonPDF =
                             border-top:1px solid #ccc;
                         "
                     >
+
 
                     <p
                         style="
@@ -1877,8 +1970,8 @@ window.generatePersonPDF =
                 <p
                     style="
                         margin-top:30px;
-                        font-size:11px;
-                        color:#666;
+                        font-size:10px;
+                        color:#777;
                     "
                 >
                     Generated by Digital Notebook
@@ -1894,41 +1987,62 @@ window.generatePersonPDF =
         );
 
 
-        const filename =
-            `${cleanName(name).replace(/\s+/g, "_")}_Transaction_Report.pdf`;
+        const safeFileName =
+            cleanName(person)
+                .replace(
+                    /[^a-zA-Z0-9\u0900-\u097F]+/g,
+                    "_"
+                );
 
 
-        await html2pdf()
-            .set({
+        try {
 
-                margin: 0,
+            await html2pdf()
+                .set({
 
-                filename,
+                    margin: 0,
 
-                image: {
-                    type: "jpeg",
-                    quality: .95
-                },
+                    filename:
+                        `${safeFileName}_Transaction_Report.pdf`,
 
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true
-                },
+                    image: {
+                        type: "jpeg",
+                        quality: 0.95
+                    },
 
-                jsPDF: {
-                    unit: "pt",
-                    format: "a4",
-                    orientation: "portrait"
-                }
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true
+                    },
 
-            })
-            .from(pdfArea)
-            .save();
+                    jsPDF: {
+                        unit: "pt",
+                        format: "a4",
+                        orientation: "portrait"
+                    }
 
+                })
+                .from(pdfArea)
+                .save();
 
-        pdfArea.classList.add(
-            "hidden"
-        );
+        } catch (error) {
+
+            console.error(
+                "PDF error:",
+                error
+            );
+
+            alert(
+                "PDF बनाउन समस्या भयो।"
+            );
+
+        } finally {
+
+            pdfArea.classList.add(
+                "hidden"
+            );
+
+        }
 
     };
 
@@ -1936,44 +2050,32 @@ window.generatePersonPDF =
 
 /* HELPERS */
 
-function cleanName(
-    name
-) {
+function cleanName(name) {
 
-    return String(
-        name || ""
-    )
+    return String(name || "")
         .trim()
-        .replace(
-            /\s+/g,
-            " "
+        .replace(/\s+/g, " ");
+
+}
+
+
+function formatMoney(value) {
+
+    return Number(value || 0)
+        .toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
         );
 
 }
 
 
-function formatMoney(
-    value
-) {
+function getTypeName(type) {
 
-    return Number(
-        value || 0
-    ).toLocaleString(
-        "en-IN",
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
-
-}
-
-
-function getTypeName(
-    type
-) {
-
-    const map = {
+    const names = {
 
         expense:
             "खर्च",
@@ -1996,37 +2098,48 @@ function getTypeName(
     };
 
 
-    return (
-        map[type]
-        ||
-        type
-    );
+    return names[type] || type;
 
 }
 
 
-function safeId(
-    value
-) {
+function getPersonId(name) {
 
-    return btoa(
-        unescape(
-            encodeURIComponent(
-                value
+    let hash = 0;
+
+    const text =
+        String(name || "")
+            .toLowerCase();
+
+
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
+        hash =
+            (
+                (
+                    hash << 5
+                )
+                -
+                hash
+                +
+                text.charCodeAt(i)
             )
-        )
-    )
-        .replace(
-            /[^a-zA-Z0-9]/g,
-            ""
-        );
+            |
+            0;
+
+    }
+
+
+    return Math.abs(hash);
 
 }
 
 
-function escapeHtml(
-    value
-) {
+function escapeHtml(value) {
 
     return String(
         value ?? ""
@@ -2055,28 +2168,12 @@ function escapeHtml(
 }
 
 
-function escapeAttr(
-    value
-) {
 
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        );
-
-}
-
+/* START */
 
 render();
 
-updateTotal();
+calculateTotal();
 
 </script>
 
