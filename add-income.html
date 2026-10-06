@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -13,7 +12,7 @@
         content="#0f172a"
     >
 
-    <title>Saving - Digital NoteBook</title>
+    <title>Income - Digital NoteBook</title>
 
     <link
         rel="manifest"
@@ -46,18 +45,17 @@
     >
 
     <style>
-
         body {
             font-family: Poppins, sans-serif;
         }
 
-        .saving-group {
+        .income-group {
             transition:
                 border-color .15s ease,
                 background .15s ease;
         }
 
-        .saving-group:hover {
+        .income-group:hover {
             border-color: #334155;
         }
 
@@ -67,6 +65,17 @@
 
         .group-details.open {
             display: block;
+        }
+
+        .type-button {
+            transition:
+                border-color .15s ease,
+                background .15s ease,
+                transform .1s ease;
+        }
+
+        .type-button:active {
+            transform: scale(.98);
         }
 
         .total-box {
@@ -83,31 +92,20 @@
         }
 
         @media (max-width: 640px) {
-
-            input,
-            select {
-                font-size: 16px;
-            }
-
             .pdf-page {
                 width: 794px;
             }
-
         }
-
     </style>
 </head>
 
-
 <body class="min-h-screen bg-slate-950 text-white">
-
 
 <!-- ================= HEADER ================= -->
 
 <header
     class="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
 >
-
     <div
         class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3"
     >
@@ -120,19 +118,15 @@
             ←
         </a>
 
-
         <div class="flex-1 min-w-0">
-
             <h1 class="font-bold text-base truncate">
-                Saving
+                Income
             </h1>
 
             <p class="text-[11px] text-slate-400">
-                Saving records
+                Income records
             </p>
-
         </div>
-
 
         <div
             id="profile-avatar"
@@ -144,17 +138,14 @@
         </div>
 
     </div>
-
 </header>
-
 
 
 <!-- ================= MAIN ================= -->
 
 <main
-    class="max-w-4xl mx-auto px-4 py-5 pb-24"
+    class="max-w-4xl mx-auto px-4 py-5 pb-20"
 >
-
 
     <!-- SUMMARY -->
 
@@ -165,9 +156,8 @@
         <div
             class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
         >
-
             <p class="text-[11px] text-slate-400">
-                Total Saving
+                Total Income
             </p>
 
             <p
@@ -176,14 +166,11 @@
             >
                 NPR 0.00
             </p>
-
         </div>
-
 
         <div
             class="rounded-2xl border border-slate-800 bg-slate-900 p-4"
         >
-
             <p class="text-[11px] text-slate-400">
                 Records
             </p>
@@ -194,85 +181,9 @@
             >
                 0
             </p>
-
         </div>
 
     </section>
-
-
-
-    <!-- ================= TARGET ================= -->
-
-    <section
-        class="rounded-2xl border border-slate-800 bg-slate-900 p-4 mb-5"
-    >
-
-        <div
-            class="flex items-center justify-between gap-3 mb-3"
-        >
-
-            <div>
-
-                <p class="text-xs font-semibold">
-                    Saving Target
-                </p>
-
-                <p
-                    id="targetText"
-                    class="text-[10px] text-slate-500 mt-1"
-                >
-                    Goal not set
-                </p>
-
-            </div>
-
-
-            <button
-                id="targetButton"
-                type="button"
-                class="rounded-xl bg-slate-800 px-3 py-2 text-[10px] font-semibold text-emerald-400"
-            >
-                Set Target
-            </button>
-
-        </div>
-
-
-        <div
-            class="flex items-center justify-between text-[10px] mb-1"
-        >
-
-            <span
-                id="targetCurrent"
-                class="text-slate-400"
-            >
-                NPR 0.00
-            </span>
-
-            <span
-                id="targetPercent"
-                class="text-emerald-400 font-semibold"
-            >
-                0%
-            </span>
-
-        </div>
-
-
-        <div
-            class="w-full h-2 rounded-full bg-slate-800 overflow-hidden"
-        >
-
-            <div
-                id="targetBar"
-                class="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                style="width:0%"
-            ></div>
-
-        </div>
-
-    </section>
-
 
 
     <!-- ================= FORM ================= -->
@@ -284,19 +195,16 @@
         <div
             class="px-4 py-4 border-b border-slate-800"
         >
-
             <h2
                 id="formTitle"
                 class="font-bold text-sm"
             >
-                Add Saving
+                Add Income
             </h2>
-
         </div>
 
-
         <form
-            id="savingForm"
+            id="incomeForm"
             class="p-4 space-y-4"
         >
 
@@ -306,58 +214,46 @@
             >
 
 
-            <!-- TITLE -->
+            <!-- SOURCE -->
 
             <div>
 
                 <label
-                    for="savingTitle"
+                    for="sourceName"
                     class="block text-xs font-semibold text-slate-300 mb-2"
                 >
-                    Saving Title
+                    Income Source
                 </label>
 
                 <input
-                    id="savingTitle"
+                    id="sourceName"
                     type="text"
                     required
                     autocomplete="off"
-                    placeholder="e.g. Bank Saving"
+                    placeholder="e.g. Salary"
                     class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-500"
                 >
 
             </div>
 
 
-            <!-- CATEGORY -->
+            <!-- DATE -->
 
             <div>
 
                 <label
-                    for="savingCategory"
+                    for="incomeDate"
                     class="block text-xs font-semibold text-slate-300 mb-2"
                 >
-                    Category
+                    Date
                 </label>
 
-                <select
-                    id="savingCategory"
+                <input
+                    id="incomeDate"
+                    type="date"
+                    required
                     class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none focus:border-emerald-500"
                 >
-
-                    <option value="Bank">
-                        Bank
-                    </option>
-
-                    <option value="Cash">
-                        Cash
-                    </option>
-
-                    <option value="Investment">
-                        Investment
-                    </option>
-
-                </select>
 
             </div>
 
@@ -371,7 +267,6 @@
                 >
                     Amount
                 </label>
-
 
                 <div
                     class="grid grid-cols-2 gap-2"
@@ -448,7 +343,6 @@
 
                         </div>
 
-
                         <div class="text-right">
 
                             <p
@@ -480,37 +374,15 @@
             </div>
 
 
-            <!-- DATE -->
-
-            <div>
-
-                <label
-                    for="savingDate"
-                    class="block text-xs font-semibold text-slate-300 mb-2"
-                >
-                    Date
-                </label>
-
-                <input
-                    id="savingDate"
-                    type="date"
-                    required
-                    class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none focus:border-emerald-500"
-                >
-
-            </div>
-
-
-            <!-- BUTTONS -->
+            <!-- ACTIONS -->
 
             <button
                 id="saveButton"
                 type="submit"
                 class="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 py-3.5 font-bold text-sm transition"
             >
-                Save Saving
+                Save Income
             </button>
-
 
             <button
                 id="cancelButton"
@@ -519,7 +391,6 @@
             >
                 Cancel Edit
             </button>
-
 
             <p
                 id="formStatus"
@@ -531,7 +402,6 @@
     </section>
 
 
-
     <!-- ================= SEARCH ================= -->
 
     <section class="mt-6">
@@ -541,7 +411,7 @@
         >
 
             <h2 class="font-bold text-sm">
-                Saving Records
+                Income Records
             </h2>
 
             <span
@@ -558,18 +428,17 @@
             id="searchInput"
             type="search"
             autocomplete="off"
-            placeholder="Search saving"
+            placeholder="Search income source"
             class="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-emerald-500"
         >
 
     </section>
 
 
-
-    <!-- ================= LIST ================= -->
+    <!-- ================= GROUP LIST ================= -->
 
     <section
-        id="savingList"
+        id="incomeList"
         class="mt-4 space-y-3"
     ></section>
 
@@ -578,86 +447,20 @@
         id="emptyState"
         class="hidden text-center py-12 text-slate-500"
     >
-
         <p class="text-sm">
-            No saving records found.
+            No income records found.
         </p>
-
     </div>
 
 
-    <!-- ================= PDF ================= -->
+    <!-- ================= PDF AREA ================= -->
 
     <div
         id="pdfArea"
         class="hidden"
     ></div>
 
-
 </main>
-
-
-
-<!-- ================= TARGET MODAL ================= -->
-
-<div
-    id="targetModal"
-    class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center"
->
-
-    <div
-        class="w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-900 p-5"
-    >
-
-        <div
-            class="flex items-center justify-between mb-4"
-        >
-
-            <h3 class="font-bold">
-                Saving Target
-            </h3>
-
-            <button
-                id="closeTarget"
-                type="button"
-                class="text-slate-400 text-lg"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <label
-            class="block text-xs text-slate-400 mb-2"
-        >
-            Target Amount (NPR)
-        </label>
-
-
-        <input
-            id="targetInput"
-            type="number"
-            min="0"
-            step="0.01"
-            inputmode="decimal"
-            placeholder="e.g. 100000"
-            class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none focus:border-emerald-500"
-        >
-
-
-        <button
-            id="saveTarget"
-            type="button"
-            class="w-full mt-4 rounded-xl bg-emerald-600 py-3 font-bold text-sm"
-        >
-            Save Target
-        </button>
-
-    </div>
-
-</div>
-
 
 
 <!-- ================= SCRIPT ================= -->
@@ -665,9 +468,9 @@
 <script type="module">
 
 import {
-    getSavings,
-    saveSavings
-} from "./js/savings.js";
+    getIncomes,
+    saveIncomes
+} from "./js/incomes.js";
 
 import {
     getProfileValue
@@ -676,25 +479,23 @@ import {
 
 const INR_RATE = 1.6;
 
+
 let editingId = "";
 
 
-
-/* ================= ELEMENTS ================= */
-
 const form =
     document.getElementById(
-        "savingForm"
+        "incomeForm"
     );
 
-const savingTitle =
+const sourceName =
     document.getElementById(
-        "savingTitle"
+        "sourceName"
     );
 
-const savingCategory =
+const incomeDate =
     document.getElementById(
-        "savingCategory"
+        "incomeDate"
     );
 
 const amountNpr =
@@ -707,11 +508,6 @@ const amountInr =
         "amountInr"
     );
 
-const savingDate =
-    document.getElementById(
-        "savingDate"
-    );
-
 const liveTotal =
     document.getElementById(
         "liveTotal"
@@ -722,9 +518,9 @@ const conversionText =
         "conversionText"
     );
 
-const savingList =
+const incomeList =
     document.getElementById(
-        "savingList"
+        "incomeList"
     );
 
 const emptyState =
@@ -747,6 +543,11 @@ const cancelButton =
         "cancelButton"
     );
 
+const editId =
+    document.getElementById(
+        "editId"
+    );
+
 const formTitle =
     document.getElementById(
         "formTitle"
@@ -758,8 +559,7 @@ const formStatus =
     );
 
 
-
-/* ================= HELPERS ================= */
+/* ================= COMMON ================= */
 
 function today() {
 
@@ -796,7 +596,7 @@ function money(value) {
 }
 
 
-function cleanText(value) {
+function cleanName(value) {
 
     return String(
         value || ""
@@ -813,7 +613,7 @@ function cleanText(value) {
 function createId() {
 
     return (
-        "saving_" +
+        "income_" +
         Date.now() +
         "_" +
         Math.random()
@@ -822,7 +622,6 @@ function createId() {
     );
 
 }
-
 
 
 /* ================= PROFILE ================= */
@@ -841,30 +640,29 @@ function loadProfile() {
             ""
         );
 
-    const box =
+    const avatarBox =
         document.getElementById(
             "profile-avatar"
         );
 
-
     if (
         avatar &&
-        box
+        avatarBox
     ) {
 
-        box.innerHTML =
+        avatarBox.innerHTML =
             `<img
                 src="${escapeAttribute(avatar)}"
-                alt="Profile"
                 class="w-full h-full object-cover"
+                alt="Profile"
             >`;
 
     } else if (
         name &&
-        box
+        avatarBox
     ) {
 
-        box.textContent =
+        avatarBox.textContent =
             name
                 .charAt(0)
                 .toUpperCase();
@@ -872,7 +670,6 @@ function loadProfile() {
     }
 
 }
-
 
 
 /* ================= LIVE TOTAL ================= */
@@ -889,12 +686,11 @@ function calculateTotal() {
             amountInr.value
         );
 
+    const converted =
+        inr * INR_RATE;
+
     const total =
-        npr +
-        (
-            inr *
-            INR_RATE
-        );
+        npr + converted;
 
 
     liveTotal.textContent =
@@ -927,7 +723,6 @@ amountInr.addEventListener(
 );
 
 
-
 /* ================= STATUS ================= */
 
 function showStatus(
@@ -956,7 +751,6 @@ function clearStatus() {
 }
 
 
-
 /* ================= SAVE ================= */
 
 form.addEventListener(
@@ -968,14 +762,14 @@ form.addEventListener(
         clearStatus();
 
 
-        const title =
-            cleanText(
-                savingTitle.value
+        const name =
+            cleanName(
+                sourceName.value
             );
 
-        const category =
-            savingCategory.value ||
-            "Bank";
+        const date =
+            incomeDate.value ||
+            today();
 
         const npr =
             number(
@@ -994,19 +788,15 @@ form.addEventListener(
                 INR_RATE
             );
 
-        const date =
-            savingDate.value ||
-            today();
 
-
-        if (!title) {
+        if (!name) {
 
             showStatus(
-                "Enter saving title.",
+                "Enter income source.",
                 false
             );
 
-            savingTitle.focus();
+            sourceName.focus();
 
             return;
 
@@ -1027,8 +817,8 @@ form.addEventListener(
         }
 
 
-        let savings =
-            getSavings();
+        let incomes =
+            getIncomes();
 
 
         const item = {
@@ -1037,12 +827,10 @@ form.addEventListener(
                 editingId ||
                 createId(),
 
-            title,
+            sourceName:
+                name,
 
-            category,
-
-            amount:
-                total,
+            date,
 
             npr,
 
@@ -1050,13 +838,15 @@ form.addEventListener(
 
             total,
 
-            date,
+            amount:
+                total,
+
+            category:
+                name,
 
             createdAt:
                 editingId
-                    ? getCreatedAt(
-                        editingId
-                    )
+                    ? getCreatedAt(editingId)
                     : Date.now(),
 
             updatedAt:
@@ -1068,7 +858,7 @@ form.addEventListener(
         if (editingId) {
 
             const index =
-                savings.findIndex(
+                incomes.findIndex(
                     item =>
                         item.id ===
                         editingId
@@ -1087,20 +877,20 @@ form.addEventListener(
             }
 
 
-            savings[index] =
+            incomes[index] =
                 item;
 
         } else {
 
-            savings.unshift(
+            incomes.unshift(
                 item
             );
 
         }
 
 
-        saveSavings(
-            savings
+        saveIncomes(
+            incomes
         );
 
 
@@ -1110,15 +900,14 @@ form.addEventListener(
 
         resetForm();
 
-        renderSavings();
 
-        updateTargetUI();
+        renderIncomes();
 
 
         showStatus(
             wasEditing
-                ? "Saving updated."
-                : "Saving saved.",
+                ? "Income updated."
+                : "Income saved.",
             true
         );
 
@@ -1126,18 +915,16 @@ form.addEventListener(
 );
 
 
-
-/* ================= CREATED ================= */
+/* ================= CREATED DATE ================= */
 
 function getCreatedAt(id) {
 
     const item =
-        getSavings()
+        getIncomes()
             .find(
-                saving =>
-                    saving.id === id
+                income =>
+                    income.id === id
             );
-
 
     return (
         item?.createdAt ||
@@ -1147,42 +934,32 @@ function getCreatedAt(id) {
 }
 
 
-
 /* ================= RESET ================= */
 
 function resetForm() {
 
     editingId = "";
 
-    document.getElementById(
-        "editId"
-    ).value = "";
-
+    editId.value = "";
 
     form.reset();
 
-
-    savingDate.value =
+    incomeDate.value =
         today();
-
 
     calculateTotal();
 
-
-    formTitle.textContent =
-        "Add Saving";
-
-
     saveButton.textContent =
-        "Save Saving";
-
+        "Save Income";
 
     cancelButton.classList.add(
         "hidden"
     );
 
-}
+    formTitle.textContent =
+        "Add Income";
 
+}
 
 
 /* ================= CANCEL ================= */
@@ -1199,20 +976,18 @@ cancelButton.addEventListener(
 );
 
 
-
 /* ================= EDIT ================= */
 
-window.editSaving =
+window.editIncome =
     function(id) {
 
-        const savings =
-            getSavings();
-
+        const incomes =
+            getIncomes();
 
         const item =
-            savings.find(
-                saving =>
-                    saving.id === id
+            incomes.find(
+                income =>
+                    income.id === id
             );
 
 
@@ -1226,52 +1001,39 @@ window.editSaving =
         editingId =
             item.id;
 
-
-        document.getElementById(
-            "editId"
-        ).value =
+        editId.value =
             item.id;
 
-
-        savingTitle.value =
-            item.title ||
+        sourceName.value =
+            item.sourceName ||
+            item.source ||
             "";
 
-
-        savingCategory.value =
-            item.category ||
-            "Bank";
-
+        incomeDate.value =
+            item.date ||
+            today();
 
         amountNpr.value =
             item.npr ||
             0;
-
 
         amountInr.value =
             item.inr ||
             0;
 
 
-        savingDate.value =
-            item.date ||
-            today();
-
-
         calculateTotal();
 
 
-        formTitle.textContent =
-            "Edit Saving";
-
-
         saveButton.textContent =
-            "Update Saving";
-
+            "Update Income";
 
         cancelButton.classList.remove(
             "hidden"
         );
+
+        formTitle.textContent =
+            "Edit Income";
 
 
         window.scrollTo({
@@ -1282,18 +1044,16 @@ window.editSaving =
     };
 
 
-
 /* ================= DELETE ================= */
 
-window.deleteSaving =
+window.deleteIncome =
     function(id) {
 
-        const savings =
-            getSavings();
-
+        const incomes =
+            getIncomes();
 
         const updated =
-            savings.filter(
+            incomes.filter(
                 item =>
                     item.id !== id
             );
@@ -1301,7 +1061,7 @@ window.deleteSaving =
 
         if (
             updated.length ===
-            savings.length
+            incomes.length
         ) {
 
             return;
@@ -1309,34 +1069,31 @@ window.deleteSaving =
         }
 
 
-        saveSavings(
+        saveIncomes(
             updated
         );
 
-
-        renderSavings();
-
-        updateTargetUI();
+        renderIncomes();
 
     };
 
 
-
 /* ================= GROUP ================= */
 
-function groupSavings(
-    savings
+function groupIncomes(
+    incomes
 ) {
 
     const groups = {};
 
 
-    savings.forEach(
+    incomes.forEach(
         item => {
 
             const name =
-                cleanText(
-                    item.title ||
+                cleanName(
+                    item.sourceName ||
+                    item.source ||
                     item.category
                 );
 
@@ -1380,23 +1137,22 @@ function groupSavings(
 }
 
 
-
 /* ================= RENDER ================= */
 
-function renderSavings() {
+function renderIncomes() {
 
-    const savings =
-        getSavings();
+    const incomes =
+        getIncomes();
 
 
     document.getElementById(
         "recordCount"
     ).textContent =
-        savings.length;
+        incomes.length;
 
 
     const grandTotal =
-        savings.reduce(
+        incomes.reduce(
             (
                 sum,
                 item
@@ -1418,15 +1174,15 @@ function renderSavings() {
 
 
     const query =
-        cleanText(
+        cleanName(
             searchInput.value
         )
         .toLocaleLowerCase();
 
 
     let groups =
-        groupSavings(
-            savings
+        groupIncomes(
+            incomes
         );
 
 
@@ -1440,10 +1196,7 @@ function renderSavings() {
 
 
     groups.sort(
-        (
-            a,
-            b
-        ) =>
+        (a, b) =>
             a.name.localeCompare(
                 b.name
             )
@@ -1461,7 +1214,7 @@ function renderSavings() {
         );
 
 
-    savingList.innerHTML =
+    incomeList.innerHTML =
         "";
 
 
@@ -1489,7 +1242,7 @@ function renderSavings() {
             index
         ) => {
 
-            savingList.appendChild(
+            incomeList.appendChild(
                 createGroupCard(
                     group,
                     index
@@ -1500,7 +1253,6 @@ function renderSavings() {
     );
 
 }
-
 
 
 /* ================= GROUP CARD ================= */
@@ -1517,7 +1269,7 @@ function createGroupCard(
 
 
     wrapper.className =
-        "saving-group rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden";
+        "income-group rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden";
 
 
     const total =
@@ -1536,7 +1288,7 @@ function createGroupCard(
 
 
     const groupId =
-        "saving_group_" +
+        "income_group_" +
         index +
         "_" +
         Math.random()
@@ -1579,7 +1331,6 @@ function createGroupCard(
 
             </div>
 
-
             <div class="text-right shrink-0">
 
                 <p class="text-[10px] text-slate-500">
@@ -1594,10 +1345,7 @@ function createGroupCard(
 
         </div>
 
-
-        <div
-            class="flex items-center justify-between mt-3"
-        >
+        <div class="flex items-center justify-between mt-3">
 
             <span class="text-[10px] text-slate-500">
                 Tap to view records
@@ -1622,7 +1370,6 @@ function createGroupCard(
 
     details.id =
         groupId;
-
 
     details.className =
         "group-details border-t border-slate-800";
@@ -1667,12 +1414,21 @@ function createGroupCard(
                 );
 
 
-            arrow.textContent =
+            if (
                 details.classList.contains(
                     "open"
                 )
-                    ? "▴"
-                    : "▾";
+            ) {
+
+                arrow.textContent =
+                    "▴";
+
+            } else {
+
+                arrow.textContent =
+                    "▾";
+
+            }
 
         }
     );
@@ -1692,8 +1448,7 @@ function createGroupCard(
 }
 
 
-
-/* ================= RECORD ================= */
+/* ================= RECORD ROW ================= */
 
 function createRecordRow(
     item
@@ -1720,18 +1475,10 @@ function createRecordRow(
 
         <div class="flex items-start justify-between gap-3">
 
-            <div>
+            <div class="min-w-0">
 
                 <p class="font-semibold text-xs">
-                    ${escapeHtml(
-                        item.date || ""
-                    )}
-                </p>
-
-                <p class="text-[10px] text-slate-500 mt-1">
-                    ${escapeHtml(
-                        item.category || ""
-                    )}
+                    ${escapeHtml(item.date || "")}
                 </p>
 
                 <p class="text-[10px] text-slate-500 mt-1">
@@ -1749,23 +1496,20 @@ function createRecordRow(
                     NPR ${money(total)}
                 </p>
 
-
-                <div
-                    class="flex justify-end gap-3 mt-2"
-                >
+                <div class="flex justify-end gap-3 mt-2">
 
                     <button
                         type="button"
-                        data-edit
                         class="text-[10px] text-blue-400"
+                        data-edit
                     >
                         Edit
                     </button>
 
                     <button
                         type="button"
-                        data-delete
                         class="text-[10px] text-rose-400"
+                        data-delete
                     >
                         Delete
                     </button>
@@ -1786,7 +1530,7 @@ function createRecordRow(
 
             event.stopPropagation();
 
-            window.editSaving(
+            window.editIncome(
                 item.id
             );
 
@@ -1802,7 +1546,7 @@ function createRecordRow(
 
             event.stopPropagation();
 
-            window.deleteSaving(
+            window.deleteIncome(
                 item.id
             );
 
@@ -1815,326 +1559,80 @@ function createRecordRow(
 }
 
 
-
 /* ================= SEARCH ================= */
 
 searchInput.addEventListener(
     "input",
-    renderSavings
+    renderIncomes
 );
-
-
-
-/* ================= TARGET ================= */
-
-const targetModal =
-    document.getElementById(
-        "targetModal"
-    );
-
-const targetInput =
-    document.getElementById(
-        "targetInput"
-    );
-
-
-document.getElementById(
-    "targetButton"
-).addEventListener(
-    "click",
-    function() {
-
-        targetInput.value =
-            localStorage.getItem(
-                "savings_target_amount"
-            ) || "";
-
-        targetModal.classList.remove(
-            "hidden"
-        );
-
-    }
-);
-
-
-document.getElementById(
-    "closeTarget"
-).addEventListener(
-    "click",
-    function() {
-
-        targetModal.classList.add(
-            "hidden"
-        );
-
-    }
-);
-
-
-document.getElementById(
-    "saveTarget"
-).addEventListener(
-    "click",
-    function() {
-
-        const target =
-            number(
-                targetInput.value
-            );
-
-
-        localStorage.setItem(
-            "savings_target_amount",
-            String(target)
-        );
-
-
-        targetModal.classList.add(
-            "hidden"
-        );
-
-
-        updateTargetUI();
-
-    }
-);
-
-
-function updateTargetUI() {
-
-    const savings =
-        getSavings();
-
-
-    const total =
-        savings.reduce(
-            (
-                sum,
-                item
-            ) =>
-                sum +
-                number(
-                    item.total ??
-                    item.amount
-                ),
-            0
-        );
-
-
-    const target =
-        number(
-            localStorage.getItem(
-                "savings_target_amount"
-            )
-        );
-
-
-    const targetText =
-        document.getElementById(
-            "targetText"
-        );
-
-    const targetCurrent =
-        document.getElementById(
-            "targetCurrent"
-        );
-
-    const targetPercent =
-        document.getElementById(
-            "targetPercent"
-        );
-
-    const targetBar =
-        document.getElementById(
-            "targetBar"
-        );
-
-
-    targetCurrent.textContent =
-        "NPR " +
-        money(total);
-
-
-    if (
-        target <= 0
-    ) {
-
-        targetText.textContent =
-            "Goal not set";
-
-        targetPercent.textContent =
-            "0%";
-
-        targetBar.style.width =
-            "0%";
-
-        return;
-
-    }
-
-
-    const percentage =
-        Math.min(
-            100,
-            Math.round(
-                (
-                    total /
-                    target
-                ) *
-                100
-            )
-        );
-
-
-    targetText.textContent =
-        "Goal NPR " +
-        money(target);
-
-
-    targetPercent.textContent =
-        percentage +
-        "%";
-
-
-    targetBar.style.width =
-        percentage +
-        "%";
-
-}
-
 
 
 /* ================= PDF ================= */
 
-const pdfButton =
-    document.createElement(
-        "button"
-    );
+window.generateIncomePDF =
+    async function() {
+
+        const incomes =
+            getIncomes();
 
 
-pdfButton.type =
-    "button";
+        if (
+            incomes.length === 0
+        ) {
+
+            return;
+
+        }
 
 
-pdfButton.className =
-    "fixed bottom-5 right-5 z-30 rounded-full bg-emerald-600 hover:bg-emerald-500 px-5 py-3 shadow-xl text-xs font-bold";
+        const profileName =
+            getProfileValue(
+                "profile_name",
+                ""
+            );
 
+        const profileAddress =
+            getProfileValue(
+                "profile_address",
+                ""
+            );
 
-pdfButton.textContent =
-    "PDF";
+        const profileMobile =
+            getProfileValue(
+                "profile_mobile",
+                ""
+            );
 
+        const profileEmail =
+            getProfileValue(
+                "profile_email",
+                ""
+            );
 
-pdfButton.addEventListener(
-    "click",
-    generateSavingPDF
-);
-
-
-document.body.appendChild(
-    pdfButton
-);
-
-
-
-async function generateSavingPDF() {
-
-    const savings =
-        getSavings();
-
-
-    if (
-        savings.length === 0
-    ) {
-
-        showStatus(
-            "No saving records available for PDF.",
-            false
-        );
-
-        return;
-
-    }
-
-
-    const profileName =
-        getProfileValue(
-            "profile_name",
-            ""
-        );
-
-    const profileAddress =
-        getProfileValue(
-            "profile_address",
-            ""
-        );
-
-    const profileMobile =
-        getProfileValue(
-            "profile_mobile",
-            ""
-        );
-
-    const profileEmail =
-        getProfileValue(
-            "profile_email",
-            ""
-        );
-
-    const profileAvatar =
-        getProfileValue(
-            "profile_avatar",
-            ""
-        );
-
-
-    const sorted =
-        savings
-            .slice()
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    new Date(a.date) -
-                    new Date(b.date)
+        const profileAvatar =
+            getProfileValue(
+                "profile_avatar",
+                ""
             );
 
 
-    const total =
-        sorted.reduce(
-            (
-                sum,
-                item
-            ) =>
-                sum +
-                number(
-                    item.total ??
-                    item.amount
-                ),
-            0
-        );
+        const sorted =
+            incomes
+                .slice()
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        new Date(a.date) -
+                        new Date(b.date)
+                );
 
 
-    const avatar =
-        profileAvatar
-            ? `
-                <img
-                    src="${escapeAttribute(profileAvatar)}"
-                    style="
-                        width:70px;
-                        height:70px;
-                        border-radius:50%;
-                        object-fit:cover;
-                    "
-                >
-            `
-            : "";
-
-
-    const rows =
-        sorted
-            .map(
-                item => `
+        const rows =
+            sorted
+                .map(
+                    item => `
 
                     <tr>
 
@@ -2146,13 +1644,9 @@ async function generateSavingPDF() {
 
                         <td>
                             ${escapeHtml(
-                                item.title || ""
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.category || ""
+                                item.sourceName ||
+                                item.source ||
+                                ""
                             )}
                         </td>
 
@@ -2166,7 +1660,7 @@ async function generateSavingPDF() {
 
                         <td>
                             <b>
-                                NPR ${money(
+                                ${money(
                                     item.total ??
                                     item.amount
                                 )}
@@ -2174,255 +1668,304 @@ async function generateSavingPDF() {
                         </td>
 
                     </tr>
-
                 `
-            )
-            .join("");
+                )
+                .join("");
 
 
-    const html = `
+        const total =
+            sorted.reduce(
+                (
+                    sum,
+                    item
+                ) =>
+                    sum +
+                    number(
+                        item.total ??
+                        item.amount
+                    ),
+                0
+            );
 
-        <div class="pdf-page">
 
-
-            <div
-                style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    border-bottom:2px solid #16a34a;
-                    padding-bottom:15px;
-                    margin-bottom:20px;
-                "
-            >
-
-                <div>
-
-                    <div
+        const avatar =
+            profileAvatar
+                ? `
+                    <img
+                        src="${escapeAttribute(profileAvatar)}"
                         style="
-                            font-size:24px;
-                            font-weight:bold;
+                            width:70px;
+                            height:70px;
+                            border-radius:50%;
+                            object-fit:cover;
                         "
                     >
-                        Digital NoteBook
+                `
+                : "";
+
+
+        const html = `
+
+            <div class="pdf-page">
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        border-bottom:2px solid #16a34a;
+                        padding-bottom:15px;
+                        margin-bottom:20px;
+                    "
+                >
+
+                    <div>
+
+                        <div
+                            style="
+                                font-size:24px;
+                                font-weight:bold;
+                            "
+                        >
+                            Digital NoteBook
+                        </div>
+
+                        <div
+                            style="
+                                font-size:11px;
+                                color:#6b7280;
+                                margin-top:4px;
+                            "
+                        >
+                            Income Report
+                        </div>
+
                     </div>
 
-                    <div
-                        style="
-                            font-size:11px;
-                            color:#6b7280;
-                            margin-top:4px;
-                        "
-                    >
-                        Saving Report
-                    </div>
+                    ${avatar}
 
                 </div>
 
 
-                ${avatar}
+                <div
+                    style="
+                        background:#f8fafc;
+                        border:1px solid #e5e7eb;
+                        padding:15px;
+                        border-radius:8px;
+                        margin-bottom:20px;
+                        font-size:11px;
+                        line-height:1.7;
+                    "
+                >
+
+                    ${
+                        profileName
+                            ? `<div><b>Name:</b> ${escapeHtml(profileName)}</div>`
+                            : ""
+                    }
+
+                    ${
+                        profileAddress
+                            ? `<div><b>Address:</b> ${escapeHtml(profileAddress)}</div>`
+                            : ""
+                    }
+
+                    ${
+                        profileMobile
+                            ? `<div><b>Mobile:</b> ${escapeHtml(profileMobile)}</div>`
+                            : ""
+                    }
+
+                    ${
+                        profileEmail
+                            ? `<div><b>Email:</b> ${escapeHtml(profileEmail)}</div>`
+                            : ""
+                    }
+
+                </div>
+
+
+                <table
+                    style="
+                        width:100%;
+                        border-collapse:collapse;
+                        font-size:10px;
+                    "
+                >
+
+                    <thead>
+
+                        <tr
+                            style="
+                                background:#f1f5f9;
+                            "
+                        >
+
+                            <th
+                                style="padding:8px;text-align:left;"
+                            >
+                                Date
+                            </th>
+
+                            <th
+                                style="padding:8px;text-align:left;"
+                            >
+                                Source
+                            </th>
+
+                            <th
+                                style="padding:8px;text-align:left;"
+                            >
+                                NPR
+                            </th>
+
+                            <th
+                                style="padding:8px;text-align:left;"
+                            >
+                                INR
+                            </th>
+
+                            <th
+                                style="padding:8px;text-align:left;"
+                            >
+                                Total NPR
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+
+                <div
+                    style="
+                        margin-top:20px;
+                        padding:15px;
+                        background:#f0fdf4;
+                        border:1px solid #bbf7d0;
+                        text-align:right;
+                        font-size:18px;
+                        font-weight:bold;
+                    "
+                >
+                    Total Income:
+                    NPR ${money(total)}
+                </div>
+
+
+                <div
+                    style="
+                        text-align:center;
+                        color:#9ca3af;
+                        font-size:9px;
+                        margin-top:30px;
+                    "
+                >
+                    Generated by Digital NoteBook
+                </div>
 
             </div>
+        `;
 
 
-            <div
-                style="
-                    background:#f8fafc;
-                    border:1px solid #e5e7eb;
-                    padding:15px;
-                    border-radius:8px;
-                    margin-bottom:20px;
-                    font-size:11px;
-                    line-height:1.7;
-                "
-            >
-
-                ${
-                    profileName
-                        ? `<div><b>Name:</b> ${escapeHtml(profileName)}</div>`
-                        : ""
-                }
-
-                ${
-                    profileAddress
-                        ? `<div><b>Address:</b> ${escapeHtml(profileAddress)}</div>`
-                        : ""
-                }
-
-                ${
-                    profileMobile
-                        ? `<div><b>Mobile:</b> ${escapeHtml(profileMobile)}</div>`
-                        : ""
-                }
-
-                ${
-                    profileEmail
-                        ? `<div><b>Email:</b> ${escapeHtml(profileEmail)}</div>`
-                        : ""
-                }
-
-            </div>
+        const pdfArea =
+            document.getElementById(
+                "pdfArea"
+            );
 
 
-            <table
-                style="
-                    width:100%;
-                    border-collapse:collapse;
-                    font-size:10px;
-                "
-            >
+        pdfArea.innerHTML =
+            html;
 
-                <thead>
-
-                    <tr
-                        style="
-                            background:#f1f5f9;
-                        "
-                    >
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            Date
-                        </th>
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            Title
-                        </th>
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            Category
-                        </th>
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            NPR
-                        </th>
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            INR
-                        </th>
-
-                        <th
-                            style="padding:8px;text-align:left;"
-                        >
-                            Total NPR
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    ${rows}
-
-                </tbody>
-
-            </table>
-
-
-            <div
-                style="
-                    margin-top:20px;
-                    padding:15px;
-                    background:#f0fdf4;
-                    border:1px solid #bbf7d0;
-                    text-align:right;
-                    font-size:18px;
-                    font-weight:bold;
-                "
-            >
-
-                Total Saving:
-                NPR ${money(total)}
-
-            </div>
-
-
-            <div
-                style="
-                    text-align:center;
-                    color:#9ca3af;
-                    font-size:9px;
-                    margin-top:30px;
-                "
-            >
-                Generated by Digital NoteBook
-            </div>
-
-
-        </div>
-    `;
-
-
-    const pdfArea =
-        document.getElementById(
-            "pdfArea"
-        );
-
-
-    pdfArea.innerHTML =
-        html;
-
-
-    pdfArea.classList.remove(
-        "hidden"
-    );
-
-
-    try {
-
-        await html2pdf()
-            .set({
-
-                margin: 0,
-
-                filename:
-                    "Saving_Report.pdf",
-
-                image: {
-                    type: "jpeg",
-                    quality: 0.95
-                },
-
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                },
-
-                jsPDF: {
-                    unit: "pt",
-                    format: "a4",
-                    orientation: "portrait"
-                }
-
-            })
-            .from(pdfArea)
-            .save();
-
-    } finally {
-
-        pdfArea.classList.add(
+        pdfArea.classList.remove(
             "hidden"
         );
 
-        pdfArea.innerHTML =
-            "";
+
+        try {
+
+            await html2pdf()
+                .set({
+
+                    margin: 0,
+
+                    filename:
+                        "Income_Report.pdf",
+
+                    image: {
+                        type: "jpeg",
+                        quality: 0.95
+                    },
+
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    },
+
+                    jsPDF: {
+                        unit: "pt",
+                        format: "a4",
+                        orientation: "portrait"
+                    }
+
+                })
+                .from(pdfArea)
+                .save();
+
+        } finally {
+
+            pdfArea.classList.add(
+                "hidden"
+            );
+
+            pdfArea.innerHTML =
+                "";
+
+        }
+
+    };
+
+
+/* ================= PDF BUTTON ================= */
+
+const pdfButton =
+    document.createElement(
+        "button"
+    );
+
+
+pdfButton.type =
+    "button";
+
+pdfButton.className =
+    "fixed bottom-5 right-5 z-30 rounded-full bg-emerald-600 hover:bg-emerald-500 px-5 py-3 shadow-xl text-xs font-bold";
+
+pdfButton.textContent =
+    "PDF";
+
+
+pdfButton.addEventListener(
+    "click",
+    function() {
+
+        window.generateIncomePDF();
 
     }
+);
 
-}
 
+document.body.appendChild(
+    pdfButton
+);
 
 
 /* ================= ESCAPE ================= */
@@ -2469,19 +2012,16 @@ function escapeAttribute(
 }
 
 
-
 /* ================= START ================= */
 
-savingDate.value =
+incomeDate.value =
     today();
 
 loadProfile();
 
 calculateTotal();
 
-renderSavings();
-
-updateTargetUI();
+renderIncomes();
 
 </script>
 
