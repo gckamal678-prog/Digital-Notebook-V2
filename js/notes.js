@@ -1,15 +1,6 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
-   NOTES DATA ENGINE
-
-   Responsibilities:
-   - Notes CRUD
-   - Local storage
-   - Legacy V1 migration
-   - Firebase sync
-   - Search
-   - Category filtering
-   - Date filtering
+   NOTEBOOK DATA ENGINE
 ========================================================= */
 
 import {
@@ -22,782 +13,457 @@ import {
     deleteCloudRecord
 } from "./sync.js";
 
-
-/* =========================================================
-   STORAGE CONFIGURATION
-========================================================= */
-
-const STORAGE_KEY =
-    "notes";
-
+const STORAGE_KEY = "notes";
 
 const LEGACY_KEYS = [
-
     "notes",
-
     "note",
-
     "notebook",
-
     "notebooks",
-
     "noteData",
-
     "notesData",
-
     "noteRecords",
-
     "noteHistory",
-
     "digital_notebook_notes"
-
 ];
 
-
-/* =========================================================
-   DATE HELPER
-========================================================= */
-
-function getToday() {
-
-    const date =
-        new Date();
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-/* =========================================================
-   ID GENERATOR
-========================================================= */
-
 function createId() {
-
     return (
-        "note_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 8)
+        Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 8)
     );
-
 }
 
+function nowISO() {
+    return new Date().toISOString();
+}
 
-/* =========================================================
-   NORMALIZE NOTE
-========================================================= */
-
-function normalizeNote(
-    record
-) {
-
+function normalizeBoolean(value) {
     if (
-        !record ||
-        typeof record !== "object"
+        value === true ||
+        value === 1 ||
+        value === "1" ||
+        value === "true"
     ) {
-
-        return null;
-
+        return true;
     }
 
+    return false;
+}
 
-    const now =
-        Date.now();
-
+function normalizeNote(item = {}) {
+    const id =
+        item.id !== undefined &&
+        item.id !== null &&
+        String(item.id).trim() !== ""
+            ? String(item.id)
+            : createId();
 
     return {
+        id,
 
-        id:
-            record.id ||
-            createId(),
+        title: String(
+            item.title ??
+            item.name ??
+            ""
+        ).trim(),
 
+        content: String(
+            item.content ??
+            item.text ??
+            item.note ??
+            ""
+        ),
 
-        title:
-            String(
-                record.title ??
-                record.heading ??
-                record.name ??
-                ""
-            ).trim(),
-
-
-        content:
-            String(
-                record.content ??
-                record.text ??
-                record.note ??
-                record.description ??
-                ""
-            ),
-
-
-        category:
-            String(
-                record.category ??
-                ""
-            ).trim(),
-
+        category: String(
+            item.category ?? ""
+        ).trim(),
 
         date:
-            record.date ||
-            getToday(),
-
+            item.date ||
+            new Date().toISOString().slice(0, 10),
 
         pinned:
-            !!record.pinned,
-
+            normalizeBoolean(
+                item.pinned ??
+                item.isPinned
+            ),
 
         createdAt:
-            record.createdAt ||
-            now,
-
+            item.createdAt ||
+            nowISO(),
 
         updatedAt:
-            record.updatedAt ||
-            record.createdAt ||
-            now
-
+            item.updatedAt ||
+            nowISO()
     };
-
 }
 
+function getNotes() {
+    const result = getDataWithLegacy(
+        STORAGE_KEY,
+        [],
+        LEGACY_KEYS
+    );
 
-/* =========================================================
-   GET ALL NOTES
-========================================================= */
-
-export function getNotes() {
-
-    const data =
-        getDataWithLegacy(
-            STORAGE_KEY,
-            LEGACY_KEYS,
-            []
-        );
-
-
-    if (
-        !Array.isArray(data)
-    ) {
-
-        return [];
-
-    }
-
-
-    return data
-        .map(
-            normalizeNote
-        )
-        .filter(
-            Boolean
-        );
-
+    return (
+        Array.isArray(result)
+            ? result
+            : []
+    ).map(normalizeNote);
 }
 
-
-/* =========================================================
-   SAVE ALL NOTES
-========================================================= */
-
-export function saveNotes(
-    notes
-) {
-
-    if (
-        !Array.isArray(notes)
-    ) {
-
-        return false;
-
-    }
-
-
+function saveNotes(notes) {
     const normalized =
-        notes
-            .map(
-                normalizeNote
-            )
-            .filter(
-                Boolean
-            );
+        Array.isArray(notes)
+            ? notes.map(normalizeNote)
+            : [];
 
+    saveData(
+        STORAGE_KEY,
+        normalized
+    );
 
-    const saved =
-        saveData(
-            STORAGE_KEY,
-            normalized
-        );
+    scheduleSync(
+        STORAGE_KEY,
+        normalized
+    );
 
-
-    if (
-        saved
-    ) {
-
-        scheduleSync(
-            STORAGE_KEY,
-            normalized
-        );
-
-    }
-
-
-    return saved;
-
+    return normalized;
 }
 
+function addNote(data = {}) {
+    const notes = getNotes();
 
-/* =========================================================
-   ADD NOTE
-========================================================= */
-
-export function addNote(
-    noteData = {}
-) {
-
-    const notes =
-        getNotes();
-
-
-    const now =
-        Date.now();
-
-
-    const note = {
+    const note = normalizeNote({
+        ...data,
 
         id:
-            noteData.id ||
+            data.id ||
             createId(),
 
-
-        title:
-            String(
-                noteData.title ??
-                noteData.heading ??
-                noteData.name ??
-                ""
-            ).trim(),
-
-
-        content:
-            String(
-                noteData.content ??
-                noteData.text ??
-                noteData.note ??
-                ""
-            ),
-
-
-        category:
-            String(
-                noteData.category ??
-                ""
-            ).trim(),
-
-
-        date:
-            noteData.date ||
-            getToday(),
-
-
-        pinned:
-            !!noteData.pinned,
-
-
         createdAt:
-            noteData.createdAt ||
-            now,
-
+            data.createdAt ||
+            nowISO(),
 
         updatedAt:
-            now
+            nowISO()
+    });
 
-    };
+    notes.push(note);
 
-
-    notes.push(
-        note
-    );
-
-
-    saveNotes(
-        notes
-    );
-
+    saveNotes(notes);
 
     return note;
-
 }
 
-
-/* =========================================================
-   UPDATE NOTE
-========================================================= */
-
-export function updateNote(
+function updateNote(
     id,
-    changes = {}
+    data = {}
 ) {
-
-    const notes =
-        getNotes();
-
+    const notes = getNotes();
 
     const index =
         notes.findIndex(
-            (item) =>
-                item.id === id
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-
-    if (
-        index === -1
-    ) {
-
+    if (index === -1) {
         return null;
-
     }
 
+    const updated =
+        normalizeNote({
+            ...notes[index],
+            ...data,
 
-    const oldNote =
-        notes[index];
+            id:
+                notes[index].id,
 
+            createdAt:
+                notes[index].createdAt,
 
-    const updated = {
-
-        ...oldNote,
-
-        ...changes,
-
-        id:
-            oldNote.id,
-
-
-        updatedAt:
-            Date.now()
-
-    };
-
-
-    updated.title =
-        String(
-            updated.title ??
-            ""
-        ).trim();
-
-
-    updated.content =
-        String(
-            updated.content ??
-            ""
-        );
-
-
-    updated.category =
-        String(
-            updated.category ??
-            ""
-        ).trim();
-
-
-    updated.pinned =
-        !!updated.pinned;
-
+            updatedAt:
+                nowISO()
+        });
 
     notes[index] =
         updated;
 
+    saveNotes(notes);
 
-    saveNotes(
+    return updated;
+}
+
+async function deleteNote(id) {
+    const notes = getNotes();
+
+    const index =
+        notes.findIndex(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (index === -1) {
+        return false;
+    }
+
+    const removed =
+        notes[index];
+
+    notes.splice(
+        index,
+        1
+    );
+
+    saveData(
+        STORAGE_KEY,
         notes
     );
 
-
-    return updated;
-
-}
-
-
-/* =========================================================
-   DELETE NOTE
-========================================================= */
-
-export async function deleteNote(
-    id
-) {
-
-    const notes =
-        getNotes();
-
-
-    const exists =
-        notes.some(
-            (item) =>
-                item.id === id
-        );
-
-
-    if (!exists) {
-
-        return false;
-
-    }
-
-
-    const filtered =
-        notes.filter(
-            (item) =>
-                item.id !== id
-        );
-
-
-    saveNotes(
-        filtered
+    await deleteCloudRecord(
+        STORAGE_KEY,
+        removed.id
     );
 
-
-    /*
-       Remove cloud copy when
-       user is logged in.
-
-       Guest mode safely skips it.
-    */
-
-    try {
-
-        await deleteCloudRecord(
-            STORAGE_KEY,
-            id
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "Cloud note delete skipped:",
-            error
-        );
-
-    }
-
+    scheduleSync(
+        STORAGE_KEY,
+        notes
+    );
 
     return true;
-
 }
 
-
-/* =========================================================
-   GET NOTE BY ID
-========================================================= */
-
-export function getNoteById(
-    id
-) {
-
-    const notes =
-        getNotes();
-
-
+function getNoteById(id) {
     return (
-        notes.find(
-            (item) =>
-                item.id === id
-        ) ||
-        null
+        getNotes().find(
+            item =>
+                String(item.id) ===
+                String(id)
+        ) || null
     );
-
 }
 
-
-/* =========================================================
-   GET NOTES BY CATEGORY
-========================================================= */
-
-export function getNotesByCategory(
-    category
+function filterNotes(
+    notes = getNotes(),
+    filters = {}
 ) {
+    const {
+        category,
+        search,
+        pinned,
+        startDate,
+        endDate
+    } = filters;
 
-    const target =
-        String(
-            category || ""
-        )
-        .trim()
-        .toLowerCase();
+    return notes.filter(item => {
+        if (
+            category &&
+            item.category !== category
+        ) {
+            return false;
+        }
 
+        if (
+            pinned !== undefined &&
+            Boolean(item.pinned) !==
+            Boolean(pinned)
+        ) {
+            return false;
+        }
 
-    if (!target) {
+        if (
+            startDate &&
+            item.date < startDate
+        ) {
+            return false;
+        }
 
-        return getNotes();
+        if (
+            endDate &&
+            item.date > endDate
+        ) {
+            return false;
+        }
 
-    }
-
-
-    return getNotes().filter(
-        (note) =>
-            String(
-                note.category || ""
-            )
-            .trim()
-            .toLowerCase() ===
-            target
-    );
-
-}
-
-
-/* =========================================================
-   GET NOTES BY DATE
-========================================================= */
-
-export function getNotesByDate(
-    date
-) {
-
-    return getNotes().filter(
-        (note) =>
-            note.date === date
-    );
-
-}
-
-
-/* =========================================================
-   GET PINNED NOTES
-========================================================= */
-
-export function getPinnedNotes() {
-
-    return getNotes().filter(
-        (note) =>
-            note.pinned === true
-    );
-
-}
-
-
-/* =========================================================
-   SEARCH NOTES
-========================================================= */
-
-export function searchNotes(
-    query
-) {
-
-    const target =
-        String(
-            query || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    if (!target) {
-
-        return getNotes();
-
-    }
-
-
-    return getNotes().filter(
-        (note) => {
+        if (search) {
+            const query =
+                String(search)
+                    .toLowerCase()
+                    .trim();
 
             const text = [
-
-                note.title,
-
-                note.content,
-
-                note.category,
-
-                note.date
-
+                item.title,
+                item.content,
+                item.category,
+                item.date
             ]
-            .join(" ")
-            .toLowerCase();
+                .join(" ")
+                .toLowerCase();
 
-
-            return text.includes(
-                target
-            );
-
+            if (
+                !text.includes(query)
+            ) {
+                return false;
+            }
         }
-    );
 
+        return true;
+    });
 }
 
+function searchNotes(
+    query,
+    notes = getNotes()
+) {
+    return filterNotes(
+        notes,
+        { search: query }
+    );
+}
 
-/* =========================================================
-   GET RECENT NOTES
-========================================================= */
-
-export function getRecentNotes(
+function getRecentNotes(
     limit = 10
 ) {
-
-    const count =
-        Math.max(
-            0,
-            Number(limit) || 0
-        );
-
-
-    return getNotes()
+    return [...getNotes()]
         .sort(
-            (
-                a,
-                b
-            ) =>
-                (
-                    Number(
-                        b.updatedAt
-                    ) || 0
+            (a, b) =>
+                new Date(
+                    b.updatedAt ||
+                    b.date ||
+                    b.createdAt
                 ) -
-                (
-                    Number(
-                        a.updatedAt
-                    ) || 0
+                new Date(
+                    a.updatedAt ||
+                    a.date ||
+                    a.createdAt
                 )
         )
-        .slice(
-            0,
-            count
-        );
-
+        .slice(0, limit);
 }
 
-
-/* =========================================================
-   GET NOTE CATEGORIES
-========================================================= */
-
-export function getNoteCategories() {
-
-    const categories =
-        getNotes()
-            .map(
-                (note) =>
-                    note.category
-            )
-            .filter(
-                (category) =>
-                    !!category
-            );
-
-
-    return [
-        ...new Set(
-            categories
+function getPinnedNotes() {
+    return getNotes()
+        .filter(
+            note => note.pinned
         )
-    ];
-
+        .sort(
+            (a, b) =>
+                new Date(
+                    b.updatedAt
+                ) -
+                new Date(
+                    a.updatedAt
+                )
+        );
 }
 
+function toggleNotePin(id) {
+    const notes = getNotes();
 
-/* =========================================================
-   PIN / UNPIN NOTE
-========================================================= */
-
-export function toggleNotePin(
-    id
-) {
-
-    const note =
-        getNoteById(
-            id
+    const index =
+        notes.findIndex(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-
-    if (!note) {
-
+    if (index === -1) {
         return null;
-
     }
 
+    notes[index] =
+        normalizeNote({
+            ...notes[index],
 
-    return updateNote(
-        id,
-        {
             pinned:
-                !note.pinned
-        }
-    );
+                !notes[index].pinned,
 
+            updatedAt:
+                nowISO()
+        });
+
+    saveNotes(notes);
+
+    return notes[index];
 }
 
+function getNoteCategories(
+    notes = getNotes()
+) {
+    return [
+        ...new Set(
+            notes
+                .map(
+                    note =>
+                        note.category
+                )
+                .filter(Boolean)
+        )
+    ];
+}
 
-/* =========================================================
-   CLEAR ALL NOTES
-========================================================= */
+function getNotesByDate(
+    date,
+    notes = getNotes()
+) {
+    return notes.filter(
+        note =>
+            note.date === date
+    );
+}
 
-export function clearNotes() {
-
-    saveNotes(
+function clearNotes() {
+    saveData(
+        STORAGE_KEY,
         []
     );
 
+    scheduleSync(
+        STORAGE_KEY,
+        []
+    );
 
     return true;
-
 }
 
-
-/* =========================================================
-   DEFAULT EXPORT
-========================================================= */
+export {
+    STORAGE_KEY,
+    getNotes,
+    saveNotes,
+    addNote,
+    updateNote,
+    deleteNote,
+    getNoteById,
+    filterNotes,
+    searchNotes,
+    getRecentNotes,
+    getPinnedNotes,
+    toggleNotePin,
+    getNoteCategories,
+    getNotesByDate,
+    clearNotes,
+    normalizeNote
+};
 
 export default {
-
+    STORAGE_KEY,
     getNotes,
-
     saveNotes,
-
     addNote,
-
     updateNote,
-
     deleteNote,
-
     getNoteById,
-
-    getNotesByCategory,
-
-    getNotesByDate,
-
-    getPinnedNotes,
-
+    filterNotes,
     searchNotes,
-
     getRecentNotes,
-
-    getNoteCategories,
-
+    getPinnedNotes,
     toggleNotePin,
-
-    clearNotes
-
+    getNoteCategories,
+    getNotesByDate,
+    clearNotes,
+    normalizeNote
 };
