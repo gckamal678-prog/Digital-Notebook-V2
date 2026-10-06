@@ -1,342 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
-
-    <meta
-        name="theme-color"
-        content="#0f172a"
-    >
-
-    <meta
-        name="description"
-        content="Digital NoteBook - Personal Finance Manager"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     >
 
     <title>Digital NoteBook</title>
 
+    <meta
+        name="theme-color"
+        content="#020617"
+    >
+
+    <meta
+        name="description"
+        content="Digital NoteBook"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="Digital NoteBook"
+    >
+
     <link
         rel="manifest"
-        href="./manifest.json"
+        href="manifest.json"
     >
 
     <link
-        rel="icon"
-        type="image/png"
-        href="./assets/N1024.png"
+        rel="apple-touch-icon"
+        href="assets/N1024.png"
     >
 
-    <link
-        rel="stylesheet"
-        href="./css/app.css"
-    >
-
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+    <!-- App CSS -->
     <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet"
+        href="css/app.css"
     >
 
     <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            background: #f8fafc;
-            color: #0f172a;
-        }
 
-        html[data-theme="dark"] body {
+        html,
+        body {
             background: #020617;
             color: #f8fafc;
         }
 
-        html[data-theme="dark"] .app-card {
-            background: #0f172a !important;
-            border-color: #1e293b !important;
-            color: #f8fafc;
+        body {
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
         }
 
-        html[data-theme="dark"] .muted-text {
-            color: #94a3b8 !important;
+        .card {
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(51, 65, 85, 0.75);
         }
 
-        html[data-theme="dark"] .soft-bg {
-            background: #1e293b !important;
+        .action-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(51, 65, 85, 0.7);
+            transition: 0.2s ease;
         }
 
-        .amount {
-            font-variant-numeric: tabular-nums;
+        .action-card:hover {
+            border-color: rgba(16, 185, 129, 0.55);
+            transform: translateY(-1px);
         }
 
-        .sidebar-overlay {
-            display: none;
+        .summary-card {
+            min-height: 105px;
         }
 
-        @media (max-width: 767px) {
-
-            #sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.25s ease;
-            }
-
-            #sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
+        .recent-row {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(51, 65, 85, 0.55);
         }
 
-        @media (min-width: 768px) {
-
-            #sidebar {
-                transform: translateX(0) !important;
-            }
-
-            #menu-button {
-                display: none;
-            }
-
-            #close-sidebar {
-                display: none;
-            }
-
-            #main-content {
-                margin-left: 18rem;
-            }
+        .recent-row:hover {
+            border-color: rgba(16, 185, 129, 0.4);
         }
+
+        .hide-amount {
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 380px) {
+
+            .summary-card {
+                min-height: 96px;
+            }
+
+            .summary-value {
+                font-size: 12px;
+            }
+
+        }
+
     </style>
+
 </head>
 
-<body>
+
+<body class="bg-slate-950 text-slate-100">
 
 <!-- =========================================================
-     MOBILE SIDEBAR OVERLAY
+     HEADER
 ========================================================= -->
 
-<div
-    id="sidebar-overlay"
-    class="sidebar-overlay fixed inset-0 bg-black/50 z-40"
-></div>
+<header
+    class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
+>
+
+    <div
+        class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3"
+    >
+
+        <!-- Menu -->
+
+        <button
+            id="menuBtn"
+            type="button"
+            class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center"
+        >
+            <i class="fa-solid fa-bars text-slate-300"></i>
+        </button>
+
+
+        <!-- Logo -->
+
+        <div
+            class="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 border border-emerald-500/30 flex-shrink-0"
+        >
+
+            <img
+                src="assets/N1024.png"
+                alt="Digital NoteBook"
+                class="w-full h-full object-cover"
+                onerror="this.style.display='none'"
+            >
+
+        </div>
+
+
+        <!-- Title -->
+
+        <div class="flex-1 min-w-0">
+
+            <h1
+                class="font-bold text-sm truncate"
+            >
+                Digital NoteBook
+            </h1>
+
+            <p
+                id="headerDate"
+                class="text-[10px] text-slate-500 truncate"
+            >
+                Dashboard
+            </p>
+
+        </div>
+
+
+        <!-- ENG / NEP -->
+
+        <button
+            id="languageToggle"
+            type="button"
+            class="h-8 px-2.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-200"
+        >
+            NEP
+        </button>
+
+
+        <!-- Privacy -->
+
+        <button
+            id="privacyBtn"
+            type="button"
+            class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center"
+        >
+
+            <i
+                id="privacyIcon"
+                class="fa-solid fa-eye text-slate-300 text-xs"
+            ></i>
+
+        </button>
+
+
+        <!-- Profile -->
+
+        <a
+            href="account.html"
+            class="w-9 h-9 rounded-full overflow-hidden bg-slate-800 border border-slate-700 flex-shrink-0"
+        >
+
+            <img
+                id="headerAvatar"
+                src="assets/N1024.png"
+                alt="Profile"
+                class="w-full h-full object-cover"
+            >
+
+        </a>
+
+    </div>
+
+</header>
 
 
 <!-- =========================================================
      SIDEBAR
 ========================================================= -->
 
+<div
+    id="sidebarOverlay"
+    class="fixed inset-0 bg-black/60 z-40 hidden"
+></div>
+
+
 <aside
     id="sidebar"
-    class="fixed left-0 top-0 bottom-0 w-72 bg-slate-950 text-white z-50 shadow-2xl"
+    class="fixed top-0 left-0 bottom-0 z-50 w-72 bg-slate-950 border-r border-slate-800 transform -translate-x-full transition-transform duration-200"
 >
 
     <div class="h-full flex flex-col">
 
-        <!-- Logo -->
-        <div class="p-5 border-b border-slate-800">
+        <!-- Sidebar header -->
 
-            <div class="flex items-center justify-between">
+        <div
+            class="px-4 py-4 border-b border-slate-800 flex items-center gap-3"
+        >
 
-                <a
-                    href="./index.html"
-                    class="flex items-center gap-3"
+            <div
+                class="w-10 h-10 rounded-xl overflow-hidden bg-slate-800"
+            >
+
+                <img
+                    id="sidebarAvatar"
+                    src="assets/N1024.png"
+                    alt="Profile"
+                    class="w-full h-full object-cover"
                 >
-
-                    <img
-                        src="./assets/N1024.png"
-                        alt="Digital NoteBook"
-                        class="w-11 h-11 rounded-xl object-cover"
-                    >
-
-                    <div>
-                        <div class="font-bold text-lg">
-                            Digital NoteBook
-                        </div>
-
-                        <div class="text-xs text-slate-400">
-                            Personal Finance
-                        </div>
-                    </div>
-
-                </a>
-
-                <button
-                    id="close-sidebar"
-                    class="w-9 h-9 rounded-lg bg-slate-800 text-slate-300"
-                    aria-label="Close menu"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
 
             </div>
 
-        </div>
+            <div class="flex-1 min-w-0">
 
-
-        <!-- Profile -->
-        <div class="px-5 py-4 border-b border-slate-800">
-
-            <div class="flex items-center gap-3">
-
-                <div
-                    id="sidebar-avatar"
-                    class="w-11 h-11 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden"
+                <p
+                    id="sidebarName"
+                    class="text-sm font-bold truncate"
                 >
-                    <i
-                        id="sidebar-avatar-icon"
-                        class="fa-solid fa-user text-slate-400"
-                    ></i>
-                </div>
+                    Guest
+                </p>
 
-                <div class="min-w-0">
-
-                    <div
-                        id="sidebar-name"
-                        class="font-semibold truncate"
-                    >
-                        Guest User
-                    </div>
-
-                    <div
-                        id="sidebar-status"
-                        class="text-xs text-slate-400"
-                    >
-                        Local Mode
-                    </div>
-
-                </div>
+                <p
+                    class="text-[10px] text-slate-500"
+                >
+                    Digital NoteBook
+                </p>
 
             </div>
+
+            <button
+                id="closeSidebar"
+                type="button"
+                class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
         </div>
 
 
         <!-- Navigation -->
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+
+        <nav
+            class="p-3 space-y-1 overflow-y-auto flex-1"
+        >
 
             <a
-                href="./index.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white"
+                href="index.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl bg-emerald-600 text-white"
             >
-                <i class="fa-solid fa-house w-5"></i>
-                <span data-i18n="dashboard">Dashboard</span>
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                <span>Dashboard</span>
             </a>
 
 
             <a
-                href="./add-income.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="add-income.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
-                <span data-i18n="income">Income</span>
+                <i class="fa-solid fa-money-bill-trend-up w-5 text-center"></i>
+                <span>Income</span>
             </a>
 
 
             <a
-                href="./add-saving.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="add-saving.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-piggy-bank w-5"></i>
-                <span data-i18n="saving">Saving</span>
+                <i class="fa-solid fa-piggy-bank w-5 text-center"></i>
+                <span>Saving</span>
             </a>
 
 
             <a
-                href="./add-transaction.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="add-transaction.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-arrow-right-arrow-left w-5"></i>
-                <span data-i18n="transaction">Transaction</span>
+                <i class="fa-solid fa-right-left w-5 text-center"></i>
+                <span>Transaction</span>
             </a>
 
 
             <a
-                href="./notebook.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="notebook.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-book w-5"></i>
-                <span data-i18n="notebook">Notebook</span>
+                <i class="fa-solid fa-book w-5 text-center"></i>
+                <span>Notebook</span>
             </a>
 
 
             <a
-                href="./calendar.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="calendar.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-calendar-days w-5"></i>
-                <span data-i18n="calendar">Calendar</span>
+                <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+                <span>Calendar</span>
             </a>
 
 
             <a
-                href="./calculate.html"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
+                href="calculate.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
             >
-                <i class="fa-solid fa-calculator w-5"></i>
-                <span data-i18n="calculator">Calculator</span>
+                <i class="fa-solid fa-calculator w-5 text-center"></i>
+                <span>Calculate</span>
             </a>
 
 
-            <div class="pt-4 mt-4 border-t border-slate-800">
-
-                <a
-                    href="./account.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
-                >
-                    <i class="fa-solid fa-user-circle w-5"></i>
-                    <span data-i18n="account">Account</span>
-                </a>
+            <a
+                href="qrscan.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
+            >
+                <i class="fa-solid fa-qrcode w-5 text-center"></i>
+                <span>QR Scan</span>
+            </a>
 
 
-                <a
-                    href="./setting.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
-                >
-                    <i class="fa-solid fa-gear w-5"></i>
-                    <span data-i18n="settings">Settings</span>
-                </a>
+            <div class="h-px bg-slate-800 my-3"></div>
 
 
-                <a
-                    href="./qrscan.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800"
-                >
-                    <i class="fa-solid fa-qrcode w-5"></i>
-                    <span>QR Scan</span>
-                </a>
+            <a
+                href="account.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
+            >
+                <i class="fa-solid fa-user w-5 text-center"></i>
+                <span>Account</span>
+            </a>
 
-            </div>
+
+            <a
+                href="setting.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
+            >
+                <i class="fa-solid fa-gear w-5 text-center"></i>
+                <span>Setting</span>
+            </a>
 
         </nav>
 
 
-        <!-- Footer -->
-        <div class="p-4 border-t border-slate-800">
+        <!-- Sidebar footer -->
 
-            <div class="text-xs text-slate-500 text-center">
+        <div
+            class="p-4 border-t border-slate-800"
+        >
+
+            <p
+                class="text-[10px] text-slate-600 text-center"
+            >
                 Digital NoteBook V2
-            </div>
+            </p>
 
         </div>
 
@@ -349,2095 +422,1890 @@
      MAIN
 ========================================================= -->
 
-<div
-    id="main-content"
-    class="min-h-screen"
+<main
+    class="max-w-5xl mx-auto px-4 py-4 pb-10"
 >
 
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         GREETING
+    ====================================================== -->
 
-    <header
-        class="
-            sticky
-            top-0
-            z-30
-            bg-white/90
-            backdrop-blur
-            border-b
-            border-slate-200
-            dark:bg-slate-950/90
-            dark:border-slate-800
-        "
+    <section
+        class="card rounded-2xl p-4 mb-4"
     >
 
         <div
-            class="
-                px-4
-                sm:px-6
-                py-3
-                flex
-                items-center
-                justify-between
-                gap-3
-            "
+            class="flex items-center justify-between gap-3"
         >
 
-            <div class="flex items-center gap-3">
+            <div class="min-w-0">
 
-                <button
-                    id="menu-button"
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-slate-100
-                        dark:bg-slate-800
-                    "
-                    aria-label="Open menu"
+                <p
+                    id="todayText"
+                    class="text-[10px] text-emerald-400 font-semibold uppercase tracking-wide"
                 >
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+                    Today
+                </p>
 
-                <div>
+                <h2
+                    id="greeting"
+                    class="text-lg font-bold mt-1 truncate"
+                >
+                    Welcome
+                </h2>
 
-                    <h1
-                        class="
-                            font-bold
-                            text-lg
-                            sm:text-xl
-                        "
-                        data-i18n="dashboard"
-                    >
-                        Dashboard
-                    </h1>
-
-                    <p
-                        id="today-date"
-                        class="
-                            text-xs
-                            muted-text
-                            text-slate-500
-                        "
-                    ></p>
-
-                </div>
+                <p
+                    class="text-[11px] text-slate-500 mt-1"
+                >
+                    Your financial overview
+                </p>
 
             </div>
 
 
-            <div class="flex items-center gap-2">
+            <a
+                href="qrscan.html"
+                class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0"
+            >
 
-                <button
-                    id="language-button"
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-slate-100
-                        dark:bg-slate-800
-                    "
-                    title="Language"
-                >
-                    <i class="fa-solid fa-language"></i>
-                </button>
+                <i
+                    class="fa-solid fa-qrcode text-emerald-400"
+                ></i>
 
-
-                <button
-                    id="theme-button"
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-slate-100
-                        dark:bg-slate-800
-                    "
-                    title="Theme"
-                >
-                    <i
-                        id="theme-icon"
-                        class="fa-solid fa-moon"
-                    ></i>
-                </button>
-
-
-                <button
-                    id="privacy-button"
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-slate-100
-                        dark:bg-slate-800
-                    "
-                    title="Hide amounts"
-                >
-                    <i
-                        id="privacy-icon"
-                        class="fa-solid fa-eye"
-                    ></i>
-                </button>
-
-            </div>
+            </a>
 
         </div>
 
-    </header>
+    </section>
 
 
-    <!-- CONTENT -->
+    <!-- =====================================================
+         SUMMARY CARDS
+    ====================================================== -->
 
-    <main
-        class="
-            p-4
-            sm:p-6
-            max-w-7xl
-            mx-auto
-        "
+    <section
+        class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-5"
     >
 
 
-        <!-- Welcome -->
+        <!-- Income -->
 
-        <section class="mb-5">
-
-            <div
-                class="
-                    app-card
-                    bg-gradient-to-r
-                    from-blue-600
-                    to-indigo-600
-                    text-white
-                    rounded-2xl
-                    p-5
-                    sm:p-6
-                    shadow-lg
-                "
-            >
-
-                <div
-                    class="
-                        flex
-                        items-center
-                        justify-between
-                        gap-4
-                    "
-                >
-
-                    <div>
-
-                        <p class="text-blue-100 text-sm">
-                            Welcome
-                        </p>
-
-                        <h2
-                            id="welcome-name"
-                            class="
-                                text-2xl
-                                sm:text-3xl
-                                font-bold
-                                mt-1
-                            "
-                        >
-                            Guest User
-                        </h2>
-
-                        <p
-                            class="
-                                text-blue-100
-                                text-sm
-                                mt-2
-                            "
-                        >
-                            Manage your income, saving and transactions easily.
-                        </p>
-
-                    </div>
-
-                    <div
-                        class="
-                            hidden
-                            sm:block
-                            text-5xl
-                            opacity-20
-                        "
-                    >
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SUMMARY CARDS -->
-
-        <section
-            class="
-                grid
-                grid-cols-2
-                lg:grid-cols-4
-                gap-3
-                sm:gap-4
-                mb-5
-            "
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
         >
 
-            <!-- Balance -->
-
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
-            >
-
-                <div class="flex items-center justify-between">
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-xl
-                            bg-blue-100
-                            text-blue-600
-                            flex
-                            items-center
-                            justify-center
-                        "
-                    >
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-
-                </div>
-
-                <p class="text-xs text-slate-500 mt-3">
-                    Balance
-                </p>
-
-                <h3
-                    id="total-balance"
-                    class="
-                        amount
-                        text-lg
-                        sm:text-xl
-                        font-bold
-                        mt-1
-                    "
-                >
-                    NPR 0
-                </h3>
-
+            <div class="text-emerald-400 text-lg">
+                <i class="fa-solid fa-arrow-down"></i>
             </div>
 
-
-            <!-- Income -->
-
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Total Income"
+                data-ne="कुल आम्दानी"
             >
+                Total Income
+            </p>
 
-                <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-green-100
-                        text-green-600
-                        flex
-                        items-center
-                        justify-center
-                    "
-                >
-                    <i class="fa-solid fa-arrow-down"></i>
-                </div>
+            <p
+                id="summaryIncome"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
 
-                <p class="text-xs text-slate-500 mt-3">
-                    Income
-                </p>
+        </div>
 
-                <h3
-                    id="total-income"
-                    class="
-                        amount
-                        text-lg
-                        sm:text-xl
-                        font-bold
-                        text-green-600
-                        mt-1
-                    "
-                >
-                    NPR 0
-                </h3>
 
-                <div
-                    id="currency-summary"
-                    class="
-                        mt-2
-                        text-xs
-                        text-slate-500
-                        space-y-1
-                    "
-                >
-                    <div id="income-npr-summary">
-                        🇳🇵 NPR 0
-                    </div>
+        <!-- Expense -->
 
-                    <div id="income-inr-summary">
-                        🇮🇳 INR 0
-                    </div>
-                </div>
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
 
+            <div class="text-rose-400 text-lg">
+                <i class="fa-solid fa-arrow-up"></i>
             </div>
 
-
-            <!-- Expense -->
-
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Total Expense"
+                data-ne="कुल खर्च"
             >
+                Total Expense
+            </p>
 
-                <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-red-100
-                        text-red-600
-                        flex
-                        items-center
-                        justify-center
-                    "
-                >
-                    <i class="fa-solid fa-arrow-up"></i>
-                </div>
+            <p
+                id="summaryExpense"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
 
-                <p class="text-xs text-slate-500 mt-3">
-                    Expense
-                </p>
+        </div>
 
-                <h3
-                    id="total-expense"
-                    class="
-                        amount
-                        text-lg
-                        sm:text-xl
-                        font-bold
-                        text-red-600
-                        mt-1
-                    "
-                >
-                    NPR 0
-                </h3>
 
+        <!-- Saving -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-amber-400 text-lg">
+                <i class="fa-solid fa-piggy-bank"></i>
             </div>
 
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Total Saving"
+                data-ne="कुल बचत"
+            >
+                Total Saving
+            </p>
 
-            <!-- Saving -->
+            <p
+                id="summarySaving"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
 
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
+        </div>
+
+
+        <!-- Receivable -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-cyan-400 text-lg">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Receivable"
+                data-ne="पाउनुपर्ने"
+            >
+                Receivable
+            </p>
+
+            <p
+                id="summaryReceivable"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+
+        <!-- Payable -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-orange-400 text-lg">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Payable"
+                data-ne="दिनुपर्ने"
+            >
+                Payable
+            </p>
+
+            <p
+                id="summaryPayable"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+
+        <!-- Given -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-violet-400 text-lg">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Given"
+                data-ne="दिएको"
+            >
+                Given
+            </p>
+
+            <p
+                id="summaryGiven"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+
+        <!-- Taken -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-blue-400 text-lg">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Taken"
+                data-ne="लिएको"
+            >
+                Taken
+            </p>
+
+            <p
+                id="summaryTaken"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+
+        <!-- Repayment -->
+
+        <div
+            class="summary-card card rounded-2xl p-3 text-center"
+        >
+
+            <div class="text-pink-400 text-lg">
+                <i class="fa-solid fa-rotate"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-slate-400 mt-1"
+                data-en="Repayment"
+                data-ne="फिर्ता"
+            >
+                Repayment
+            </p>
+
+            <p
+                id="summaryRepayment"
+                class="summary-value text-sm font-bold mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+
+        <!-- Balance -->
+
+        <div
+            class="summary-card rounded-2xl p-3 text-center bg-emerald-950/40 border border-emerald-500/40"
+        >
+
+            <div class="text-emerald-400 text-lg">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+            <p
+                class="card-label text-[10px] text-emerald-300 mt-1"
+                data-en="Balance"
+                data-ne="ब्यालेन्स"
+            >
+                Balance
+            </p>
+
+            <p
+                id="summaryBalance"
+                class="summary-value text-sm font-bold text-emerald-400 mt-1"
+            >
+                Rs 0
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUICK ACTIONS
+    ====================================================== -->
+
+    <section class="mb-5">
+
+        <div
+            class="flex items-center justify-between mb-2"
+        >
+
+            <h3
+                class="text-sm font-bold"
+            >
+                Quick Actions
+            </h3>
+
+        </div>
+
+
+        <div
+            class="grid grid-cols-3 gap-2"
+        >
+
+            <a
+                href="add-income.html"
+                class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-purple-100
-                        text-purple-600
-                        flex
-                        items-center
-                        justify-center
-                    "
+                    class="w-9 h-9 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Add Income
+                </p>
+
+            </a>
+
+
+            <a
+                href="add-saving.html"
+                class="action-card rounded-2xl p-3 text-center"
+            >
+
+                <div
+                    class="w-9 h-9 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400"
                 >
                     <i class="fa-solid fa-piggy-bank"></i>
                 </div>
 
-                <p class="text-xs text-slate-500 mt-3">
-                    Saving
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Add Saving
                 </p>
 
-                <h3
-                    id="total-saving"
-                    class="
-                        amount
-                        text-lg
-                        sm:text-xl
-                        font-bold
-                        text-purple-600
-                        mt-1
-                    "
+            </a>
+
+
+            <a
+                href="add-transaction.html"
+                class="action-card rounded-2xl p-3 text-center"
+            >
+
+                <div
+                    class="w-9 h-9 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400"
                 >
-                    NPR 0
-                </h3>
+                    <i class="fa-solid fa-right-left"></i>
+                </div>
 
-            </div>
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Transaction
+                </p>
 
-        </section>
+            </a>
 
 
-        <!-- RECEIVABLE / PAYABLE -->
+            <a
+                href="notebook.html"
+                class="action-card rounded-2xl p-3 text-center"
+            >
 
-        <section
-            class="
-                grid
-                grid-cols-2
-                gap-3
-                sm:gap-4
-                mb-5
-            "
+                <div
+                    class="w-9 h-9 mx-auto rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400"
+                >
+                    <i class="fa-solid fa-book"></i>
+                </div>
+
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Notebook
+                </p>
+
+            </a>
+
+
+            <a
+                href="calendar.html"
+                class="action-card rounded-2xl p-3 text-center"
+            >
+
+                <div
+                    class="w-9 h-9 mx-auto rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400"
+                >
+                    <i class="fa-solid fa-calendar"></i>
+                </div>
+
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Calendar
+                </p>
+
+            </a>
+
+
+            <a
+                href="calculate.html"
+                class="action-card rounded-2xl p-3 text-center"
+            >
+
+                <div
+                    class="w-9 h-9 mx-auto rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400"
+                >
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+
+                <p
+                    class="text-[10px] font-semibold mt-2"
+                >
+                    Calculate
+                </p>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RECENT ACTIVITY
+    ====================================================== -->
+
+    <section>
+
+        <div
+            class="flex items-center justify-between mb-2"
         >
 
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
+            <h3
+                class="text-sm font-bold"
             >
+                Recent Activity
+            </h3>
 
-                <div class="flex items-center gap-3">
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-xl
-                            bg-amber-100
-                            text-amber-600
-                            flex
-                            items-center
-                            justify-center
-                        "
-                    >
-                        <i
-                            class="
-                                fa-solid
-                                fa-hand-holding-dollar
-                            "
-                        ></i>
-                    </div>
-
-                    <div>
-
-                        <p class="text-xs text-slate-500">
-                            Receivable
-                        </p>
-
-                        <p
-                            id="total-receivable"
-                            class="amount font-bold"
-                        >
-                            NPR 0
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                "
+            <span
+                id="activityCount"
+                class="text-[10px] text-slate-500"
             >
+                0 records
+            </span>
 
-                <div class="flex items-center gap-3">
+        </div>
 
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-xl
-                            bg-orange-100
-                            text-orange-600
-                            flex
-                            items-center
-                            justify-center
-                        "
-                    >
-                        <i
-                            class="
-                                fa-solid
-                                fa-money-bill-transfer
-                            "
-                        ></i>
-                    </div>
 
-                    <div>
+        <div
+            id="recentActivity"
+            class="space-y-2"
+        >
 
-                        <p class="text-xs text-slate-500">
-                            Payable
-                        </p>
+            <!-- Javascript -->
 
-                        <p
-                            id="total-payable"
-                            class="amount font-bold"
-                        >
-                            NPR 0
-                        </p>
+        </div>
 
-                    </div>
+    </section>
 
-                </div>
 
-            </div>
-
-        </section>
-
-
-        <!-- QUICK ACTIONS -->
-
-        <section class="mb-5">
-
-            <div class="flex items-center justify-between mb-3">
-
-                <h2 class="font-bold text-lg">
-                    Quick Actions
-                </h2>
-
-            </div>
-
-
-            <div
-                class="
-                    grid
-                    grid-cols-2
-                    sm:grid-cols-4
-                    gap-3
-                "
-            >
-
-                <a
-                    href="./add-income.html"
-                    class="
-                        app-card
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-4
-                        shadow-sm
-                        hover:shadow-md
-                        transition
-                    "
-                >
-
-                    <div
-                        class="
-                            w-11
-                            h-11
-                            rounded-xl
-                            bg-green-100
-                            text-green-600
-                            flex
-                            items-center
-                            justify-center
-                            mb-3
-                        "
-                    >
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
-
-                    <p class="font-semibold">
-                        Add Income
-                    </p>
-
-                    <p class="text-xs text-slate-500 mt-1">
-                        Record new income
-                    </p>
-
-                </a>
-
-
-                <a
-                    href="./add-saving.html"
-                    class="
-                        app-card
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-4
-                        shadow-sm
-                        hover:shadow-md
-                        transition
-                    "
-                >
-
-                    <div
-                        class="
-                            w-11
-                            h-11
-                            rounded-xl
-                            bg-purple-100
-                            text-purple-600
-                            flex
-                            items-center
-                            justify-center
-                            mb-3
-                        "
-                    >
-                        <i class="fa-solid fa-piggy-bank"></i>
-                    </div>
-
-                    <p class="font-semibold">
-                        Add Saving
-                    </p>
-
-                    <p class="text-xs text-slate-500 mt-1">
-                        Record saving
-                    </p>
-
-                </a>
-
-
-                <a
-                    href="./add-transaction.html"
-                    class="
-                        app-card
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-4
-                        shadow-sm
-                        hover:shadow-md
-                        transition
-                    "
-                >
-
-                    <div
-                        class="
-                            w-11
-                            h-11
-                            rounded-xl
-                            bg-red-100
-                            text-red-600
-                            flex
-                            items-center
-                            justify-center
-                            mb-3
-                        "
-                    >
-                        <i
-                            class="
-                                fa-solid
-                                fa-arrow-right-arrow-left
-                            "
-                        ></i>
-                    </div>
-
-                    <p class="font-semibold">
-                        Transaction
-                    </p>
-
-                    <p class="text-xs text-slate-500 mt-1">
-                        Add expense / debt
-                    </p>
-
-                </a>
-
-
-                <a
-                    href="./notebook.html"
-                    class="
-                        app-card
-                        bg-white
-                        border
-                        border-slate-200
-                        rounded-2xl
-                        p-4
-                        shadow-sm
-                        hover:shadow-md
-                        transition
-                    "
-                >
-
-                    <div
-                        class="
-                            w-11
-                            h-11
-                            rounded-xl
-                            bg-blue-100
-                            text-blue-600
-                            flex
-                            items-center
-                            justify-center
-                            mb-3
-                        "
-                    >
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-
-                    <p class="font-semibold">
-                        Notebook
-                    </p>
-
-                    <p class="text-xs text-slate-500 mt-1">
-                        Notes & reminders
-                    </p>
-
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- RECENT ACTIVITY -->
-
-        <section>
-
-            <div
-                class="
-                    flex
-                    items-center
-                    justify-between
-                    mb-3
-                "
-            >
-
-                <h2 class="font-bold text-lg">
-                    Recent Activity
-                </h2>
-
-                <a
-                    href="./add-transaction.html"
-                    class="
-                        text-sm
-                        text-blue-600
-                        font-medium
-                    "
-                >
-                    View All
-                </a>
-
-            </div>
-
-
-            <div
-                id="recent-activity"
-                class="
-                    app-card
-                    bg-white
-                    border
-                    border-slate-200
-                    rounded-2xl
-                    shadow-sm
-                    overflow-hidden
-                "
-            >
-
-                <div
-                    id="empty-activity"
-                    class="
-                        p-8
-                        text-center
-                        text-slate-500
-                    "
-                >
-
-                    <div
-                        class="
-                            w-14
-                            h-14
-                            mx-auto
-                            rounded-full
-                            bg-slate-100
-                            flex
-                            items-center
-                            justify-center
-                            mb-3
-                        "
-                    >
-                        <i
-                            class="
-                                fa-solid
-                                fa-receipt
-                                text-xl
-                            "
-                        ></i>
-                    </div>
-
-                    <p class="font-medium">
-                        No recent activity
-                    </p>
-
-                    <p class="text-xs mt-1">
-                        Add income or transaction to see it here.
-                    </p>
-
-                </div>
-
-
-                <div
-                    id="activity-list"
-                    class="
-                        hidden
-                        divide-y
-                        divide-slate-100
-                    "
-                ></div>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
-</div>
-
-
-<!-- TOAST -->
-
-<div
-    id="toast-container"
-    class="
-        fixed
-        bottom-5
-        left-1/2
-        -translate-x-1/2
-        z-[100]
-        w-[90%]
-        max-w-sm
-    "
-></div>
+</main>
 
 
 <!-- =========================================================
-     DASHBOARD SCRIPT
+     JAVASCRIPT
 ========================================================= -->
 
 <script type="module">
 
-import {
-    getIncomes,
-    getTotalIncome,
-    getTotalIncomeNPR,
-    getTotalIncomeINR
-} from "./js/incomes.js";
-
-import {
-    getSavings,
-    getTotalSaving
-} from "./js/savings.js";
-
-import {
-    getTransactions,
-    getTotalExpense,
-    getTotalReceivable,
-    getTotalPayable
-} from "./js/transactions.js";
-
-import {
-    calculateFinance
-} from "./js/finance.js";
-
-import {
-    initTheme,
-    toggleTheme,
-    getTheme
-} from "./js/theme.js";
-
-import {
-    getLanguage,
-    setLanguage,
-    applyTranslations
-} from "./js/language.js";
-
-import {
-    getProfileValue
-} from "./js/storage.js";
-
-import "./js/app.js";
+    import {
+        getIncomes
+    } from "./js/incomes.js";
 
 
-/* =========================================================
-   THEME
-========================================================= */
-
-initTheme();
+    import {
+        getSavings
+    } from "./js/savings.js";
 
 
-function updateThemeIcon() {
+    import {
+        getTransactions
+    } from "./js/transactions.js";
 
-    const icon =
-        document.getElementById(
-            "theme-icon"
+
+    import {
+        calculateFinance
+    } from "./js/finance.js";
+
+
+    import {
+        getProfileValue
+    } from "./js/storage.js";
+
+
+    /*
+        -----------------------------------------------
+        Global state
+        -----------------------------------------------
+    */
+
+    let privacyHidden =
+        localStorage.getItem(
+            "balance_privacy"
+        ) === "hidden";
+
+
+    let cardLanguage =
+        localStorage.getItem(
+            "dashboard_card_language"
+        ) || "en";
+
+
+    /*
+        -----------------------------------------------
+        Amount formatter
+        -----------------------------------------------
+    */
+
+    function formatAmount(amount) {
+
+        if (privacyHidden) {
+
+            return "••••••";
+
+        }
+
+        return (
+            "Rs " +
+            Number(amount || 0).toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }
+            )
         );
 
-    if (!icon) {
-        return;
-    }
-
-    icon.className =
-        getTheme() === "dark"
-            ? "fa-solid fa-sun"
-            : "fa-solid fa-moon";
-}
-
-
-updateThemeIcon();
-
-
-/* =========================================================
-   LANGUAGE
-========================================================= */
-
-applyTranslations(
-    getLanguage()
-);
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-function loadProfile() {
-
-    const name =
-        getProfileValue(
-            "profile_name",
-            ""
-        );
-
-    const avatar =
-        getProfileValue(
-            "profile_avatar",
-            ""
-        );
-
-
-    const displayName =
-        name || "Guest User";
-
-
-    const welcomeName =
-        document.getElementById(
-            "welcome-name"
-        );
-
-    if (welcomeName) {
-
-        welcomeName.textContent =
-            displayName;
     }
 
 
-    const sidebarName =
-        document.getElementById(
-            "sidebar-name"
+    /*
+        -----------------------------------------------
+        Date formatter
+        -----------------------------------------------
+    */
+
+    function formatDate(value) {
+
+        if (!value) {
+
+            return "";
+
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return String(value);
+
+        }
+
+        return date.toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
         );
 
-    if (sidebarName) {
-
-        sidebarName.textContent =
-            displayName;
     }
 
 
-    const avatarBox =
-        document.getElementById(
-            "sidebar-avatar"
-        );
+    /*
+        -----------------------------------------------
+        Amount reader
+        -----------------------------------------------
+    */
+
+    function getAmount(item) {
+
+        return Number(
+            item?.total ??
+            item?.amount ??
+            item?.npr ??
+            item?.price ??
+            0
+        ) || 0;
+
+    }
 
 
-    const avatarIcon =
-        document.getElementById(
-            "sidebar-avatar-icon"
-        );
+    /*
+        -----------------------------------------------
+        Dashboard finance
+        -----------------------------------------------
+    */
+
+    function updateDashboard() {
+
+        const incomes =
+            getIncomes() || [];
 
 
-    if (
-        avatarBox &&
-        avatar
-    ) {
-
-        avatarBox.innerHTML = "";
+        const savings =
+            getSavings() || [];
 
 
-        const image =
-            document.createElement(
-                "img"
+        const transactions =
+            getTransactions() || [];
+
+
+        const finance =
+            calculateFinance(
+                incomes,
+                transactions,
+                savings
             );
 
 
-        image.src =
-            avatar;
-
-        image.alt =
-            "Profile";
-
-        image.className =
-            "w-full h-full object-cover";
-
-
-        avatarBox.appendChild(
-            image
+        setText(
+            "summaryIncome",
+            formatAmount(
+                finance.totalIncome
+            )
         );
 
-    } else if (
-        avatarIcon
-    ) {
 
-        avatarIcon.classList.remove(
-            "hidden"
-        );
-    }
-}
-
-
-loadProfile();
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function showDate() {
-
-    const element =
-        document.getElementById(
-            "today-date"
+        setText(
+            "summaryExpense",
+            formatAmount(
+                finance.totalExpense
+            )
         );
 
-    if (!element) {
-        return;
-    }
 
-
-    element.textContent =
-        new Date().toLocaleDateString(
-            undefined,
-            {
-                weekday: "short",
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-            }
+        setText(
+            "summarySaving",
+            formatAmount(
+                finance.totalSaving
+            )
         );
-}
 
 
-showDate();
+        setText(
+            "summaryReceivable",
+            formatAmount(
+                finance.totalReceivable
+            )
+        );
 
 
-/* =========================================================
-   MONEY FORMAT
-========================================================= */
-
-function formatNPR(
-    amount
-) {
-
-    return (
-        "NPR "
-        +
-        (
-            Number(amount) || 0
-        ).toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )
-    );
-}
+        setText(
+            "summaryPayable",
+            formatAmount(
+                finance.totalPayable
+            )
+        );
 
 
-function formatINR(
-    amount
-) {
-
-    return (
-        "INR "
-        +
-        (
-            Number(amount) || 0
-        ).toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        )
-    );
-}
+        setText(
+            "summaryGiven",
+            formatAmount(
+                finance.totalGiven
+            )
+        );
 
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
-function loadDashboard() {
-
-    const incomes =
-        getIncomes();
+        setText(
+            "summaryTaken",
+            formatAmount(
+                finance.totalTaken
+            )
+        );
 
 
-    const savings =
-        getSavings();
+        setText(
+            "summaryRepayment",
+            formatAmount(
+                finance.totalRepayment
+            )
+        );
 
 
-    const transactions =
-        getTransactions();
+        setText(
+            "summaryBalance",
+            formatAmount(
+                finance.balance
+            )
+        );
 
 
-    const totalIncome =
-        getTotalIncome();
-
-
-    const totalIncomeNPR =
-        getTotalIncomeNPR();
-
-
-    const totalIncomeINR =
-        getTotalIncomeINR();
-
-
-    const totalSaving =
-        getTotalSaving();
-
-
-    const totalExpense =
-        getTotalExpense();
-
-
-    const totalReceivable =
-        getTotalReceivable();
-
-
-    const totalPayable =
-        getTotalPayable();
-
-
-    const finance =
-        calculateFinance(
+        renderRecentActivity(
             incomes,
-            transactions,
-            savings
+            savings,
+            transactions
         );
 
-
-    setText(
-        "total-balance",
-        formatNPR(
-            finance.balance
-        )
-    );
+    }
 
 
-    setText(
-        "total-income",
-        formatNPR(
-            totalIncome
-        )
-    );
+    /*
+        -----------------------------------------------
+        Recent Activity
+        -----------------------------------------------
+    */
 
-
-    setText(
-        "total-expense",
-        formatNPR(
-            totalExpense
-        )
-    );
-
-
-    setText(
-        "total-saving",
-        formatNPR(
-            totalSaving
-        )
-    );
-
-
-    setText(
-        "total-receivable",
-        formatNPR(
-            totalReceivable
-        )
-    );
-
-
-    setText(
-        "total-payable",
-        formatNPR(
-            totalPayable
-        )
-    );
-
-
-    updateCurrencySummary(
-        totalIncomeNPR,
-        totalIncomeINR
-    );
-
-
-    loadRecentActivity(
+    function renderRecentActivity(
         incomes,
         savings,
         transactions
-    );
-}
-
-
-/* =========================================================
-   SET TEXT
-========================================================= */
-
-function setText(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value;
-    }
-}
-
-
-/* =========================================================
-   NPR / INR SUMMARY
-========================================================= */
-
-function updateCurrencySummary(
-    npr,
-    inr
-) {
-
-    const nprElement =
-        document.getElementById(
-            "income-npr-summary"
-        );
-
-
-    const inrElement =
-        document.getElementById(
-            "income-inr-summary"
-        );
-
-
-    if (nprElement) {
-
-        nprElement.textContent =
-            "🇳🇵 " +
-            formatNPR(npr);
-    }
-
-
-    if (inrElement) {
-
-        inrElement.textContent =
-            "🇮🇳 " +
-            formatINR(inr);
-    }
-}
-
-
-/* =========================================================
-   RECENT ACTIVITY
-========================================================= */
-
-function loadRecentActivity(
-    incomes,
-    savings,
-    transactions
-) {
-
-    const list =
-        document.getElementById(
-            "activity-list"
-        );
-
-
-    const empty =
-        document.getElementById(
-            "empty-activity"
-        );
-
-
-    if (
-        !list ||
-        !empty
     ) {
 
-        return;
-    }
-
-
-    const items = [];
-
-
-    /* Income */
-
-    incomes.forEach(
-        item => {
-
-            items.push({
-
-                type:
-                    "income",
-
-                title:
-                    item.sourceName
-                    ||
-                    item.source
-                    ||
-                    item.category
-                    ||
-                    "Income",
-
-                amount:
-                    Number(
-                        item.total
-                        ??
-                        item.amount
-                    )
-                    || 0,
-
-                date:
-                    item.date
-                    || "",
-
-                positive:
-                    true
-            });
-        }
-    );
-
-
-    /* Saving */
-
-    savings.forEach(
-        item => {
-
-            items.push({
-
-                type:
-                    "saving",
-
-                title:
-                    item.category
-                    ||
-                    "Saving",
-
-                amount:
-                    Number(
-                        item.amount
-                    )
-                    || 0,
-
-                date:
-                    item.date
-                    || "",
-
-                positive:
-                    false
-            });
-        }
-    );
-
-
-    /* Transactions */
-
-    transactions.forEach(
-        item => {
-
-            let title =
-                "Transaction";
-
-
-            let positive =
-                false;
-
-
-            if (
-                item.type === "expense"
-            ) {
-
-                title =
-                    item.category
-                    ||
-                    "Expense";
-
-            } else if (
-                item.type === "receivable"
-            ) {
-
-                title =
-                    item.category
-                    ||
-                    item.partyName
-                    ||
-                    "Receivable";
-
-                positive =
-                    true;
-
-            } else if (
-                item.type === "payable"
-            ) {
-
-                title =
-                    item.category
-                    ||
-                    item.partyName
-                    ||
-                    "Payable";
-            }
-
-
-            items.push({
-
-                type:
-                    item.type,
-
-                title,
-
-                amount:
-                    Number(
-                        item.amount
-                    )
-                    || 0,
-
-                date:
-                    item.date
-                    || "",
-
-                positive
-            });
-        }
-    );
-
-
-    items.sort(
-        (
-            a,
-            b
-        ) => {
-
-            const dateA =
-                new Date(
-                    a.date || 0
-                ).getTime();
-
-
-            const dateB =
-                new Date(
-                    b.date || 0
-                ).getTime();
-
-
-            return (
-                dateB - dateA
+        const container =
+            document.getElementById(
+                "recentActivity"
             );
+
+
+        if (!container) {
+
+            return;
+
         }
-    );
 
 
-    const recent =
-        items.slice(
-            0,
-            6
+        const records = [];
+
+
+        /*
+            Income records
+        */
+
+        incomes.forEach(
+            item => {
+
+                records.push({
+
+                    id:
+                        item.id ||
+                        cryptoRandom(),
+
+                    date:
+                        item.date ||
+                        item.createdAt ||
+                        "",
+
+                    createdAt:
+                        item.createdAt ||
+                        "",
+
+                    title:
+                        item.sourceName ||
+                        item.title ||
+                        item.category ||
+                        "Income",
+
+                    type:
+                        "Income",
+
+                    amount:
+                        getAmount(item),
+
+                    direction:
+                        "in",
+
+                    note:
+                        item.note || ""
+
+                });
+
+            }
         );
 
 
-    if (
-        recent.length === 0
+        /*
+            Saving records
+        */
+
+        savings.forEach(
+            item => {
+
+                records.push({
+
+                    id:
+                        item.id ||
+                        cryptoRandom(),
+
+                    date:
+                        item.date ||
+                        item.createdAt ||
+                        "",
+
+                    createdAt:
+                        item.createdAt ||
+                        "",
+
+                    title:
+                        item.title ||
+                        item.category ||
+                        "Saving",
+
+                    type:
+                        "Saving",
+
+                    amount:
+                        getAmount(item),
+
+                    direction:
+                        "saving",
+
+                    note:
+                        item.note || ""
+
+                });
+
+            }
+        );
+
+
+        /*
+            Transaction records
+        */
+
+        transactions.forEach(
+            item => {
+
+                const rawType =
+                    String(
+                        item.type ||
+                        item.transactionType ||
+                        "expense"
+                    ).toLowerCase();
+
+
+                let displayType =
+                    "Transaction";
+
+
+                let direction =
+                    "out";
+
+
+                if (
+                    rawType ===
+                    "expense"
+                ) {
+
+                    displayType =
+                        "Expense";
+
+                    direction =
+                        "out";
+
+                }
+
+                else if (
+                    rawType ===
+                    "receivable"
+                ) {
+
+                    displayType =
+                        "Receivable";
+
+                    direction =
+                        "in";
+
+                }
+
+                else if (
+                    rawType ===
+                    "payable"
+                ) {
+
+                    displayType =
+                        "Payable";
+
+                    direction =
+                        "out";
+
+                }
+
+                else if (
+                    rawType ===
+                    "given"
+                ) {
+
+                    displayType =
+                        "Given";
+
+                    direction =
+                        "out";
+
+                }
+
+                else if (
+                    rawType ===
+                    "taken"
+                ) {
+
+                    displayType =
+                        "Taken";
+
+                    direction =
+                        "in";
+
+                }
+
+                else if (
+                    rawType ===
+                    "repayment"
+                ) {
+
+                    displayType =
+                        "Repayment";
+
+                    direction =
+                        "repayment";
+
+                }
+
+
+                records.push({
+
+                    id:
+                        item.id ||
+                        cryptoRandom(),
+
+                    date:
+                        item.date ||
+                        item.createdAt ||
+                        "",
+
+                    createdAt:
+                        item.createdAt ||
+                        "",
+
+                    title:
+                        item.personName ||
+                        item.partyName ||
+                        "Transaction",
+
+                    type:
+                        displayType,
+
+                    amount:
+                        getAmount(item),
+
+                    direction:
+                        direction,
+
+                    note:
+                        item.note || ""
+
+                });
+
+            }
+        );
+
+
+        /*
+            Sort newest first
+        */
+
+        records.sort(
+            (a, b) => {
+
+                const aDate =
+                    new Date(
+                        a.date ||
+                        a.createdAt ||
+                        0
+                    ).getTime();
+
+
+                const bDate =
+                    new Date(
+                        b.date ||
+                        b.createdAt ||
+                        0
+                    ).getTime();
+
+
+                return bDate - aDate;
+
+            }
+        );
+
+
+        /*
+            Show latest 20 individual records
+        */
+
+        const latest =
+            records.slice(
+                0,
+                20
+            );
+
+
+        setText(
+            "activityCount",
+            `${records.length} record${records.length === 1 ? "" : "s"}`
+        );
+
+
+        if (!latest.length) {
+
+            container.innerHTML = `
+
+                <div
+                    class="card rounded-2xl p-6 text-center"
+                >
+
+                    <div
+                        class="w-12 h-12 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-3"
+                    >
+
+                        <i
+                            class="fa-solid fa-receipt text-slate-600"
+                        ></i>
+
+                    </div>
+
+                    <p
+                        class="text-sm font-semibold text-slate-400"
+                    >
+                        No activity yet
+                    </p>
+
+                    <p
+                        class="text-[10px] text-slate-600 mt-1"
+                    >
+                        Add income, saving or transaction to see it here.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            latest.map(
+                record =>
+                    createActivityHTML(
+                        record
+                    )
+            ).join("");
+
+    }
+
+
+    /*
+        -----------------------------------------------
+        Activity HTML
+        -----------------------------------------------
+    */
+
+    function createActivityHTML(
+        record
     ) {
 
-        empty.classList.remove(
-            "hidden"
-        );
+        let icon =
+            "fa-receipt";
 
 
-        list.classList.add(
-            "hidden"
-        );
+        let iconClass =
+            "text-slate-400";
 
 
-        list.innerHTML =
+        let amountClass =
+            "text-slate-200";
+
+
+        let sign =
             "";
 
 
-        return;
+        if (
+            record.direction ===
+            "in"
+        ) {
+
+            icon =
+                "fa-arrow-down";
+
+            iconClass =
+                "text-emerald-400";
+
+            amountClass =
+                "text-emerald-400";
+
+            sign =
+                "+";
+
+        }
+
+
+        else if (
+            record.direction ===
+            "out"
+        ) {
+
+            icon =
+                "fa-arrow-up";
+
+            iconClass =
+                "text-rose-400";
+
+            amountClass =
+                "text-rose-400";
+
+            sign =
+                "-";
+
+        }
+
+
+        else if (
+            record.direction ===
+            "saving"
+        ) {
+
+            icon =
+                "fa-piggy-bank";
+
+            iconClass =
+                "text-amber-400";
+
+            amountClass =
+                "text-amber-400";
+
+            sign =
+                "";
+
+        }
+
+
+        else if (
+            record.direction ===
+            "repayment"
+        ) {
+
+            icon =
+                "fa-rotate";
+
+            iconClass =
+                "text-pink-400";
+
+            amountClass =
+                "text-pink-400";
+
+            sign =
+                "";
+
+        }
+
+
+        return `
+
+            <div
+                class="recent-row rounded-2xl p-3 flex items-center gap-3"
+            >
+
+                <div
+                    class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center flex-shrink-0"
+                >
+
+                    <i
+                        class="fa-solid ${icon} ${iconClass}"
+                    ></i>
+
+                </div>
+
+
+                <div
+                    class="flex-1 min-w-0"
+                >
+
+                    <p
+                        class="text-xs font-semibold truncate"
+                    >
+                        ${escapeHTML(record.title)}
+                    </p>
+
+                    <div
+                        class="flex items-center gap-1.5 mt-1"
+                    >
+
+                        <span
+                            class="text-[9px] text-slate-500"
+                        >
+                            ${escapeHTML(record.type)}
+                        </span>
+
+                        <span
+                            class="text-slate-700"
+                        >
+                            •
+                        </span>
+
+                        <span
+                            class="text-[9px] text-slate-600"
+                        >
+                            ${escapeHTML(
+                                formatDate(
+                                    record.date ||
+                                    record.createdAt
+                                )
+                            )}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="text-right flex-shrink-0"
+                >
+
+                    <p
+                        class="text-xs font-bold ${amountClass} ${privacyHidden ? "hide-amount" : ""}"
+                    >
+                        ${privacyHidden
+                            ? "••••••"
+                            : sign +
+                              "Rs " +
+                              Number(
+                                  record.amount || 0
+                              ).toLocaleString(
+                                  "en-IN"
+                              )
+                        }
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
     }
 
 
-    empty.classList.add(
-        "hidden"
-    );
-
-
-    list.classList.remove(
-        "hidden"
-    );
-
-
-    list.innerHTML =
-        "";
-
-
-    recent.forEach(
-        item => {
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.className =
-                "p-4 flex items-center justify-between gap-3";
-
-
-            let icon =
-                "fa-receipt";
-
-
-            let iconBg =
-                "bg-slate-100";
-
-
-            let iconColor =
-                "text-slate-600";
-
-
-            if (
-                item.type === "income"
-            ) {
-
-                icon =
-                    "fa-arrow-down";
-
-                iconBg =
-                    "bg-green-100";
-
-                iconColor =
-                    "text-green-600";
-
-            } else if (
-                item.type === "saving"
-            ) {
-
-                icon =
-                    "fa-piggy-bank";
-
-                iconBg =
-                    "bg-purple-100";
-
-                iconColor =
-                    "text-purple-600";
-
-            } else if (
-                item.type === "expense"
-            ) {
-
-                icon =
-                    "fa-arrow-up";
-
-                iconBg =
-                    "bg-red-100";
-
-                iconColor =
-                    "text-red-600";
-
-            } else if (
-                item.type === "receivable"
-            ) {
-
-                icon =
-                    "fa-hand-holding-dollar";
-
-                iconBg =
-                    "bg-amber-100";
-
-                iconColor =
-                    "text-amber-600";
-
-            } else if (
-                item.type === "payable"
-            ) {
-
-                icon =
-                    "fa-money-bill-transfer";
-
-                iconBg =
-                    "bg-orange-100";
-
-                iconColor =
-                    "text-orange-600";
-            }
-
-
-            const left =
-                document.createElement(
-                    "div"
-                );
-
-
-            left.className =
-                "flex items-center gap-3 min-w-0";
-
-
-            const iconBox =
-                document.createElement(
-                    "div"
-                );
-
-
-            iconBox.className =
-                `
-                w-10
-                h-10
-                rounded-xl
-                ${iconBg}
-                ${iconColor}
-                flex
-                items-center
-                justify-center
-                shrink-0
-                `;
-
-
-            iconBox.innerHTML =
-                `
-                <i
-                    class="fa-solid ${icon}"
-                ></i>
-                `;
-
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-
-            info.className =
-                "min-w-0";
-
-
-            const title =
-                document.createElement(
-                    "p"
-                );
-
-
-            title.className =
-                "font-medium truncate";
-
-
-            title.textContent =
-                item.title;
-
-
-            const date =
-                document.createElement(
-                    "p"
-                );
-
-
-            date.className =
-                "text-xs text-slate-500";
-
-
-            date.textContent =
-                item.date || "-";
-
-
-            info.appendChild(
-                title
-            );
-
-
-            info.appendChild(
-                date
-            );
-
-
-            left.appendChild(
-                iconBox
-            );
-
-
-            left.appendChild(
-                info
-            );
-
-
-            const amount =
-                document.createElement(
-                    "div"
-                );
-
-
-            amount.className =
-                "amount font-semibold whitespace-nowrap";
-
-
-            amount.textContent =
-                (
-                    item.positive
-                        ? "+"
-                        : "-"
-                )
-                +
-                " "
-                +
-                formatNPR(
-                    item.amount
-                );
-
-
-            if (
-                item.positive
-            ) {
-
-                amount.classList.add(
-                    "text-green-600"
-                );
-
-            } else {
-
-                amount.classList.add(
-                    "text-red-600"
-                );
-            }
-
-
-            row.appendChild(
-                left
-            );
-
-
-            row.appendChild(
-                amount
-            );
-
-
-            list.appendChild(
-                row
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   THEME BUTTON
-========================================================= */
-
-document
-    .getElementById(
-        "theme-button"
-    )
-    ?.addEventListener(
-        "click",
-        () => {
-
-            toggleTheme();
-
-            updateThemeIcon();
-
-        }
-    );
-
-
-/* =========================================================
-   LANGUAGE BUTTON
-========================================================= */
-
-document
-    .getElementById(
-        "language-button"
-    )
-    ?.addEventListener(
-        "click",
-        () => {
-
-            const next =
-                getLanguage() === "en"
-                    ? "ne"
-                    : "en";
-
-
-            setLanguage(
-                next
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   PRIVACY
-========================================================= */
-
-let privacyMode =
-    false;
-
-
-document
-    .getElementById(
-        "privacy-button"
-    )
-    ?.addEventListener(
-        "click",
-        () => {
-
-            privacyMode =
-                !privacyMode;
-
-
-            document
-                .querySelectorAll(
-                    ".amount"
-                )
-                .forEach(
-                    element => {
-
-                        if (
-                            !element.dataset.original
-                        ) {
-
-                            element.dataset.original =
-                                element.textContent;
-                        }
-
+    /*
+        -----------------------------------------------
+        Card language
+        ONLY card names change
+        -----------------------------------------------
+    */
+
+    function updateCardLanguage() {
+
+        document
+            .querySelectorAll(
+                ".card-label"
+            )
+            .forEach(
+                element => {
+
+                    const text =
+                        cardLanguage === "ne"
+                            ? element.dataset.ne
+                            : element.dataset.en;
+
+
+                    if (text) {
 
                         element.textContent =
-                            privacyMode
-                                ? "••••••"
-                                : element.dataset.original;
+                            text;
+
                     }
-                );
 
-
-            const icon =
-                document.getElementById(
-                    "privacy-icon"
-                );
-
-
-            if (icon) {
-
-                icon.className =
-                    privacyMode
-                        ? "fa-solid fa-eye-slash"
-                        : "fa-solid fa-eye";
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   MOBILE SIDEBAR
-========================================================= */
-
-const sidebar =
-    document.getElementById(
-        "sidebar"
-    );
-
-
-const overlay =
-    document.getElementById(
-        "sidebar-overlay"
-    );
-
-
-function openSidebar() {
-
-    sidebar?.classList.add(
-        "open"
-    );
-
-
-    overlay?.classList.add(
-        "show"
-    );
-}
-
-
-function closeSidebar() {
-
-    sidebar?.classList.remove(
-        "open"
-    );
-
-
-    overlay?.classList.remove(
-        "show"
-    );
-}
-
-
-document
-    .getElementById(
-        "menu-button"
-    )
-    ?.addEventListener(
-        "click",
-        openSidebar
-    );
-
-
-document
-    .getElementById(
-        "close-sidebar"
-    )
-    ?.addEventListener(
-        "click",
-        closeSidebar
-    );
-
-
-overlay?.addEventListener(
-    "click",
-    closeSidebar
-);
-
-
-document
-    .querySelectorAll(
-        "#sidebar a"
-    )
-    .forEach(
-        link => {
-
-            link.addEventListener(
-                "click",
-                closeSidebar
+                }
             );
+
+
+        const button =
+            document.getElementById(
+                "languageToggle"
+            );
+
+
+        if (button) {
+
+            button.textContent =
+                cardLanguage === "en"
+                    ? "NEP"
+                    : "ENG";
+
         }
-    );
 
 
-/* =========================================================
-   FIRST LOAD
-========================================================= */
+        localStorage.setItem(
+            "dashboard_card_language",
+            cardLanguage
+        );
 
-loadProfile();
-
-showDate();
-
-loadDashboard();
-
-
-/* =========================================================
-   REFRESH
-========================================================= */
-
-window.addEventListener(
-    "pageshow",
-    () => {
-
-        loadProfile();
-
-        loadDashboard();
     }
-);
 
 
-window.addEventListener(
-    "storage",
-    () => {
+    /*
+        -----------------------------------------------
+        Privacy
+        -----------------------------------------------
+    */
 
-        loadProfile();
+    function updatePrivacy() {
 
-        loadDashboard();
+        const icon =
+            document.getElementById(
+                "privacyIcon"
+            );
+
+
+        if (privacyHidden) {
+
+            icon.classList.remove(
+                "fa-eye"
+            );
+
+            icon.classList.add(
+                "fa-eye-slash"
+            );
+
+        }
+
+        else {
+
+            icon.classList.remove(
+                "fa-eye-slash"
+            );
+
+            icon.classList.add(
+                "fa-eye"
+            );
+
+        }
+
+
+        updateDashboard();
+
     }
-);
 
 
-/* =========================================================
-   SERVICE WORKER
-========================================================= */
+    /*
+        -----------------------------------------------
+        Profile
+        -----------------------------------------------
+    */
 
-if (
-    "serviceWorker"
-    in navigator
-) {
+    function loadProfile() {
+
+        const name =
+            getProfileValue(
+                "profile_name",
+                ""
+            );
+
+
+        const avatar =
+            getProfileValue(
+                "profile_avatar",
+                ""
+            );
+
+
+        setText(
+            "sidebarName",
+            name || "Guest"
+        );
+
+
+        if (avatar) {
+
+            setImage(
+                "headerAvatar",
+                avatar
+            );
+
+            setImage(
+                "sidebarAvatar",
+                avatar
+            );
+
+        }
+
+    }
+
+
+    /*
+        -----------------------------------------------
+        Greeting
+        -----------------------------------------------
+    */
+
+    function updateGreeting() {
+
+        const name =
+            getProfileValue(
+                "profile_name",
+                ""
+            );
+
+
+        const hour =
+            new Date().getHours();
+
+
+        let greeting =
+            "Good morning";
+
+
+        if (
+            hour >= 12 &&
+            hour < 17
+        ) {
+
+            greeting =
+                "Good afternoon";
+
+        }
+
+
+        else if (
+            hour >= 17
+        ) {
+
+            greeting =
+                "Good evening";
+
+        }
+
+
+        setText(
+            "greeting",
+            name
+                ? `${greeting}, ${name}`
+                : greeting
+        );
+
+
+        const now =
+            new Date();
+
+
+        setText(
+            "headerDate",
+            now.toLocaleDateString(
+                "en-US",
+                {
+                    weekday:
+                        "short",
+
+                    month:
+                        "short",
+
+                    day:
+                        "numeric",
+
+                    year:
+                        "numeric"
+                }
+            )
+        );
+
+
+        setText(
+            "todayText",
+            now.toLocaleDateString(
+                "en-US",
+                {
+                    weekday:
+                        "long",
+
+                    month:
+                        "long",
+
+                    day:
+                        "numeric",
+
+                    year:
+                        "numeric"
+                }
+            )
+        );
+
+    }
+
+
+    /*
+        -----------------------------------------------
+        Sidebar
+        -----------------------------------------------
+    */
+
+    function openSidebar() {
+
+        document
+            .getElementById(
+                "sidebar"
+            )
+            .classList.remove(
+                "-translate-x-full"
+            );
+
+
+        document
+            .getElementById(
+                "sidebarOverlay"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+    }
+
+
+    function closeSidebar() {
+
+        document
+            .getElementById(
+                "sidebar"
+            )
+            .classList.add(
+                "-translate-x-full"
+            );
+
+
+        document
+            .getElementById(
+                "sidebarOverlay"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+    }
+
+
+    /*
+        -----------------------------------------------
+        Helpers
+        -----------------------------------------------
+    */
+
+    function setText(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (element) {
+
+            element.textContent =
+                value;
+
+        }
+
+    }
+
+
+    function setImage(
+        id,
+        value
+    ) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (element) {
+
+            element.src =
+                value;
+
+        }
+
+    }
+
+
+    function escapeHTML(
+        value
+    ) {
+
+        return String(
+            value ?? ""
+        )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+    }
+
+
+    function cryptoRandom() {
+
+        if (
+            window.crypto &&
+            crypto.randomUUID
+        ) {
+
+            return crypto.randomUUID();
+
+        }
+
+        return (
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .slice(2)
+        );
+
+    }
+
+
+    /*
+        -----------------------------------------------
+        Events
+        -----------------------------------------------
+    */
+
+    document
+        .getElementById(
+            "menuBtn"
+        )
+        .addEventListener(
+            "click",
+            openSidebar
+        );
+
+
+    document
+        .getElementById(
+            "closeSidebar"
+        )
+        .addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+    document
+        .getElementById(
+            "sidebarOverlay"
+        )
+        .addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+    document
+        .getElementById(
+            "privacyBtn"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                privacyHidden =
+                    !privacyHidden;
+
+
+                localStorage.setItem(
+                    "balance_privacy",
+                    privacyHidden
+                        ? "hidden"
+                        : "visible"
+                );
+
+
+                updatePrivacy();
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "languageToggle"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                cardLanguage =
+                    cardLanguage === "en"
+                        ? "ne"
+                        : "en";
+
+
+                updateCardLanguage();
+
+            }
+        );
+
+
+    /*
+        -----------------------------------------------
+        Refresh when page becomes active
+        -----------------------------------------------
+    */
 
     window.addEventListener(
-        "load",
+        "pageshow",
         () => {
 
-            navigator.serviceWorker
-                .register(
-                    "./sw.js"
-                )
-                .catch(
-                    error => {
+            loadProfile();
 
-                        console.warn(
-                            "Service worker registration failed:",
-                            error
-                        );
-                    }
-                );
+            updateGreeting();
+
+            updateDashboard();
+
+            updateCardLanguage();
+
+            updatePrivacy();
+
         }
     );
-}
+
+
+    window.addEventListener(
+        "focus",
+        () => {
+
+            loadProfile();
+
+            updateGreeting();
+
+            updateDashboard();
+
+        }
+    );
+
+
+    window.addEventListener(
+        "storage",
+        () => {
+
+            loadProfile();
+
+            updateGreeting();
+
+            updateDashboard();
+
+        }
+    );
+
+
+    /*
+        -----------------------------------------------
+        Initial load
+        -----------------------------------------------
+    */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            loadProfile();
+
+            updateGreeting();
+
+            updateCardLanguage();
+
+            updatePrivacy();
+
+        }
+    );
+
+
+    /*
+        -----------------------------------------------
+        Service Worker
+        -----------------------------------------------
+    */
+
+    if (
+        "serviceWorker" in navigator
+    ) {
+
+        window.addEventListener(
+            "load",
+            () => {
+
+                navigator
+                    .serviceWorker
+                    .register(
+                        "./sw.js"
+                    )
+                    .catch(
+                        () => {}
+                    );
+
+            }
+        );
+
+    }
 
 </script>
 
 </body>
+
 </html>
