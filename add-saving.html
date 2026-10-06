@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -10,1211 +12,1348 @@
 
     <meta
         name="theme-color"
-        content="#111827"
+        content="#0f172a"
     >
 
-    <title>Digital NoteBook - Saving</title>
+    <title>Saving - Digital Notebook</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
     <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="manifest"
+        href="./manifest.json"
     >
 
-    <!-- Poppins -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <!-- Common CSS -->
     <link
         rel="stylesheet"
         href="./css/app.css"
     >
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- PDF Libraries -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    ></script>
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    ></script>
+
+
     <style>
+
         * {
             font-family: "Poppins", sans-serif;
         }
 
         body {
-            background: #f3f4f6;
-            color: #111827;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(16,185,129,0.14),
+                    transparent 35%
+                ),
+                #020617;
+
+            color: #e5e7eb;
+
         }
 
-        html[data-theme="dark"] body {
-            background: #111827;
-            color: #f9fafb;
+
+        .app-card {
+
+            background:
+                rgba(15,23,42,0.94);
+
+            border:
+                1px solid
+                rgba(148,163,184,0.18);
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,0.30);
+
         }
 
-        .app-panel {
-            background: white;
-            border: 1px solid #e5e7eb;
-        }
 
-        html[data-theme="dark"] .app-panel {
-            background: #1f2937;
-            border-color: #374151;
-        }
+        .input-box {
 
-        .app-input {
             width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: white;
-            color: #111827;
+
+            background: #020617;
+
+            border:
+                1px solid
+                #334155;
+
+            color: #f8fafc;
+
+            border-radius: 14px;
+
+            padding:
+                14px 16px;
+
+            font-size: 16px;
+
         }
 
-        html[data-theme="dark"] .app-input {
-            background: #111827;
-            color: #f9fafb;
-            border-color: #4b5563;
+
+        .input-box:focus {
+
+            border-color:
+                #10b981;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(16,185,129,0.14);
+
+            outline: none;
+
         }
 
-        .app-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+
+        .saving-card {
+
+            background:
+                rgba(15,23,42,0.92);
+
+            border:
+                1px solid
+                #1e293b;
+
+            border-radius:
+                16px;
+
         }
 
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            color: #374151;
-            transition: 0.2s;
+
+        .saving-card:hover {
+
+            border-color:
+                rgba(16,185,129,0.35);
+
         }
 
-        html[data-theme="dark"] .sidebar-link {
-            color: #d1d5db;
-        }
-
-        .sidebar-link:hover {
-            background: #f3f4f6;
-        }
-
-        html[data-theme="dark"] .sidebar-link:hover {
-            background: #374151;
-        }
-
-        .sidebar-link.active {
-            background: #4f46e5;
-            color: white !important;
-        }
-
-        .saving-row {
-            transition: 0.2s;
-        }
-
-        .saving-row:hover {
-            transform: translateY(-1px);
-        }
-
-        .modal-bg {
-            background: rgba(0, 0, 0, 0.55);
-        }
 
         .toast {
-            animation: toastIn 0.25s ease;
+
+            animation:
+                toastIn
+                0.25s
+                ease-out;
+
         }
 
+
         @keyframes toastIn {
+
             from {
+
                 opacity: 0;
-                transform: translateY(10px);
+
+                transform:
+                    translateY(12px);
+
             }
 
             to {
+
                 opacity: 1;
-                transform: translateY(0);
+
+                transform:
+                    translateY(0);
+
             }
+
         }
+
+
+        /* =========================
+           PDF AREA
+        ========================== */
+
+        #pdf-content {
+
+            position:
+                fixed;
+
+            left:
+                -100000px;
+
+            top:
+                0;
+
+            width:
+                794px;
+
+            min-height:
+                1123px;
+
+            background:
+                #ffffff;
+
+            color:
+                #172033;
+
+            padding:
+                40px;
+
+            z-index:
+                -9999;
+
+        }
+
+
+        .pdf-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                22px;
+
+            width:
+                100%;
+
+            padding-bottom:
+                14px;
+
+            border-bottom:
+                3px solid
+                #20a46b;
+
+        }
+
+
+        .pdf-user {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+
+            flex:
+                1;
+
+            min-width:
+                0;
+
+        }
+
+
+        .pdf-avatar {
+
+            width:
+                78px;
+
+            height:
+                78px;
+
+            border-radius:
+                50%;
+
+            object-fit:
+                cover;
+
+            border:
+                3px solid
+                #20a46b;
+
+            flex-shrink:
+                0;
+
+        }
+
+
+        .pdf-user-info {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                3px;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.35;
+
+        }
+
+
+        .pdf-user-name {
+
+            font-size:
+                16px;
+
+            font-weight:
+                700;
+
+            margin-bottom:
+                2px;
+
+        }
+
+
+        .pdf-banner {
+
+            width:
+                245px;
+
+            height:
+                78px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            overflow:
+                hidden;
+
+            flex-shrink:
+                0;
+
+        }
+
+
+        .pdf-banner-image {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            object-fit:
+                contain;
+
+            display:
+                block;
+
+        }
+
+
+        .pdf-title {
+
+            text-align:
+                center;
+
+            margin-top:
+                25px;
+
+            margin-bottom:
+                20px;
+
+        }
+
+
+        .pdf-title h1 {
+
+            font-size:
+                25px;
+
+            font-weight:
+                700;
+
+            margin:
+                0;
+
+            letter-spacing:
+                1px;
+
+        }
+
+
+        .pdf-title p {
+
+            margin:
+                5px 0 0;
+
+            font-size:
+                11px;
+
+            color:
+                #64748b;
+
+        }
+
+
+        .pdf-table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+            font-size:
+                10px;
+
+        }
+
+
+        .pdf-table th {
+
+            background:
+                #f1f5f9;
+
+            color:
+                #334155;
+
+            padding:
+                9px 7px;
+
+            border-bottom:
+                1px solid
+                #cbd5e1;
+
+            text-align:
+                left;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .pdf-table td {
+
+            padding:
+                9px 7px;
+
+            border-bottom:
+                1px solid
+                #e2e8f0;
+
+            vertical-align:
+                top;
+
+        }
+
+
+        .pdf-total {
+
+            color:
+                #16a34a;
+
+            font-weight:
+                700;
+
+        }
+
+
+        .pdf-summary {
+
+            margin-top:
+                20px;
+
+            border-top:
+                2px solid
+                #20a46b;
+
+            padding-top:
+                14px;
+
+        }
+
+
+        .pdf-summary-row {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            width:
+                300px;
+
+            font-size:
+                12px;
+
+            margin-bottom:
+                6px;
+
+        }
+
+
+        .pdf-footer {
+
+            margin-top:
+                35px;
+
+            text-align:
+                center;
+
+            color:
+                #94a3b8;
+
+            font-size:
+                9px;
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- =========================================
-         MOBILE SIDEBAR BACKDROP
-         ========================================= -->
 
-    <div
-        id="sidebar-backdrop"
-        class="fixed inset-0 z-40 hidden bg-black/50"
-    ></div>
-
-
-    <!-- =========================================
-         SIDEBAR
-         ========================================= -->
-
-    <aside
-        id="sidebar"
-        class="fixed left-0 top-0 z-50 h-full w-72 -translate-x-full overflow-y-auto border-r bg-white p-4 transition-transform duration-300 dark:border-gray-700 dark:bg-gray-900 md:translate-x-0"
+    <main
+        class="max-w-3xl mx-auto px-4 py-6 pb-12"
     >
 
-        <!-- Logo -->
-        <div class="mb-6 flex items-center gap-3 px-2">
 
-            <div
-                class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white"
-            >
-                <i class="fa-solid fa-book"></i>
-            </div>
+        <!-- =========================
+             HEADER
+        ========================== -->
 
-            <div>
-                <h1 class="text-lg font-bold">
-                    Digital NoteBook
-                </h1>
-
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                    Finance Manager
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- Profile -->
         <div
-            class="mb-5 rounded-2xl bg-gray-100 p-4 dark:bg-gray-800"
+            class="flex items-center
+                   justify-between mb-6"
         >
 
-            <div class="flex items-center gap-3">
+            <div>
 
-                <div
-                    id="sidebar-avatar"
-                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-bold text-white"
+                <h1
+                    class="text-2xl
+                           font-bold
+                           text-white"
                 >
-                    <span id="sidebar-avatar-letter">
-                        U
-                    </span>
+                    Saving
+                </h1>
 
-                    <img
-                        id="sidebar-avatar-image"
-                        src=""
-                        alt="Avatar"
-                        class="hidden h-full w-full object-cover"
-                    >
-                </div>
-
-                <div class="min-w-0">
-
-                    <p
-                        id="sidebar-profile-name"
-                        class="truncate font-semibold"
-                    >
-                        User
-                    </p>
-
-                    <p class="truncate text-xs text-gray-500 dark:text-gray-400">
-                        Personal Account
-                    </p>
-
-                </div>
+                <p
+                    class="text-slate-400
+                           text-sm mt-1"
+                >
+                    Manage your saving records
+                </p>
 
             </div>
 
-
-            <!-- Profile information -->
-            <div class="mt-4 space-y-2">
-
-                <input
-                    id="input-full-name"
-                    type="text"
-                    placeholder="Full Name"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-address"
-                    type="text"
-                    placeholder="Address"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-mobile"
-                    type="tel"
-                    placeholder="Mobile Number"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-email"
-                    type="email"
-                    placeholder="Email"
-                    class="app-input text-sm"
-                >
-
-            </div>
-
-        </div>
-
-
-        <!-- Navigation -->
-        <nav class="space-y-1">
 
             <a
                 href="./index.html"
-                class="sidebar-link"
+                class="w-11 h-11
+                       rounded-xl
+                       bg-slate-800
+                       flex items-center
+                       justify-center
+                       text-slate-300"
             >
-                <i class="fa-solid fa-house w-5"></i>
-                <span data-i18n="dashboard">Dashboard</span>
+
+                <i
+                    class="fa-solid
+                           fa-xmark"
+                ></i>
+
             </a>
-
-            <a
-                href="./add-income.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
-                <span data-i18n="income">Income</span>
-            </a>
-
-            <a
-                href="./add-saving.html"
-                class="sidebar-link active"
-            >
-                <i class="fa-solid fa-piggy-bank w-5"></i>
-                <span data-i18n="saving">Saving</span>
-            </a>
-
-            <a
-                href="./add-transaction.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-right-left w-5"></i>
-                <span data-i18n="transaction">Transaction</span>
-            </a>
-
-            <a
-                href="./notebook.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-book-open w-5"></i>
-                <span data-i18n="notebook">Notebook</span>
-            </a>
-
-            <a
-                href="./calendar.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-calendar-days w-5"></i>
-                <span data-i18n="calendar">Calendar</span>
-            </a>
-
-            <a
-                href="./calculate.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-calculator w-5"></i>
-                <span data-i18n="calculator">Calculator</span>
-            </a>
-
-            <a
-                href="./account.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-user w-5"></i>
-                <span data-i18n="account">Account</span>
-            </a>
-
-            <a
-                href="./setting.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-gear w-5"></i>
-                <span data-i18n="settings">Settings</span>
-            </a>
-
-        </nav>
-
-
-        <!-- Sidebar bottom -->
-        <div class="mt-6 border-t border-gray-200 pt-4 dark:border-gray-700">
-
-            <p class="px-3 text-xs text-gray-500 dark:text-gray-400">
-                Digital NoteBook V2
-            </p>
 
         </div>
 
-    </aside>
 
+        <!-- =========================
+             FORM
+        ========================== -->
 
-    <!-- =========================================
-         MAIN
-         ========================================= -->
-
-    <main class="min-h-screen md:ml-72">
-
-        <!-- Header -->
-        <header
-            class="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-700 dark:bg-gray-900/95"
+        <section
+            class="app-card
+                   rounded-2xl p-5"
         >
 
+
             <div
-                class="flex items-center justify-between gap-3 px-4 py-3 md:px-6"
+                class="flex items-center
+                       justify-between mb-5"
             >
 
-                <!-- Left -->
-                <div class="flex items-center gap-3">
+                <div>
 
-                    <button
-                        id="menu-button"
-                        type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 md:hidden"
+                    <h2
+                        id="form-title"
+                        class="text-lg
+                               font-semibold"
                     >
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+                        Add Saving
+                    </h2>
 
-                    <div>
-                        <h2 class="text-lg font-bold md:text-xl">
-                            <span data-i18n="saving">Saving</span>
-                        </h2>
-
-                        <p
-                            id="current-date-time"
-                            class="text-xs text-gray-500 dark:text-gray-400"
-                        ></p>
-                    </div>
-
-                </div>
-
-
-                <!-- Right controls -->
-                <div class="flex items-center gap-2">
-
-                    <!-- Privacy -->
-                    <button
-                        id="privacy-toggle"
-                        type="button"
-                        title="Privacy"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
+                    <p
+                        id="form-subtitle"
+                        class="text-sm
+                               text-slate-400
+                               mt-1"
                     >
-                        <i
-                            id="privacy-icon"
-                            class="fa-solid fa-eye"
-                        ></i>
-                    </button>
-
-
-                    <!-- Language -->
-                    <button
-                        id="language-toggle"
-                        type="button"
-                        title="Language"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xs font-bold dark:bg-gray-800"
-                    >
-                        EN
-                    </button>
-
-
-                    <!-- Theme -->
-                    <button
-                        id="theme-toggle"
-                        type="button"
-                        title="Theme"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
-                    >
-                        <i
-                            id="theme-icon"
-                            class="fa-solid fa-moon"
-                        ></i>
-                    </button>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- Page content -->
-        <div class="mx-auto max-w-6xl p-4 md:p-6">
-
-
-            <!-- =====================================
-                 SUMMARY
-                 ===================================== -->
-
-            <section
-                class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
-            >
-
-                <!-- Total saving -->
-                <div class="app-panel rounded-2xl p-5 shadow-sm">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Total Saving
-                            </p>
-
-                            <h3
-                                id="total-saving"
-                                class="privacy-amount mt-1 text-2xl font-bold"
-                            >
-                                NPR 0.00
-                            </h3>
-
-                        </div>
-
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
-                        >
-                            <i class="fa-solid fa-piggy-bank text-xl"></i>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Number of records -->
-                <div class="app-panel rounded-2xl p-5 shadow-sm">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Saving Records
-                            </p>
-
-                            <h3
-                                id="saving-count"
-                                class="mt-1 text-2xl font-bold"
-                            >
-                                0
-                            </h3>
-
-                        </div>
-
-                        <div
-                            class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                        >
-                            <i class="fa-solid fa-list text-xl"></i>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =====================================
-                 ADD / EDIT SAVING FORM
-                 ===================================== -->
-
-            <section
-                class="app-panel mb-6 rounded-2xl p-5 shadow-sm"
-            >
-
-                <div class="mb-5 flex items-center justify-between gap-3">
-
-                    <div>
-
-                        <h3
-                            id="form-title"
-                            class="text-lg font-bold"
-                        >
-                            Add Saving
-                        </h3>
-
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Record your saving amount
-                        </p>
-
-                    </div>
-
-                    <div
-                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
-                    >
-                        <i class="fa-solid fa-piggy-bank"></i>
-                    </div>
-
-                </div>
-
-
-                <form id="saving-form">
-
-                    <input
-                        type="hidden"
-                        id="edit-saving-id"
-                        value=""
-                    >
-
-
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-
-                        <!-- Amount -->
-                        <div>
-
-                            <label
-                                for="saving-amount"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Saving Amount (NPR)
-                            </label>
-
-                            <input
-                                id="saving-amount"
-                                type="number"
-                                inputmode="decimal"
-                                min="0"
-                                step="0.01"
-                                placeholder="Enter saving amount"
-                                class="app-input"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- Category -->
-                        <div>
-
-                            <label
-                                for="saving-category"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Category
-                            </label>
-
-                            <input
-                                id="saving-category"
-                                type="text"
-                                placeholder="e.g. Bank, Cash, Emergency"
-                                class="app-input"
-                            >
-
-                        </div>
-
-
-                        <!-- Date -->
-                        <div>
-
-                            <label
-                                for="saving-date"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Date
-                            </label>
-
-                            <input
-                                id="saving-date"
-                                type="date"
-                                class="app-input"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- Note -->
-                        <div>
-
-                            <label
-                                for="saving-note"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Note
-                            </label>
-
-                            <input
-                                id="saving-note"
-                                type="text"
-                                placeholder="Optional note"
-                                class="app-input"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Buttons -->
-                    <div class="mt-5 flex flex-wrap gap-3">
-
-                        <button
-                            type="submit"
-                            id="save-button"
-                            class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
-                        >
-                            <i class="fa-solid fa-plus mr-2"></i>
-                            <span id="save-button-text">
-                                Save Saving
-                            </span>
-                        </button>
-
-
-                        <button
-                            type="button"
-                            id="cancel-edit"
-                            class="hidden rounded-xl bg-gray-200 px-5 py-3 font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100"
-                        >
-                            <i class="fa-solid fa-xmark mr-2"></i>
-                            Cancel
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </section>
-
-
-            <!-- =====================================
-                 SAVING LIST
-                 ===================================== -->
-
-            <section
-                class="app-panel rounded-2xl p-5 shadow-sm"
-            >
-
-                <div class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
-                    <div>
-
-                        <h3 class="text-lg font-bold">
-                            Saving Ledger
-                        </h3>
-
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Your saving records
-                        </p>
-
-                    </div>
-
-
-                    <!-- Search / Sort -->
-                    <div class="flex flex-col gap-2 sm:flex-row">
-
-                        <div class="relative">
-
-                            <i
-                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                            ></i>
-
-                            <input
-                                id="search-saving"
-                                type="search"
-                                placeholder="Search saving..."
-                                class="app-input pl-10"
-                            >
-
-                        </div>
-
-
-                        <select
-                            id="sort-saving"
-                            class="app-input sm:w-48"
-                        >
-
-                            <option value="date_desc">
-                                Newest First
-                            </option>
-
-                            <option value="date_asc">
-                                Oldest First
-                            </option>
-
-                            <option value="amount_desc">
-                                Amount High → Low
-                            </option>
-
-                            <option value="amount_asc">
-                                Amount Low → High
-                            </option>
-
-                            <option value="category">
-                                Category
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Total -->
-                <div
-                    class="mb-4 flex items-center justify-between rounded-xl bg-gray-100 px-4 py-3 dark:bg-gray-800"
-                >
-
-                    <span class="text-sm font-medium">
-                        Displayed Total
-                    </span>
-
-                    <strong
-                        id="saving-list-total"
-                        class="privacy-amount"
-                    >
-                        NPR 0.00
-                    </strong>
-
-                </div>
-
-
-                <!-- Desktop table -->
-                <div class="hidden overflow-x-auto md:block">
-
-                    <table class="w-full text-left">
-
-                        <thead>
-
-                            <tr
-                                class="border-b border-gray-200 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400"
-                            >
-
-                                <th class="px-3 py-3">
-                                    Date
-                                </th>
-
-                                <th class="px-3 py-3">
-                                    Category
-                                </th>
-
-                                <th class="px-3 py-3">
-                                    Note
-                                </th>
-
-                                <th class="px-3 py-3 text-right">
-                                    Amount
-                                </th>
-
-                                <th class="px-3 py-3 text-center">
-                                    Action
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="saving-table-body">
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-                <!-- Mobile list -->
-                <div
-                    id="saving-mobile-list"
-                    class="space-y-3 md:hidden"
-                >
-                </div>
-
-
-                <!-- Empty state -->
-                <div
-                    id="saving-empty"
-                    class="hidden py-12 text-center"
-                >
-
-                    <div
-                        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800"
-                    >
-                        <i class="fa-solid fa-piggy-bank text-2xl"></i>
-                    </div>
-
-                    <h4 class="font-semibold">
-                        No saving records
-                    </h4>
-
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Add your first saving record above.
+                        Add a new saving record
                     </p>
 
                 </div>
 
-            </section>
 
-        </div>
+                <div
+                    id="edit-badge"
+                    class="hidden
+                           px-3 py-1
+                           rounded-full
+                           bg-emerald-500/10
+                           text-emerald-300
+                           text-xs
+                           font-medium"
+                >
+                    Editing
+                </div>
+
+            </div>
+
+
+            <!-- Amount -->
+
+            <label
+                class="block mb-2
+                       font-medium
+                       text-slate-300"
+            >
+                Amount
+            </label>
+
+            <input
+                id="saving-amount"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                class="input-box mb-5"
+                placeholder="0"
+            >
+
+
+            <!-- Category -->
+
+            <label
+                class="block mb-2
+                       font-medium
+                       text-slate-300"
+            >
+                Category
+            </label>
+
+            <input
+                id="saving-category"
+                type="text"
+                class="input-box mb-5"
+                placeholder="e.g. Emergency, Bank, Future"
+                autocomplete="off"
+            >
+
+
+            <!-- Date -->
+
+            <label
+                class="block mb-2
+                       font-medium
+                       text-slate-300"
+            >
+                Date
+            </label>
+
+            <input
+                id="saving-date"
+                type="date"
+                class="input-box mb-5"
+            >
+
+
+            <!-- Note -->
+
+            <label
+                class="block mb-2
+                       font-medium
+                       text-slate-300"
+            >
+                Note
+            </label>
+
+            <textarea
+                id="saving-note"
+                rows="3"
+                class="input-box mb-5
+                       resize-none"
+                placeholder="Optional note..."
+            ></textarea>
+
+
+            <!-- Buttons -->
+
+            <div
+                class="grid
+                       grid-cols-2
+                       gap-3"
+            >
+
+                <button
+                    id="cancel-edit"
+                    type="button"
+                    class="rounded-xl
+                           bg-slate-800
+                           text-slate-200
+                           font-semibold
+                           py-3"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    id="save-saving"
+                    type="button"
+                    class="rounded-xl
+                           bg-emerald-600
+                           hover:bg-emerald-500
+                           text-white
+                           font-semibold
+                           py-3"
+                >
+
+                    <i
+                        class="fa-solid
+                               fa-check mr-2"
+                    ></i>
+
+                    <span
+                        id="save-button-text"
+                    >
+                        Save Saving
+                    </span>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SUMMARY
+        ========================== -->
+
+        <section
+            class="grid
+                   grid-cols-2
+                   gap-3 mt-6"
+        >
+
+
+            <div
+                class="app-card
+                       rounded-2xl p-4"
+            >
+
+                <div
+                    class="text-sm
+                           text-slate-400"
+                >
+                    Total Saving
+                </div>
+
+                <div
+                    id="total-saving"
+                    class="text-xl
+                           font-bold
+                           text-emerald-400
+                           mt-2"
+                >
+                    NPR 0
+                </div>
+
+            </div>
+
+
+            <div
+                class="app-card
+                       rounded-2xl p-4"
+            >
+
+                <div
+                    class="text-sm
+                           text-slate-400"
+                >
+                    Records
+                </div>
+
+                <div
+                    id="saving-count"
+                    class="text-xl
+                           font-bold
+                           text-white mt-2"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             RECORDS HEADER
+        ========================== -->
+
+        <section
+            class="mt-7"
+        >
+
+            <div
+                class="flex items-center
+                       justify-between
+                       gap-3"
+            >
+
+                <div>
+
+                    <h2
+                        class="text-xl
+                               font-bold"
+                    >
+                        Saving Records
+                    </h2>
+
+                    <p
+                        class="text-sm
+                               text-slate-400
+                               mt-1"
+                    >
+                        Your saved amounts
+                    </p>
+
+                </div>
+
+
+                <!-- PDF -->
+
+                <button
+                    id="download-pdf"
+                    type="button"
+                    class="px-4 py-3
+                           rounded-xl
+                           bg-emerald-600
+                           hover:bg-emerald-500
+                           text-white
+                           font-semibold
+                           text-sm
+                           whitespace-nowrap"
+                >
+
+                    <i
+                        class="fa-solid
+                               fa-file-pdf mr-2"
+                    ></i>
+
+                    PDF
+
+                </button>
+
+            </div>
+
+
+            <!-- Records -->
+
+            <div
+                id="saving-list"
+                class="space-y-3 mt-4"
+            ></div>
+
+
+            <!-- Empty -->
+
+            <div
+                id="empty-state"
+                class="hidden
+                       app-card
+                       rounded-2xl
+                       p-8
+                       text-center
+                       mt-4"
+            >
+
+                <div
+                    class="w-16 h-16
+                           mx-auto mb-4
+                           rounded-2xl
+                           bg-emerald-500/10
+                           flex items-center
+                           justify-center"
+                >
+
+                    <i
+                        class="fa-solid
+                               fa-piggy-bank
+                               text-emerald-400
+                               text-2xl"
+                    ></i>
+
+                </div>
+
+
+                <h3
+                    class="font-semibold
+                           text-lg"
+                >
+                    No saving records
+                </h3>
+
+
+                <p
+                    class="text-slate-400
+                           text-sm mt-1"
+                >
+                    Add your first saving record above.
+                </p>
+
+            </div>
+
+        </section>
 
     </main>
 
 
-    <!-- =========================================
+    <!-- =========================
+         PDF CONTENT
+    ========================== -->
+
+    <div
+        id="pdf-content"
+    ></div>
+
+
+    <!-- =========================
          TOAST
-         ========================================= -->
+    ========================== -->
 
     <div
         id="toast-container"
-        class="fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2"
-    >
-        <div
-            id="toast"
-            class="toast rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl dark:bg-white dark:text-gray-900"
-        >
-            Saved
-        </div>
-    </div>
+        class="fixed bottom-5
+               left-4 right-4
+               z-[9999]
+               flex justify-center
+               pointer-events-none"
+    ></div>
 
 
-    <!-- =========================================
+    <!-- =========================
          JAVASCRIPT
-         ========================================= -->
+    ========================== -->
 
     <script type="module">
 
+
         import {
+
             getSavings,
+
             addSaving,
+
             updateSaving,
-            deleteSaving
+
+            deleteSaving,
+
+            getTotalSaving
+
         } from "./js/savings.js";
 
-        import {
-            initTheme,
-            getTheme,
-            setTheme
-        } from "./js/theme.js";
 
         import {
-            getLanguage,
-            setLanguage,
-            applyTranslations
-        } from "./js/language.js";
+
+            getProfileValue
+
+        } from "./js/storage.js";
+
+
+        import "./js/app.js";
 
 
         /* =========================================
            ELEMENTS
-           ========================================= */
+        ========================================== */
 
-        const form =
-            document.getElementById("saving-form");
 
         const amountInput =
-            document.getElementById("saving-amount");
+            document.getElementById(
+                "saving-amount"
+            );
+
 
         const categoryInput =
-            document.getElementById("saving-category");
+            document.getElementById(
+                "saving-category"
+            );
+
 
         const dateInput =
-            document.getElementById("saving-date");
+            document.getElementById(
+                "saving-date"
+            );
+
 
         const noteInput =
-            document.getElementById("saving-note");
+            document.getElementById(
+                "saving-note"
+            );
 
-        const editIdInput =
-            document.getElementById("edit-saving-id");
 
-        const cancelEditButton =
-            document.getElementById("cancel-edit");
+        const saveButton =
+            document.getElementById(
+                "save-saving"
+            );
 
-        const formTitle =
-            document.getElementById("form-title");
 
         const saveButtonText =
-            document.getElementById("save-button-text");
+            document.getElementById(
+                "save-button-text"
+            );
 
-        const tableBody =
-            document.getElementById("saving-table-body");
 
-        const mobileList =
-            document.getElementById("saving-mobile-list");
+        const cancelButton =
+            document.getElementById(
+                "cancel-edit"
+            );
+
+
+        const formTitle =
+            document.getElementById(
+                "form-title"
+            );
+
+
+        const formSubtitle =
+            document.getElementById(
+                "form-subtitle"
+            );
+
+
+        const editBadge =
+            document.getElementById(
+                "edit-badge"
+            );
+
+
+        const savingList =
+            document.getElementById(
+                "saving-list"
+            );
+
 
         const emptyState =
-            document.getElementById("saving-empty");
+            document.getElementById(
+                "empty-state"
+            );
 
-        const searchInput =
-            document.getElementById("search-saving");
 
-        const sortSelect =
-            document.getElementById("sort-saving");
+        const totalSavingEl =
+            document.getElementById(
+                "total-saving"
+            );
 
-        const totalSaving =
-            document.getElementById("total-saving");
 
-        const savingCount =
-            document.getElementById("saving-count");
+        const savingCountEl =
+            document.getElementById(
+                "saving-count"
+            );
 
-        const listTotal =
-            document.getElementById("saving-list-total");
 
-        const privacyToggle =
-            document.getElementById("privacy-toggle");
-
-        const privacyIcon =
-            document.getElementById("privacy-icon");
-
-        const languageToggle =
-            document.getElementById("language-toggle");
-
-        const themeToggle =
-            document.getElementById("theme-toggle");
-
-        const themeIcon =
-            document.getElementById("theme-icon");
-
-        const menuButton =
-            document.getElementById("menu-button");
-
-        const sidebar =
-            document.getElementById("sidebar");
-
-        const sidebarBackdrop =
-            document.getElementById("sidebar-backdrop");
+        const pdfButton =
+            document.getElementById(
+                "download-pdf"
+            );
 
 
         /* =========================================
-           INITIALIZATION
-           ========================================= */
+           STATE
+        ========================================== */
 
-        initTheme();
 
-        setToday();
-
-        loadProfile();
-
-        updateThemeIcon();
-
-        updateLanguageButton();
-
-        renderSavings();
-
-        updateDateTime();
-
-        setInterval(
-            updateDateTime,
-            1000
-        );
+        let editingId =
+            null;
 
 
         /* =========================================
-           DATE
-           ========================================= */
+           TODAY
+        ========================================== */
 
-        function setToday() {
 
-            if (!dateInput.value) {
+        function today() {
 
-                dateInput.value =
-                    new Date()
-                        .toISOString()
-                        .split("T")[0];
-
-            }
+            return new Date()
+                .toISOString()
+                .split("T")[0];
 
         }
 
 
-        function updateDateTime() {
-
-            const element =
-                document.getElementById(
-                    "current-date-time"
-                );
-
-            const now =
-                new Date();
-
-            element.textContent =
-                now.toLocaleString(
-                    getLanguage() === "ne"
-                        ? "ne-NP"
-                        : "en-US",
-                    {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                );
-
-        }
+        dateInput.value =
+            today();
 
 
         /* =========================================
-           PROFILE
-           ========================================= */
-
-        function loadProfile() {
-
-            const name =
-                localStorage.getItem(
-                    "profile_name"
-                ) || "";
-
-            const address =
-                localStorage.getItem(
-                    "profile_address"
-                ) || "";
-
-            const mobile =
-                localStorage.getItem(
-                    "profile_mobile"
-                ) || "";
-
-            const email =
-                localStorage.getItem(
-                    "profile_email"
-                ) || "";
-
-            const avatar =
-                localStorage.getItem(
-                    "profile_avatar"
-                ) || "";
-
-            document.getElementById(
-                "input-full-name"
-            ).value = name;
-
-            document.getElementById(
-                "input-address"
-            ).value = address;
-
-            document.getElementById(
-                "input-mobile"
-            ).value = mobile;
-
-            document.getElementById(
-                "input-email"
-            ).value = email;
-
-            document.getElementById(
-                "sidebar-profile-name"
-            ).textContent =
-                name || "User";
-
-            if (avatar) {
-
-                const image =
-                    document.getElementById(
-                        "sidebar-avatar-image"
-                    );
-
-                const letter =
-                    document.getElementById(
-                        "sidebar-avatar-letter"
-                    );
-
-                image.src = avatar;
-
-                image.classList.remove(
-                    "hidden"
-                );
-
-                letter.classList.add(
-                    "hidden"
-                );
-
-            } else {
-
-                const letter =
-                    document.getElementById(
-                        "sidebar-avatar-letter"
-                    );
-
-                letter.textContent =
-                    (
-                        name
-                        ? name.charAt(0)
-                        : "U"
-                    ).toUpperCase();
-
-            }
-
-        }
+           MONEY
+        ========================================== */
 
 
-        function saveProfileField(
-            element,
-            key
+        function money(
+            value
         ) {
 
-            element.addEventListener(
-                "change",
-                () => {
-
-                    localStorage.setItem(
-                        key,
-                        element.value.trim()
-                    );
-
-                    if (
-                        key ===
-                        "profile_name"
-                    ) {
-
-                        document.getElementById(
-                            "sidebar-profile-name"
-                        ).textContent =
-                            element.value.trim()
-                            || "User";
-
-                    }
-
+            return Number(
+                value || 0
+            ).toLocaleString(
+                "en-IN",
+                {
+                    maximumFractionDigits:
+                        2
                 }
             );
 
         }
 
 
-        saveProfileField(
-            document.getElementById(
-                "input-full-name"
-            ),
-            "profile_name"
-        );
+        /* =========================================
+           ESCAPE HTML
+        ========================================== */
 
-        saveProfileField(
-            document.getElementById(
-                "input-address"
-            ),
-            "profile_address"
-        );
 
-        saveProfileField(
-            document.getElementById(
-                "input-mobile"
-            ),
-            "profile_mobile"
-        );
+        function escapeHtml(
+            value
+        ) {
 
-        saveProfileField(
-            document.getElementById(
-                "input-email"
-            ),
-            "profile_email"
-        );
+            return String(
+                value ?? ""
+            )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+        }
 
 
         /* =========================================
-           FORM SUBMIT
-           ========================================= */
+           TOAST
+        ========================================== */
 
-        form.addEventListener(
-            "submit",
-            (event) => {
 
-                event.preventDefault();
+        function showToast(
+            message,
+            type = "success"
+        ) {
+
+            const container =
+                document.getElementById(
+                    "toast-container"
+                );
+
+
+            const toast =
+                document.createElement(
+                    "div"
+                );
+
+
+            const icon =
+                type === "error"
+                    ? "fa-circle-exclamation"
+                    : "fa-circle-check";
+
+
+            const bg =
+                type === "error"
+                    ? "bg-red-600"
+                    : "bg-emerald-600";
+
+
+            toast.className =
+                `
+                    toast
+                    ${bg}
+                    text-white
+                    px-5 py-3
+                    rounded-xl
+                    shadow-xl
+                    text-sm
+                    font-medium
+                `;
+
+
+            toast.innerHTML =
+                `
+                    <i
+                        class="fa-solid
+                               ${icon}
+                               mr-2"
+                    ></i>
+
+                    ${escapeHtml(message)}
+                `;
+
+
+            container.appendChild(
+                toast
+            );
+
+
+            setTimeout(
+                () => {
+
+                    toast.remove();
+
+                },
+                2500
+            );
+
+        }
+
+
+        /* =========================================
+           RESET
+        ========================================== */
+
+
+        function resetForm() {
+
+            editingId =
+                null;
+
+
+            amountInput.value =
+                "";
+
+
+            categoryInput.value =
+                "";
+
+
+            dateInput.value =
+                today();
+
+
+            noteInput.value =
+                "";
+
+
+            formTitle.textContent =
+                "Add Saving";
+
+
+            formSubtitle.textContent =
+                "Add a new saving record";
+
+
+            saveButtonText.textContent =
+                "Save Saving";
+
+
+            editBadge.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================
+           SAVE / UPDATE
+        ========================================== */
+
+
+        saveButton.addEventListener(
+            "click",
+            () => {
 
                 const amount =
                     Number(
                         amountInput.value
                     ) || 0;
 
-                if (amount <= 0) {
+
+                const category =
+                    categoryInput.value
+                        .trim();
+
+
+                const date =
+                    dateInput.value
+                    ||
+                    today();
+
+
+                const note =
+                    noteInput.value
+                        .trim();
+
+
+                if (
+                    amount <= 0
+                ) {
 
                     showToast(
-                        "Please enter a valid amount."
+                        "Please enter saving amount.",
+                        "error"
                     );
 
                     amountInput.focus();
@@ -1228,28 +1367,24 @@
 
                     amount,
 
-                    category:
-                        categoryInput.value.trim(),
+                    category,
 
-                    date:
-                        dateInput.value,
+                    date,
 
-                    note:
-                        noteInput.value.trim()
+                    note
 
                 };
 
 
-                const editId =
-                    editIdInput.value;
-
-
-                if (editId) {
+                if (
+                    editingId
+                ) {
 
                     updateSaving(
-                        editId,
+                        editingId,
                         data
                     );
+
 
                     showToast(
                         "Saving updated successfully."
@@ -1257,7 +1392,10 @@
 
                 } else {
 
-                    addSaving(data);
+                    addSaving(
+                        data
+                    );
+
 
                     showToast(
                         "Saving added successfully."
@@ -1275,31 +1413,11 @@
 
 
         /* =========================================
-           RESET FORM
-           ========================================= */
-
-        function resetForm() {
-
-            form.reset();
-
-            editIdInput.value = "";
-
-            formTitle.textContent =
-                "Add Saving";
-
-            saveButtonText.textContent =
-                "Save Saving";
-
-            cancelEditButton.classList.add(
-                "hidden"
-            );
-
-            setToday();
-
-        }
+           CANCEL
+        ========================================== */
 
 
-        cancelEditButton.addEventListener(
+        cancelButton.addEventListener(
             "click",
             () => {
 
@@ -1310,489 +1428,104 @@
 
 
         /* =========================================
-           RENDER SAVINGS
-           ========================================= */
+           EDIT
+        ========================================== */
 
-        function renderSavings() {
 
-            let savings =
-                getSavings();
-
-            const search =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
-
-            const sort =
-                sortSelect.value;
-
-
-            /* Search */
-
-            if (search) {
-
-                savings =
-                    savings.filter(
-                        item => {
-
-                            const category =
-                                String(
-                                    item.category
-                                    || ""
-                                ).toLowerCase();
-
-                            const note =
-                                String(
-                                    item.note
-                                    || ""
-                                ).toLowerCase();
-
-                            const date =
-                                String(
-                                    item.date
-                                    || ""
-                                ).toLowerCase();
-
-                            return (
-                                category.includes(
-                                    search
-                                )
-                                ||
-                                note.includes(
-                                    search
-                                )
-                                ||
-                                date.includes(
-                                    search
-                                )
-                            );
-
-                        }
-                    );
-
-            }
-
-
-            /* Sort */
-
-            savings.sort(
-                (a, b) => {
-
-                    if (
-                        sort ===
-                        "amount_desc"
-                    ) {
-
-                        return (
-                            Number(b.amount || 0)
-                            -
-                            Number(a.amount || 0)
-                        );
-
-                    }
-
-                    if (
-                        sort ===
-                        "amount_asc"
-                    ) {
-
-                        return (
-                            Number(a.amount || 0)
-                            -
-                            Number(b.amount || 0)
-                        );
-
-                    }
-
-                    if (
-                        sort ===
-                        "category"
-                    ) {
-
-                        return String(
-                            a.category || ""
-                        ).localeCompare(
-                            String(
-                                b.category || ""
-                            )
-                        );
-
-                    }
-
-                    if (
-                        sort ===
-                        "date_asc"
-                    ) {
-
-                        return String(
-                            a.date || ""
-                        ).localeCompare(
-                            String(
-                                b.date || ""
-                            )
-                        );
-
-                    }
-
-                    return String(
-                        b.date || ""
-                    ).localeCompare(
-                        String(
-                            a.date || ""
-                        )
-                    );
-
-                }
-            );
-
-
-            /* Clear */
-
-            tableBody.innerHTML = "";
-
-            mobileList.innerHTML = "";
-
-
-            /* Empty */
-
-            if (!savings.length) {
-
-                emptyState.classList.remove(
-                    "hidden"
-                );
-
-            } else {
-
-                emptyState.classList.add(
-                    "hidden"
-                );
-
-            }
-
-
-            /* Display total */
-
-            const displayedTotal =
-                savings.reduce(
-                    (
-                        total,
-                        item
-                    ) => {
-
-                        return (
-                            total
-                            +
-                            (
-                                Number(
-                                    item.amount
-                                ) || 0
-                            )
-                        );
-
-                    },
-                    0
-                );
-
-
-            listTotal.textContent =
-                formatAmount(
-                    displayedTotal
-                );
-
-
-            /* Overall total */
-
-            const allSavings =
-                getSavings();
-
-            const overallTotal =
-                allSavings.reduce(
-                    (
-                        total,
-                        item
-                    ) => {
-
-                        return (
-                            total
-                            +
-                            (
-                                Number(
-                                    item.amount
-                                ) || 0
-                            )
-                        );
-
-                    },
-                    0
-                );
-
-
-            totalSaving.textContent =
-                formatAmount(
-                    overallTotal
-                );
-
-            savingCount.textContent =
-                allSavings.length;
-
-
-            /* Desktop */
-
-            savings.forEach(
-                item => {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-                    row.className =
-                        "saving-row border-b border-gray-100 dark:border-gray-700";
-
-
-                    row.innerHTML = `
-
-                        <td class="px-3 py-4 text-sm">
-                            ${escapeHTML(item.date || "-")}
-                        </td>
-
-                        <td class="px-3 py-4 text-sm">
-                            ${escapeHTML(item.category || "-")}
-                        </td>
-
-                        <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            ${escapeHTML(item.note || "-")}
-                        </td>
-
-                        <td class="privacy-amount px-3 py-4 text-right text-sm font-semibold text-green-600 dark:text-green-400">
-                            ${formatAmount(item.amount)}
-                        </td>
-
-                        <td class="px-3 py-4 text-center">
-
-                            <div class="flex justify-center gap-2">
-
-                                <button
-                                    type="button"
-                                    data-edit-id="${escapeAttribute(item.id)}"
-                                    class="edit-saving flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                                    title="Edit"
-                                >
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    data-delete-id="${escapeAttribute(item.id)}"
-                                    class="delete-saving flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                                    title="Delete"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    `;
-
-                    tableBody.appendChild(
-                        row
-                    );
-
-                }
-            );
-
-
-            /* Mobile */
-
-            savings.forEach(
-                item => {
-
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
-
-                    card.className =
-                        "saving-row rounded-2xl border border-gray-200 p-4 dark:border-gray-700";
-
-
-                    card.innerHTML = `
-
-                        <div class="flex items-start justify-between gap-3">
-
-                            <div class="min-w-0">
-
-                                <p class="font-semibold">
-                                    ${escapeHTML(item.category || "Saving")}
-                                </p>
-
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    ${escapeHTML(item.date || "-")}
-                                </p>
-
-                            </div>
-
-                            <p class="privacy-amount whitespace-nowrap font-bold text-green-600 dark:text-green-400">
-                                ${formatAmount(item.amount)}
-                            </p>
-
-                        </div>
-
-
-                        ${
-                            item.note
-                            ?
-                            `
-                            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                                ${escapeHTML(item.note)}
-                            </p>
-                            `
-                            :
-                            ""
-                        }
-
-
-                        <div class="mt-4 flex justify-end gap-2">
-
-                            <button
-                                type="button"
-                                data-edit-id="${escapeAttribute(item.id)}"
-                                class="edit-saving rounded-lg bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                            >
-                                <i class="fa-solid fa-pen mr-1"></i>
-                                Edit
-                            </button>
-
-                            <button
-                                type="button"
-                                data-delete-id="${escapeAttribute(item.id)}"
-                                class="delete-saving rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                            >
-                                <i class="fa-solid fa-trash mr-1"></i>
-                                Delete
-                            </button>
-
-                        </div>
-
-                    `;
-
-                    mobileList.appendChild(
-                        card
-                    );
-
-                }
-            );
-
-
-            updatePrivacyVisibility();
-
-        }
-
-
-        /* =========================================
-           EDIT / DELETE
-           ========================================= */
-
-        document.addEventListener(
-            "click",
-            (event) => {
-
-                const editButton =
-                    event.target.closest(
-                        ".edit-saving"
-                    );
-
-                if (editButton) {
-
-                    editSaving(
-                        editButton.dataset.editId
-                    );
-
-                    return;
-
-                }
-
-
-                const deleteButton =
-                    event.target.closest(
-                        ".delete-saving"
-                    );
-
-                if (deleteButton) {
-
-                    deleteSavingRecord(
-                        deleteButton.dataset.deleteId
-                    );
-
-                }
-
-            }
-        );
-
-
-        function editSaving(id) {
+        function startEdit(
+            id
+        ) {
 
             const savings =
                 getSavings();
+
 
             const item =
                 savings.find(
                     saving =>
                         saving.id === id
                 );
+
 
             if (!item) {
                 return;
             }
 
 
-            editIdInput.value =
-                item.id;
+            editingId =
+                id;
+
 
             amountInput.value =
-                item.amount ?? "";
+                Number(
+                    item.amount
+                ) || 0;
+
 
             categoryInput.value =
-                item.category ?? "";
+                item.category
+                ||
+                "";
+
 
             dateInput.value =
-                item.date ?? "";
+                item.date
+                ||
+                today();
+
 
             noteInput.value =
-                item.note ?? "";
+                item.note
+                ||
+                "";
 
 
             formTitle.textContent =
                 "Edit Saving";
 
+
+            formSubtitle.textContent =
+                "Correct this saving record";
+
+
             saveButtonText.textContent =
                 "Update Saving";
 
-            cancelEditButton.classList.remove(
+
+            editBadge.classList.remove(
                 "hidden"
             );
 
 
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+            window.scrollTo(
+                {
+                    top: 0,
+                    behavior: "smooth"
+                }
+            );
 
         }
 
 
-        function deleteSavingRecord(id) {
+        /* =========================================
+           DELETE
+        ========================================== */
+
+
+        function removeSaving(
+            id
+        ) {
 
             const savings =
                 getSavings();
+
 
             const item =
                 savings.find(
                     saving =>
                         saving.id === id
                 );
+
 
             if (!item) {
                 return;
@@ -1801,19 +1534,33 @@
 
             const confirmed =
                 window.confirm(
-                    `Delete this saving record of ${formatAmount(item.amount)}?`
+                    "Delete this saving record?"
                 );
+
 
             if (!confirmed) {
                 return;
             }
 
 
-            deleteSaving(id);
+            deleteSaving(
+                id
+            );
+
+
+            if (
+                editingId === id
+            ) {
+
+                resetForm();
+
+            }
+
 
             showToast(
-                "Saving deleted successfully."
+                "Saving deleted."
             );
+
 
             renderSavings();
 
@@ -1821,326 +1568,1135 @@
 
 
         /* =========================================
-           SEARCH / SORT
-           ========================================= */
+           RENDER
+        ========================================== */
 
-        searchInput.addEventListener(
-            "input",
-            renderSavings
-        );
 
-        sortSelect.addEventListener(
-            "change",
-            renderSavings
-        );
+        function renderSavings() {
+
+            const savings =
+                getSavings();
+
+
+            savingCountEl.textContent =
+                savings.length;
+
+
+            totalSavingEl.textContent =
+                `NPR ${money(
+                    getTotalSaving()
+                )}`;
+
+
+            if (
+                savings.length === 0
+            ) {
+
+                savingList.innerHTML =
+                    "";
+
+                emptyState.classList.remove(
+                    "hidden"
+                );
+
+                return;
+
+            }
+
+
+            emptyState.classList.add(
+                "hidden"
+            );
+
+
+            savingList.innerHTML =
+                savings
+                    .map(
+                        item =>
+                            renderSavingCard(
+                                item
+                            )
+                    )
+                    .join("");
+
+
+            attachRecordEvents();
+
+        }
 
 
         /* =========================================
-           PRIVACY MODE
-           ========================================= */
-
-        let privacyMode =
-            localStorage.getItem(
-                "privacy_mode"
-            ) === "true";
+           RECORD CARD
+        ========================================== */
 
 
-        privacyToggle.addEventListener(
-            "click",
-            () => {
+        function renderSavingCard(
+            item
+        ) {
 
-                privacyMode =
-                    !privacyMode;
+            return `
+                <div
+                    class="saving-card p-4"
+                >
 
-                localStorage.setItem(
-                    "privacy_mode",
-                    privacyMode
-                );
+                    <div
+                        class="flex
+                               items-start
+                               justify-between
+                               gap-3"
+                    >
 
-                updatePrivacyVisibility();
+                        <div
+                            class="flex
+                                   items-center
+                                   gap-3
+                                   min-w-0"
+                        >
 
-            }
-        );
+                            <div
+                                class="w-11 h-11
+                                       rounded-xl
+                                       bg-emerald-500/10
+                                       flex items-center
+                                       justify-center
+                                       shrink-0"
+                            >
+
+                                <i
+                                    class="fa-solid
+                                           fa-piggy-bank
+                                           text-emerald-400"
+                                ></i>
+
+                            </div>
 
 
-        function updatePrivacyVisibility() {
+                            <div
+                                class="min-w-0"
+                            >
+
+                                <div
+                                    class="font-semibold
+                                           text-white
+                                           truncate"
+                                >
+                                    ${
+                                        escapeHtml(
+                                            item.category
+                                            ||
+                                            "General Saving"
+                                        )
+                                    }
+                                </div>
+
+
+                                <div
+                                    class="text-xs
+                                           text-slate-400
+                                           mt-1"
+                                >
+                                    ${
+                                        escapeHtml(
+                                            formatDate(
+                                                item.date
+                                            )
+                                        )
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="text-right
+                                   shrink-0"
+                        >
+
+                            <div
+                                class="text-lg
+                                       font-bold
+                                       text-emerald-400"
+                            >
+                                NPR ${money(
+                                    item.amount
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        item.note
+                            ? `
+                                <div
+                                    class="mt-3
+                                           pt-3
+                                           border-t
+                                           border-slate-800
+                                           text-sm
+                                           text-slate-400"
+                                >
+                                    ${escapeHtml(
+                                        item.note
+                                    )}
+                                </div>
+                            `
+                            : ""
+                    }
+
+
+                    <div
+                        class="flex
+                               justify-end
+                               gap-2
+                               mt-3"
+                    >
+
+                        <button
+                            type="button"
+                            class="edit-record
+                                   px-3 py-2
+                                   rounded-lg
+                                   bg-indigo-500/10
+                                   text-indigo-300
+                                   text-xs"
+                            data-id="${escapeHtml(
+                                item.id
+                            )}"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-pen mr-1"
+                            ></i>
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="delete-record
+                                   px-3 py-2
+                                   rounded-lg
+                                   bg-red-500/10
+                                   text-red-300
+                                   text-xs"
+                            data-id="${escapeHtml(
+                                item.id
+                            )}"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-trash mr-1"
+                            ></i>
+
+                            Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        /* =========================================
+           EVENTS
+        ========================================== */
+
+
+        function attachRecordEvents() {
 
             document
                 .querySelectorAll(
-                    ".privacy-amount"
+                    ".edit-record"
                 )
                 .forEach(
-                    element => {
+                    button => {
 
-                        if (privacyMode) {
+                        button.addEventListener(
+                            "click",
+                            () => {
 
-                            element.dataset.original =
-                                element.textContent;
-
-                            element.textContent =
-                                "••••••";
-
-                        } else {
-
-                            if (
-                                element.dataset.original
-                            ) {
-
-                                element.textContent =
-                                    element.dataset.original;
+                                startEdit(
+                                    button.dataset.id
+                                );
 
                             }
-
-                        }
+                        );
 
                     }
                 );
 
 
-            privacyIcon.className =
-                privacyMode
-                    ? "fa-solid fa-eye-slash"
-                    : "fa-solid fa-eye";
+            document
+                .querySelectorAll(
+                    ".delete-record"
+                )
+                .forEach(
+                    button => {
 
-        }
+                        button.addEventListener(
+                            "click",
+                            () => {
 
+                                removeSaving(
+                                    button.dataset.id
+                                );
 
-        /* =========================================
-           LANGUAGE
-           ========================================= */
+                            }
+                        );
 
-        languageToggle.addEventListener(
-            "click",
-            () => {
-
-                const current =
-                    getLanguage();
-
-                const next =
-                    current === "en"
-                        ? "ne"
-                        : "en";
-
-                setLanguage(next);
-
-                applyTranslations(next);
-
-                updateLanguageButton();
-
-                updateDateTime();
-
-            }
-        );
-
-
-        function updateLanguageButton() {
-
-            languageToggle.textContent =
-                getLanguage() === "ne"
-                    ? "ने"
-                    : "EN";
-
-        }
-
-
-        /* =========================================
-           THEME
-           ========================================= */
-
-        themeToggle.addEventListener(
-            "click",
-            () => {
-
-                const current =
-                    getTheme();
-
-                const next =
-                    current === "dark"
-                        ? "light"
-                        : "dark";
-
-                setTheme(next);
-
-                updateThemeIcon();
-
-            }
-        );
-
-
-        function updateThemeIcon() {
-
-            const dark =
-                getTheme() === "dark";
-
-            themeIcon.className =
-                dark
-                    ? "fa-solid fa-sun"
-                    : "fa-solid fa-moon";
-
-        }
-
-
-        /* =========================================
-           MOBILE SIDEBAR
-           ========================================= */
-
-        menuButton.addEventListener(
-            "click",
-            () => {
-
-                sidebar.classList.remove(
-                    "-translate-x-full"
+                    }
                 );
 
-                sidebarBackdrop.classList.remove(
-                    "hidden"
-                );
+        }
+
+
+        /* =========================================
+           DATE
+        ========================================== */
+
+
+        function formatDate(
+            value
+        ) {
+
+            if (!value) {
+                return "-";
+            }
+
+
+            const parts =
+                String(
+                    value
+                ).split("-");
+
+
+            if (
+                parts.length === 3
+            ) {
+
+                return `
+                    ${parts[2]}
+                    ${monthName(parts[1])}
+                    ${parts[0]}
+                `;
 
             }
-        );
 
 
-        sidebarBackdrop.addEventListener(
+            return value;
+
+        }
+
+
+        function monthName(
+            month
+        ) {
+
+            const months = [
+
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec"
+
+            ];
+
+
+            return (
+                months[
+                    Number(month) - 1
+                ]
+                ||
+                month
+            );
+
+        }
+
+
+        /* =========================================
+           PROFILE
+        ========================================== */
+
+
+        function getProfile() {
+
+            return {
+
+                name:
+                    getProfileValue(
+                        "profile_name",
+                        "Digital Notebook User"
+                    ),
+
+                address:
+                    getProfileValue(
+                        "profile_address",
+                        ""
+                    ),
+
+                mobile:
+                    getProfileValue(
+                        "profile_mobile",
+                        ""
+                    ),
+
+                email:
+                    getProfileValue(
+                        "profile_email",
+                        ""
+                    ),
+
+                avatar:
+                    getProfileValue(
+                        "profile_avatar",
+                        ""
+                    )
+
+            };
+
+        }
+
+
+        /* =========================================
+           WAIT FOR IMAGES
+        ========================================== */
+
+
+        async function waitForImages(
+            container
+        ) {
+
+            const images =
+                container.querySelectorAll(
+                    "img"
+                );
+
+
+            await Promise.all(
+
+                [
+                    ...images
+                ].map(
+                    img => {
+
+                        if (
+                            img.complete
+                            &&
+                            img.naturalWidth > 0
+                        ) {
+
+                            return Promise.resolve();
+
+                        }
+
+
+                        return new Promise(
+                            resolve => {
+
+                                img.onload =
+                                    resolve;
+
+                                img.onerror =
+                                    resolve;
+
+                            }
+                        );
+
+                    }
+                )
+
+            );
+
+        }
+
+
+        /* =========================================
+           PDF BUTTON
+        ========================================== */
+
+
+        pdfButton.addEventListener(
             "click",
-            closeSidebar
+            generatePDF
         );
 
 
-        document
-            .querySelectorAll(
-                "#sidebar a"
-            )
-            .forEach(
-                link => {
+        /* =========================================
+           GENERATE PDF
+        ========================================== */
 
-                    link.addEventListener(
-                        "click",
-                        closeSidebar
+
+        async function generatePDF() {
+
+            const savings =
+                getSavings();
+
+
+            if (
+                savings.length === 0
+            ) {
+
+                showToast(
+                    "There are no saving records for PDF.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            pdfButton.disabled =
+                true;
+
+
+            pdfButton.innerHTML =
+                `
+                    <i
+                        class="fa-solid
+                               fa-spinner
+                               fa-spin mr-2"
+                    ></i>
+
+                    Preparing...
+                `;
+
+
+            try {
+
+                const profile =
+                    getProfile();
+
+
+                const pdfContent =
+                    document.getElementById(
+                        "pdf-content"
                     );
+
+
+                /*
+                 * Permanent app banner.
+                 *
+                 * Put your actual banner here:
+                 *
+                 * assets/bannerlogo.png
+                 */
+
+                const bannerLogoUrl =
+                    new URL(
+                        "./assets/bannerlogo.png",
+                        window.location.href
+                    ).href;
+
+
+                /*
+                 * User avatar.
+                 *
+                 * If user has no avatar,
+                 * use app icon.
+                 */
+
+                const avatarSrc =
+                    profile.avatar
+                    ||
+                    new URL(
+                        "./assets/N1024.png",
+                        window.location.href
+                    ).href;
+
+
+                const totalSaving =
+                    savings.reduce(
+                        (
+                            total,
+                            item
+                        ) => {
+
+                            return (
+                                total
+                                +
+                                (
+                                    Number(
+                                        item.amount
+                                    )
+                                    ||
+                                    0
+                                )
+                            );
+
+                        },
+                        0
+                    );
+
+
+                /*
+                 * Create every saving
+                 * record as a PDF row.
+                 */
+
+                const rows =
+                    savings
+                        .map(
+                            (
+                                item,
+                                index
+                            ) => {
+
+                                return `
+                                    <tr>
+
+                                        <td>
+                                            ${index + 1}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                                formatDate(
+                                                    item.date
+                                                )
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                                item.category
+                                                ||
+                                                "General Saving"
+                                            )}
+                                        </td>
+
+                                        <td>
+                                            ${
+                                                escapeHtml(
+                                                    item.note
+                                                    ||
+                                                    "-"
+                                                )
+                                            }
+                                        </td>
+
+                                        <td
+                                            class="pdf-total"
+                                        >
+                                            NPR
+                                            ${money(
+                                                item.amount
+                                            )}
+                                        </td>
+
+                                    </tr>
+                                `;
+
+                            }
+                        )
+                        .join("");
+
+
+                /*
+                 * Build complete PDF page.
+                 */
+
+                pdfContent.innerHTML =
+                    `
+
+                        <div
+                            class="pdf-header"
+                        >
+
+                            <!-- USER -->
+
+                            <div
+                                class="pdf-user"
+                            >
+
+                                <img
+                                    src="${escapeHtml(
+                                        avatarSrc
+                                    )}"
+                                    class="pdf-avatar"
+                                    crossorigin="anonymous"
+                                    alt="User"
+                                >
+
+
+                                <div
+                                    class="pdf-user-info"
+                                >
+
+                                    <div
+                                        class="pdf-user-name"
+                                    >
+                                        ${escapeHtml(
+                                            profile.name
+                                        )}
+                                    </div>
+
+
+                                    ${
+                                        profile.address
+                                            ? `
+                                                <div>
+                                                    📍
+                                                    ${escapeHtml(
+                                                        profile.address
+                                                    )}
+                                                </div>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        profile.mobile
+                                            ? `
+                                                <div>
+                                                    📞
+                                                    ${escapeHtml(
+                                                        profile.mobile
+                                                    )}
+                                                </div>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        profile.email
+                                            ? `
+                                                <div>
+                                                    ✉️
+                                                    ${escapeHtml(
+                                                        profile.email
+                                                    )}
+                                                </div>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- APP BANNER -->
+
+                            <div
+                                class="pdf-banner"
+                            >
+
+                                <img
+                                    src="${escapeHtml(
+                                        bannerLogoUrl
+                                    )}"
+                                    class="pdf-banner-image"
+                                    crossorigin="anonymous"
+                                    alt="Digital Notebook"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TITLE -->
+
+                        <div
+                            class="pdf-title"
+                        >
+
+                            <h1>
+                                SAVING REPORT
+                            </h1>
+
+                            <p>
+                                Digital Notebook
+                                •
+                                Generated:
+                                ${formatDate(
+                                    today()
+                                )}
+                            </p>
+
+                        </div>
+
+
+                        <!-- TABLE -->
+
+                        <table
+                            class="pdf-table"
+                        >
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        #
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Category
+                                    </th>
+
+                                    <th>
+                                        Note
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${rows}
+
+                            </tbody>
+
+                        </table>
+
+
+                        <!-- SUMMARY -->
+
+                        <div
+                            class="pdf-summary"
+                        >
+
+                            <div
+                                class="pdf-summary-row"
+                            >
+
+                                <span>
+                                    Total Records:
+                                </span>
+
+                                <strong>
+                                    ${savings.length}
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="pdf-summary-row"
+                            >
+
+                                <span>
+                                    Total Saving:
+                                </span>
+
+                                <strong
+                                    class="pdf-total"
+                                >
+                                    NPR
+                                    ${money(
+                                        totalSaving
+                                    )}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FOOTER -->
+
+                        <div
+                            class="pdf-footer"
+                        >
+                            Digital Notebook
+                        </div>
+
+                    `;
+
+
+                /*
+                 * Wait for avatar and banner.
+                 */
+
+                await waitForImages(
+                    pdfContent
+                );
+
+
+                /*
+                 * Small rendering delay.
+                 */
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            300
+                        )
+                );
+
+
+                /*
+                 * Convert HTML to image.
+                 */
+
+                const canvas =
+                    await html2canvas(
+                        pdfContent,
+                        {
+                            scale: 2,
+
+                            useCORS:
+                                true,
+
+                            allowTaint:
+                                false,
+
+                            backgroundColor:
+                                "#ffffff"
+                        }
+                    );
+
+
+                /*
+                 * jsPDF
+                 */
+
+                const {
+                    jsPDF
+                } =
+                    window.jspdf;
+
+
+                const pdf =
+                    new jsPDF(
+                        {
+                            orientation:
+                                "portrait",
+
+                            unit:
+                                "mm",
+
+                            format:
+                                "a4"
+                        }
+                    );
+
+
+                const pageWidth =
+                    pdf.internal
+                        .pageSize
+                        .getWidth();
+
+
+                const pageHeight =
+                    pdf.internal
+                        .pageSize
+                        .getHeight();
+
+
+                const imageWidth =
+                    pageWidth;
+
+
+                const imageHeight =
+                    (
+                        canvas.height
+                        *
+                        imageWidth
+                    )
+                    /
+                    canvas.width;
+
+
+                let heightLeft =
+                    imageHeight;
+
+
+                let position =
+                    0;
+
+
+                const imageData =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.95
+                    );
+
+
+                /*
+                 * First page.
+                 */
+
+                pdf.addImage(
+                    imageData,
+                    "JPEG",
+                    0,
+                    position,
+                    imageWidth,
+                    imageHeight
+                );
+
+
+                heightLeft -=
+                    pageHeight;
+
+
+                /*
+                 * Additional pages.
+                 *
+                 * This means if saving records
+                 * are many, everything continues
+                 * into the same PDF.
+                 */
+
+                while (
+                    heightLeft > 0
+                ) {
+
+                    position =
+                        heightLeft
+                        -
+                        imageHeight;
+
+
+                    pdf.addPage();
+
+
+                    pdf.addImage(
+                        imageData,
+                        "JPEG",
+                        0,
+                        position,
+                        imageWidth,
+                        imageHeight
+                    );
+
+
+                    heightLeft -=
+                        pageHeight;
+
+                }
+
+
+                /*
+                 * Save.
+                 */
+
+                pdf.save(
+                    "Digital-Notebook-Saving-Report.pdf"
+                );
+
+
+                showToast(
+                    "Saving PDF created successfully."
+                );
+
+
+            } catch (
+                error
+            ) {
+
+                console.error(
+                    "Saving PDF error:",
+                    error
+                );
+
+
+                showToast(
+                    "PDF बनाउन समस्या भयो। फेरि प्रयास गर्नुहोस्।",
+                    "error"
+                );
+
+            } finally {
+
+                pdfButton.disabled =
+                    false;
+
+
+                pdfButton.innerHTML =
+                    `
+                        <i
+                            class="fa-solid
+                                   fa-file-pdf mr-2"
+                        ></i>
+
+                        PDF
+                    `;
+
+            }
+
+        }
+
+
+        /* =========================================
+           SERVICE WORKER
+        ========================================== */
+
+
+        if (
+            "serviceWorker"
+            in navigator
+        ) {
+
+            window.addEventListener(
+                "load",
+                () => {
+
+                    navigator.serviceWorker
+                        .register(
+                            "./sw.js"
+                        )
+                        .catch(
+                            error => {
+
+                                console.warn(
+                                    "Service worker error:",
+                                    error
+                                );
+
+                            }
+                        );
 
                 }
             );
 
-
-        function closeSidebar() {
-
-            sidebar.classList.add(
-                "-translate-x-full"
-            );
-
-            sidebarBackdrop.classList.add(
-                "hidden"
-            );
-
         }
 
 
         /* =========================================
-           TOAST
-           ========================================= */
-
-        let toastTimer = null;
+           INITIAL
+        ========================================== */
 
 
-        function showToast(message) {
-
-            const container =
-                document.getElementById(
-                    "toast-container"
-                );
-
-            const toast =
-                document.getElementById(
-                    "toast"
-                );
-
-            toast.textContent =
-                message;
-
-            container.classList.remove(
-                "hidden"
-            );
-
-            clearTimeout(
-                toastTimer
-            );
-
-            toastTimer =
-                setTimeout(
-                    () => {
-
-                        container.classList.add(
-                            "hidden"
-                        );
-
-                    },
-                    2200
-                );
-
-        }
-
-
-        /* =========================================
-           FORMAT AMOUNT
-           ========================================= */
-
-        function formatAmount(amount) {
-
-            const number =
-                Number(amount) || 0;
-
-            return (
-                "NPR " +
-                number.toLocaleString(
-                    "en-IN",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                )
-            );
-
-        }
-
-
-        /* =========================================
-           HTML SAFETY
-           ========================================= */
-
-        function escapeHTML(value) {
-
-            return String(value)
-                .replaceAll(
-                    "&",
-                    "&amp;"
-                )
-                .replaceAll(
-                    "<",
-                    "&lt;"
-                )
-                .replaceAll(
-                    ">",
-                    "&gt;"
-                )
-                .replaceAll(
-                    '"',
-                    "&quot;"
-                )
-                .replaceAll(
-                    "'",
-                    "&#039;"
-                );
-
-        }
-
-
-        function escapeAttribute(value) {
-
-            return escapeHTML(value);
-
-        }
+        renderSavings();
 
     </script>
 
 </body>
+
 </html>
