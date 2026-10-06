@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 
 <head>
 
@@ -12,10 +12,12 @@
 
     <meta
         name="theme-color"
-        content="#0f172a"
+        content="#111827"
     >
 
-    <title>Saving - Digital Notebook</title>
+    <title>
+        Saving - Digital Notebook
+    </title>
 
     <link
         rel="manifest"
@@ -47,491 +49,59 @@
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
 
-    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-    ></script>
-
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
-    ></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
 
-        * {
-            font-family: "Poppins", sans-serif;
-        }
-
         body {
-
-            background:
-                radial-gradient(
-                    circle at top,
-                    rgba(16,185,129,0.14),
-                    transparent 35%
-                ),
-                #020617;
-
-            color: #e5e7eb;
-
+            font-family: "Poppins", sans-serif;
+            background: #f3f4f6;
         }
 
-
-        .app-card {
-
-            background:
-                rgba(15,23,42,0.94);
-
-            border:
-                1px solid
-                rgba(148,163,184,0.18);
-
-            box-shadow:
-                0 20px 50px
-                rgba(0,0,0,0.30);
-
+        html[data-theme="dark"] body {
+            background: #111827;
+            color: #f9fafb;
         }
 
-
-        .input-box {
-
-            width: 100%;
-
-            background: #020617;
-
-            border:
-                1px solid
-                #334155;
-
-            color: #f8fafc;
-
-            border-radius: 14px;
-
-            padding:
-                14px 16px;
-
-            font-size: 16px;
-
+        html[data-theme="dark"] .card {
+            background: #1f2937;
+            color: #f9fafb;
         }
 
-
-        .input-box:focus {
-
-            border-color:
-                #10b981;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(16,185,129,0.14);
-
-            outline: none;
-
+        html[data-theme="dark"] input,
+        html[data-theme="dark"] textarea,
+        html[data-theme="dark"] select {
+            background: #111827;
+            color: #fff;
+            border-color: #374151;
         }
 
-
-        .saving-card {
-
-            background:
-                rgba(15,23,42,0.92);
-
-            border:
-                1px solid
-                #1e293b;
-
-            border-radius:
-                16px;
-
+        .group-records {
+            display: none;
         }
 
-
-        .saving-card:hover {
-
-            border-color:
-                rgba(16,185,129,0.35);
-
+        .group-records.open {
+            display: block;
         }
 
-
-        .toast {
-
-            animation:
-                toastIn
-                0.25s
-                ease-out;
-
+        .rotate {
+            transform: rotate(180deg);
         }
-
-
-        @keyframes toastIn {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(12px);
-
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-
-            }
-
-        }
-
-
-        /* =========================
-           PDF AREA
-        ========================== */
 
         #pdf-content {
-
-            position:
-                fixed;
-
-            left:
-                -100000px;
-
-            top:
-                0;
-
-            width:
-                794px;
-
-            min-height:
-                1123px;
-
-            background:
-                #ffffff;
-
-            color:
-                #172033;
-
-            padding:
-                40px;
-
-            z-index:
-                -9999;
-
-        }
-
-
-        .pdf-header {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                22px;
-
-            width:
-                100%;
-
-            padding-bottom:
-                14px;
-
-            border-bottom:
-                3px solid
-                #20a46b;
-
-        }
-
-
-        .pdf-user {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                14px;
-
-            flex:
-                1;
-
-            min-width:
-                0;
-
-        }
-
-
-        .pdf-avatar {
-
-            width:
-                78px;
-
-            height:
-                78px;
-
-            border-radius:
-                50%;
-
-            object-fit:
-                cover;
-
-            border:
-                3px solid
-                #20a46b;
-
-            flex-shrink:
-                0;
-
-        }
-
-
-        .pdf-user-info {
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            gap:
-                3px;
-
-            font-size:
-                11px;
-
-            line-height:
-                1.35;
-
-        }
-
-
-        .pdf-user-name {
-
-            font-size:
-                16px;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                2px;
-
-        }
-
-
-        .pdf-banner {
-
-            width:
-                245px;
-
-            height:
-                78px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            overflow:
-                hidden;
-
-            flex-shrink:
-                0;
-
-        }
-
-
-        .pdf-banner-image {
-
-            width:
-                100%;
-
-            height:
-                100%;
-
-            object-fit:
-                contain;
-
-            display:
-                block;
-
-        }
-
-
-        .pdf-title {
-
-            text-align:
-                center;
-
-            margin-top:
-                25px;
-
-            margin-bottom:
-                20px;
-
-        }
-
-
-        .pdf-title h1 {
-
-            font-size:
-                25px;
-
-            font-weight:
-                700;
-
-            margin:
-                0;
-
-            letter-spacing:
-                1px;
-
-        }
-
-
-        .pdf-title p {
-
-            margin:
-                5px 0 0;
-
-            font-size:
-                11px;
-
-            color:
-                #64748b;
-
-        }
-
-
-        .pdf-table {
-
-            width:
-                100%;
-
-            border-collapse:
-                collapse;
-
-            font-size:
-                10px;
-
-        }
-
-
-        .pdf-table th {
-
-            background:
-                #f1f5f9;
-
-            color:
-                #334155;
-
-            padding:
-                9px 7px;
-
-            border-bottom:
-                1px solid
-                #cbd5e1;
-
-            text-align:
-                left;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .pdf-table td {
-
-            padding:
-                9px 7px;
-
-            border-bottom:
-                1px solid
-                #e2e8f0;
-
-            vertical-align:
-                top;
-
-        }
-
-
-        .pdf-total {
-
-            color:
-                #16a34a;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .pdf-summary {
-
-            margin-top:
-                20px;
-
-            border-top:
-                2px solid
-                #20a46b;
-
-            padding-top:
-                14px;
-
-        }
-
-
-        .pdf-summary-row {
-
-            display:
-                flex;
-
-            justify-content:
-                space-between;
-
-            width:
-                300px;
-
-            font-size:
-                12px;
-
-            margin-bottom:
-                6px;
-
-        }
-
-
-        .pdf-footer {
-
-            margin-top:
-                35px;
-
-            text-align:
-                center;
-
-            color:
-                #94a3b8;
-
-            font-size:
-                9px;
-
+            position: absolute;
+            left: -10000px;
+            top: 0;
+            width: 794px;
+            background: #ffffff;
+            color: #111827;
+            padding: 35px;
+            z-index: 9999;
         }
 
     </style>
@@ -541,415 +111,422 @@
 
 <body>
 
+<div class="min-h-screen">
 
-    <main
-        class="max-w-3xl mx-auto px-4 py-6 pb-12"
+    <!-- HEADER -->
+
+    <header
+        class="sticky top-0 z-40 bg-gray-900 text-white shadow-lg"
     >
 
-
-        <!-- =========================
-             HEADER
-        ========================== -->
-
         <div
-            class="flex items-center
-                   justify-between mb-6"
+            class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
         >
 
-            <div>
+            <div class="flex items-center gap-3">
 
-                <h1
-                    class="text-2xl
-                           font-bold
-                           text-white"
+                <a
+                    href="./index.html"
+                    class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center"
                 >
-                    Saving
-                </h1>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
 
-                <p
-                    class="text-slate-400
-                           text-sm mt-1"
-                >
-                    Manage your saving records
-                </p>
+                <div>
+
+                    <h1
+                        class="font-bold text-lg"
+                    >
+                        Saving
+                    </h1>
+
+                    <p
+                        class="text-xs text-gray-300"
+                    >
+                        Digital Notebook
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <a
-                href="./index.html"
-                class="w-11 h-11
-                       rounded-xl
-                       bg-slate-800
-                       flex items-center
-                       justify-center
-                       text-slate-300"
+            <button
+                id="pdf-btn"
+                class="bg-white text-gray-900 px-3 py-2 rounded-lg text-sm font-semibold"
             >
 
                 <i
-                    class="fa-solid
-                           fa-xmark"
+                    class="fa-solid fa-file-pdf mr-1"
                 ></i>
 
-            </a>
+                PDF
+
+            </button>
 
         </div>
 
+    </header>
 
-        <!-- =========================
-             FORM
-        ========================== -->
+
+    <!-- MAIN -->
+
+    <main
+        class="max-w-4xl mx-auto px-4 py-5"
+    >
+
+
+        <!-- SUMMARY -->
 
         <section
-            class="app-card
-                   rounded-2xl p-5"
+            class="grid grid-cols-2 gap-3 mb-5"
         >
+
+            <div
+                class="card bg-white rounded-2xl p-4 shadow"
+            >
+
+                <p
+                    class="text-xs text-gray-500"
+                >
+                    Total Saving
+                </p>
+
+                <h2
+                    id="total-saving"
+                    class="text-xl font-bold mt-1"
+                >
+                    रु 0
+                </h2>
+
+            </div>
 
 
             <div
-                class="flex items-center
-                       justify-between mb-5"
+                class="card bg-white rounded-2xl p-4 shadow"
             >
 
-                <div>
+                <p
+                    class="text-xs text-gray-500"
+                >
+                    Records
+                </p>
 
-                    <h2
-                        id="form-title"
-                        class="text-lg
-                               font-semibold"
+                <h2
+                    id="record-count"
+                    class="text-xl font-bold mt-1"
+                >
+                    0
+                </h2>
+
+            </div>
+
+        </section>
+
+
+        <!-- ADD FORM -->
+
+        <section
+            class="card bg-white rounded-2xl shadow p-5 mb-5"
+        >
+
+            <div
+                class="flex items-center justify-between mb-4"
+            >
+
+                <h2
+                    id="form-title"
+                    class="font-bold text-lg"
+                >
+                    Add Saving
+                </h2>
+
+                <button
+                    id="cancel-edit"
+                    class="hidden text-sm text-red-500"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+
+            <form
+                id="saving-form"
+            >
+
+
+                <!-- CATEGORY -->
+
+                <div class="mb-4">
+
+                    <label
+                        class="block text-sm font-medium mb-1"
                     >
-                        Add Saving
-                    </h2>
+                        Saving Name / Category
+                    </label>
+
+                    <input
+                        id="category"
+                        type="text"
+                        placeholder="Bank Saving"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3"
+                    >
 
                     <p
-                        id="form-subtitle"
-                        class="text-sm
-                               text-slate-400
-                               mt-1"
+                        class="text-xs text-gray-500 mt-1"
                     >
-                        Add a new saving record
+                        उदाहरण: Bank Saving, Fixed Deposit, Gold
                     </p>
 
                 </div>
 
 
-                <div
-                    id="edit-badge"
-                    class="hidden
-                           px-3 py-1
-                           rounded-full
-                           bg-emerald-500/10
-                           text-emerald-300
-                           text-xs
-                           font-medium"
-                >
-                    Editing
+                <!-- NPR -->
+
+                <div class="mb-4">
+
+                    <label
+                        class="block text-sm font-medium mb-1"
+                    >
+                        नेरु (NPR)
+                    </label>
+
+                    <div
+                        class="relative"
+                    >
+
+                        <span
+                            class="absolute left-4 top-3 text-gray-500"
+                        >
+                            रु
+                        </span>
+
+                        <input
+                            id="npr"
+                            type="number"
+                            inputmode="decimal"
+                            min="0"
+                            step="0.01"
+                            placeholder="0"
+                            class="w-full border border-gray-300 rounded-xl px-10 py-3"
+                        >
+
+                    </div>
+
                 </div>
 
-            </div>
+
+                <!-- INR -->
+
+                <div class="mb-4">
+
+                    <label
+                        class="block text-sm font-medium mb-1"
+                    >
+                        भारु (INR)
+                    </label>
+
+                    <div
+                        class="relative"
+                    >
+
+                        <span
+                            class="absolute left-4 top-3 text-gray-500"
+                        >
+                            ₹
+                        </span>
+
+                        <input
+                            id="inr"
+                            type="number"
+                            inputmode="decimal"
+                            min="0"
+                            step="0.01"
+                            placeholder="0"
+                            class="w-full border border-gray-300 rounded-xl px-10 py-3"
+                        >
+
+                    </div>
+
+                    <p
+                        class="text-xs text-gray-500 mt-1"
+                    >
+                        1 भारु = रु 1.60
+                    </p>
+
+                </div>
 
 
-            <!-- Amount -->
+                <!-- DATE -->
 
-            <label
-                class="block mb-2
-                       font-medium
-                       text-slate-300"
-            >
-                Amount
-            </label>
+                <div class="mb-4">
 
-            <input
-                id="saving-amount"
-                type="number"
-                inputmode="decimal"
-                min="0"
-                step="0.01"
-                class="input-box mb-5"
-                placeholder="0"
-            >
+                    <label
+                        class="block text-sm font-medium mb-1"
+                    >
+                        Date
+                    </label>
+
+                    <input
+                        id="date"
+                        type="date"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3"
+                    >
+
+                </div>
 
 
-            <!-- Category -->
+                <!-- NOTE -->
 
-            <label
-                class="block mb-2
-                       font-medium
-                       text-slate-300"
-            >
-                Category
-            </label>
+                <div class="mb-4">
 
-            <input
-                id="saving-category"
-                type="text"
-                class="input-box mb-5"
-                placeholder="e.g. Emergency, Bank, Future"
-                autocomplete="off"
-            >
+                    <label
+                        class="block text-sm font-medium mb-1"
+                    >
+                        Note
+                    </label>
 
+                    <textarea
+                        id="note"
+                        rows="3"
+                        placeholder="Optional note"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3"
+                    ></textarea>
 
-            <!-- Date -->
-
-            <label
-                class="block mb-2
-                       font-medium
-                       text-slate-300"
-            >
-                Date
-            </label>
-
-            <input
-                id="saving-date"
-                type="date"
-                class="input-box mb-5"
-            >
+                </div>
 
 
-            <!-- Note -->
+                <!-- PREVIEW -->
 
-            <label
-                class="block mb-2
-                       font-medium
-                       text-slate-300"
-            >
-                Note
-            </label>
-
-            <textarea
-                id="saving-note"
-                rows="3"
-                class="input-box mb-5
-                       resize-none"
-                placeholder="Optional note..."
-            ></textarea>
-
-
-            <!-- Buttons -->
-
-            <div
-                class="grid
-                       grid-cols-2
-                       gap-3"
-            >
-
-                <button
-                    id="cancel-edit"
-                    type="button"
-                    class="rounded-xl
-                           bg-slate-800
-                           text-slate-200
-                           font-semibold
-                           py-3"
+                <div
+                    class="bg-gray-100 rounded-xl p-4 mb-4"
                 >
-                    Cancel
-                </button>
+
+                    <div
+                        class="flex justify-between text-sm mb-2"
+                    >
+
+                        <span>
+                            NPR
+                        </span>
+
+                        <strong
+                            id="preview-npr"
+                        >
+                            रु 0
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="flex justify-between text-sm mb-2"
+                    >
+
+                        <span>
+                            INR
+                        </span>
+
+                        <strong
+                            id="preview-inr"
+                        >
+                            ₹ 0
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="border-t border-gray-300 pt-2 flex justify-between"
+                    >
+
+                        <span
+                            class="font-semibold"
+                        >
+                            Total NPR
+                        </span>
+
+                        <strong
+                            id="preview-total"
+                        >
+                            रु 0
+                        </strong>
+
+                    </div>
+
+                </div>
 
 
                 <button
-                    id="save-saving"
-                    type="button"
-                    class="rounded-xl
-                           bg-emerald-600
-                           hover:bg-emerald-500
-                           text-white
-                           font-semibold
-                           py-3"
+                    type="submit"
+                    class="w-full bg-gray-900 text-white rounded-xl py-3 font-semibold"
                 >
 
                     <i
-                        class="fa-solid
-                               fa-check mr-2"
+                        class="fa-solid fa-floppy-disk mr-2"
                     ></i>
 
-                    <span
-                        id="save-button-text"
-                    >
+                    <span id="submit-text">
                         Save Saving
                     </span>
 
                 </button>
 
-            </div>
+            </form>
 
         </section>
 
 
-        <!-- =========================
-             SUMMARY
-        ========================== -->
+        <!-- GROUP LIST -->
 
-        <section
-            class="grid
-                   grid-cols-2
-                   gap-3 mt-6"
-        >
-
+        <section>
 
             <div
-                class="app-card
-                       rounded-2xl p-4"
+                class="flex items-center justify-between mb-3"
             >
 
-                <div
-                    class="text-sm
-                           text-slate-400"
+                <h2
+                    class="font-bold text-lg"
                 >
-                    Total Saving
-                </div>
+                    Saving Groups
+                </h2>
 
-                <div
-                    id="total-saving"
-                    class="text-xl
-                           font-bold
-                           text-emerald-400
-                           mt-2"
+                <span
+                    id="group-count"
+                    class="text-xs text-gray-500"
                 >
-                    NPR 0
-                </div>
+                    0 groups
+                </span>
 
             </div>
 
 
             <div
-                class="app-card
-                       rounded-2xl p-4"
-            >
-
-                <div
-                    class="text-sm
-                           text-slate-400"
-                >
-                    Records
-                </div>
-
-                <div
-                    id="saving-count"
-                    class="text-xl
-                           font-bold
-                           text-white mt-2"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             RECORDS HEADER
-        ========================== -->
-
-        <section
-            class="mt-7"
-        >
-
-            <div
-                class="flex items-center
-                       justify-between
-                       gap-3"
-            >
-
-                <div>
-
-                    <h2
-                        class="text-xl
-                               font-bold"
-                    >
-                        Saving Records
-                    </h2>
-
-                    <p
-                        class="text-sm
-                               text-slate-400
-                               mt-1"
-                    >
-                        Your saved amounts
-                    </p>
-
-                </div>
-
-
-                <!-- PDF -->
-
-                <button
-                    id="download-pdf"
-                    type="button"
-                    class="px-4 py-3
-                           rounded-xl
-                           bg-emerald-600
-                           hover:bg-emerald-500
-                           text-white
-                           font-semibold
-                           text-sm
-                           whitespace-nowrap"
-                >
-
-                    <i
-                        class="fa-solid
-                               fa-file-pdf mr-2"
-                    ></i>
-
-                    PDF
-
-                </button>
-
-            </div>
-
-
-            <!-- Records -->
-
-            <div
-                id="saving-list"
-                class="space-y-3 mt-4"
+                id="saving-groups"
+                class="space-y-3"
             ></div>
 
 
-            <!-- Empty -->
-
             <div
                 id="empty-state"
-                class="hidden
-                       app-card
-                       rounded-2xl
-                       p-8
-                       text-center
-                       mt-4"
+                class="hidden card bg-white rounded-2xl p-8 text-center"
             >
 
-                <div
-                    class="w-16 h-16
-                           mx-auto mb-4
-                           rounded-2xl
-                           bg-emerald-500/10
-                           flex items-center
-                           justify-center"
-                >
-
-                    <i
-                        class="fa-solid
-                               fa-piggy-bank
-                               text-emerald-400
-                               text-2xl"
-                    ></i>
-
-                </div>
-
-
-                <h3
-                    class="font-semibold
-                           text-lg"
-                >
-                    No saving records
-                </h3>
-
+                <i
+                    class="fa-solid fa-piggy-bank text-4xl text-gray-400 mb-3"
+                ></i>
 
                 <p
-                    class="text-slate-400
-                           text-sm mt-1"
+                    class="font-semibold"
                 >
-                    Add your first saving record above.
+                    No saving records yet
+                </p>
+
+                <p
+                    class="text-sm text-gray-500 mt-1"
+                >
+                    Add your first saving above.
                 </p>
 
             </div>
@@ -958,1745 +535,1587 @@
 
     </main>
 
+</div>
 
-    <!-- =========================
-         PDF CONTENT
-    ========================== -->
+
+<!-- PDF CONTENT -->
+
+<div id="pdf-content">
 
     <div
-        id="pdf-content"
+        style="
+            text-align:center;
+            border-bottom:2px solid #111827;
+            padding-bottom:15px;
+            margin-bottom:20px;
+        "
+    >
+
+        <img
+            id="pdf-avatar"
+            src="./assets/N1024.png"
+            style="
+                width:70px;
+                height:70px;
+                border-radius:50%;
+                object-fit:cover;
+                display:block;
+                margin:0 auto 10px;
+            "
+        >
+
+        <h1
+            style="
+                font-size:24px;
+                font-weight:700;
+                margin:0;
+            "
+        >
+            Digital Notebook
+        </h1>
+
+        <p
+            style="
+                font-size:16px;
+                margin:5px 0 0;
+            "
+        >
+            Saving Report
+        </p>
+
+    </div>
+
+
+    <div
+        id="pdf-profile"
+        style="
+            font-size:13px;
+            line-height:1.8;
+            margin-bottom:20px;
+        "
     ></div>
 
 
-    <!-- =========================
-         TOAST
-    ========================== -->
-
     <div
-        id="toast-container"
-        class="fixed bottom-5
-               left-4 right-4
-               z-[9999]
-               flex justify-center
-               pointer-events-none"
+        id="pdf-summary"
+        style="
+            background:#f3f4f6;
+            padding:15px;
+            border-radius:8px;
+            margin-bottom:20px;
+            font-size:14px;
+        "
     ></div>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <div id="pdf-table"></div>
+
+</div>
+
+
+<!-- APP -->
+
+<script
+    type="module"
+>
+
+import "./js/app.js";
+
+import {
+    getSavings,
+    addSaving,
+    updateSaving,
+    deleteSaving,
+    getGroupedSavings,
+    getTotalSavingNPR,
+    getTotalSavingINR,
+    getTotalSaving
+} from "./js/savings.js";
+
+import {
+    getProfileValue
+} from "./js/storage.js";
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const form =
+    document.getElementById(
+        "saving-form"
+    );
 
-    <script type="module">
+const categoryInput =
+    document.getElementById(
+        "category"
+    );
 
+const nprInput =
+    document.getElementById(
+        "npr"
+    );
 
-        import {
+const inrInput =
+    document.getElementById(
+        "inr"
+    );
+
+const dateInput =
+    document.getElementById(
+        "date"
+    );
+
+const noteInput =
+    document.getElementById(
+        "note"
+    );
+
+const groupsContainer =
+    document.getElementById(
+        "saving-groups"
+    );
+
+const emptyState =
+    document.getElementById(
+        "empty-state"
+    );
+
+const totalSavingEl =
+    document.getElementById(
+        "total-saving"
+    );
+
+const recordCountEl =
+    document.getElementById(
+        "record-count"
+    );
+
+const groupCountEl =
+    document.getElementById(
+        "group-count"
+    );
+
+const previewNpr =
+    document.getElementById(
+        "preview-npr"
+    );
+
+const previewInr =
+    document.getElementById(
+        "preview-inr"
+    );
+
+const previewTotal =
+    document.getElementById(
+        "preview-total"
+    );
 
-            getSavings,
+const formTitle =
+    document.getElementById(
+        "form-title"
+    );
 
-            addSaving,
+const submitText =
+    document.getElementById(
+        "submit-text"
+    );
 
-            updateSaving,
+const cancelEditBtn =
+    document.getElementById(
+        "cancel-edit"
+    );
 
-            deleteSaving,
+let editingId = null;
 
-            getTotalSaving
 
-        } from "./js/savings.js";
+/* =========================
+   DATE
+========================= */
 
+function today() {
 
-        import {
+    return new Date()
+        .toISOString()
+        .split("T")[0];
 
-            getProfileValue
+}
 
-        } from "./js/storage.js";
+dateInput.value =
+    today();
 
 
-        import "./js/app.js";
+/* =========================
+   FORMAT MONEY
+========================= */
 
+function formatNPR(value) {
 
-        /* =========================================
-           ELEMENTS
-        ========================================== */
-
-
-        const amountInput =
-            document.getElementById(
-                "saving-amount"
-            );
-
-
-        const categoryInput =
-            document.getElementById(
-                "saving-category"
-            );
-
-
-        const dateInput =
-            document.getElementById(
-                "saving-date"
-            );
-
-
-        const noteInput =
-            document.getElementById(
-                "saving-note"
-            );
-
-
-        const saveButton =
-            document.getElementById(
-                "save-saving"
-            );
-
-
-        const saveButtonText =
-            document.getElementById(
-                "save-button-text"
-            );
-
-
-        const cancelButton =
-            document.getElementById(
-                "cancel-edit"
-            );
-
-
-        const formTitle =
-            document.getElementById(
-                "form-title"
-            );
-
-
-        const formSubtitle =
-            document.getElementById(
-                "form-subtitle"
-            );
-
-
-        const editBadge =
-            document.getElementById(
-                "edit-badge"
-            );
-
-
-        const savingList =
-            document.getElementById(
-                "saving-list"
-            );
-
-
-        const emptyState =
-            document.getElementById(
-                "empty-state"
-            );
-
-
-        const totalSavingEl =
-            document.getElementById(
-                "total-saving"
-            );
-
-
-        const savingCountEl =
-            document.getElementById(
-                "saving-count"
-            );
-
-
-        const pdfButton =
-            document.getElementById(
-                "download-pdf"
-            );
-
-
-        /* =========================================
-           STATE
-        ========================================== */
-
-
-        let editingId =
-            null;
-
-
-        /* =========================================
-           TODAY
-        ========================================== */
-
-
-        function today() {
-
-            return new Date()
-                .toISOString()
-                .split("T")[0];
-
-        }
-
-
-        dateInput.value =
-            today();
-
-
-        /* =========================================
-           MONEY
-        ========================================== */
-
-
-        function money(
-            value
-        ) {
-
-            return Number(
-                value || 0
-            ).toLocaleString(
-                "en-IN",
-                {
-                    maximumFractionDigits:
-                        2
-                }
-            );
-
-        }
-
-
-        /* =========================================
-           ESCAPE HTML
-        ========================================== */
-
-
-        function escapeHtml(
-            value
-        ) {
-
-            return String(
-                value ?? ""
-            )
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
-        }
-
-
-        /* =========================================
-           TOAST
-        ========================================== */
-
-
-        function showToast(
-            message,
-            type = "success"
-        ) {
-
-            const container =
-                document.getElementById(
-                    "toast-container"
-                );
-
-
-            const toast =
-                document.createElement(
-                    "div"
-                );
-
-
-            const icon =
-                type === "error"
-                    ? "fa-circle-exclamation"
-                    : "fa-circle-check";
-
-
-            const bg =
-                type === "error"
-                    ? "bg-red-600"
-                    : "bg-emerald-600";
-
-
-            toast.className =
-                `
-                    toast
-                    ${bg}
-                    text-white
-                    px-5 py-3
-                    rounded-xl
-                    shadow-xl
-                    text-sm
-                    font-medium
-                `;
-
-
-            toast.innerHTML =
-                `
-                    <i
-                        class="fa-solid
-                               ${icon}
-                               mr-2"
-                    ></i>
-
-                    ${escapeHtml(message)}
-                `;
-
-
-            container.appendChild(
-                toast
-            );
-
-
-            setTimeout(
-                () => {
-
-                    toast.remove();
-
-                },
-                2500
-            );
-
-        }
-
-
-        /* =========================================
-           RESET
-        ========================================== */
-
-
-        function resetForm() {
-
-            editingId =
-                null;
-
-
-            amountInput.value =
-                "";
-
-
-            categoryInput.value =
-                "";
-
-
-            dateInput.value =
-                today();
-
-
-            noteInput.value =
-                "";
-
-
-            formTitle.textContent =
-                "Add Saving";
-
-
-            formSubtitle.textContent =
-                "Add a new saving record";
-
-
-            saveButtonText.textContent =
-                "Save Saving";
-
-
-            editBadge.classList.add(
-                "hidden"
-            );
-
-        }
-
-
-        /* =========================================
-           SAVE / UPDATE
-        ========================================== */
-
-
-        saveButton.addEventListener(
-            "click",
-            () => {
-
-                const amount =
-                    Number(
-                        amountInput.value
-                    ) || 0;
-
-
-                const category =
-                    categoryInput.value
-                        .trim();
-
-
-                const date =
-                    dateInput.value
-                    ||
-                    today();
-
-
-                const note =
-                    noteInput.value
-                        .trim();
-
-
-                if (
-                    amount <= 0
-                ) {
-
-                    showToast(
-                        "Please enter saving amount.",
-                        "error"
-                    );
-
-                    amountInput.focus();
-
-                    return;
-
-                }
-
-
-                const data = {
-
-                    amount,
-
-                    category,
-
-                    date,
-
-                    note
-
-                };
-
-
-                if (
-                    editingId
-                ) {
-
-                    updateSaving(
-                        editingId,
-                        data
-                    );
-
-
-                    showToast(
-                        "Saving updated successfully."
-                    );
-
-                } else {
-
-                    addSaving(
-                        data
-                    );
-
-
-                    showToast(
-                        "Saving added successfully."
-                    );
-
-                }
-
-
-                resetForm();
-
-                renderSavings();
-
+    return (
+        "रु " +
+        Number(
+            value || 0
+        ).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }
+        )
+    );
+
+}
+
+
+function formatINR(value) {
+
+    return (
+        "₹ " +
+        Number(
+            value || 0
+        ).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+
+}
+
+
+/* =========================
+   UPDATE PREVIEW
+========================= */
+
+function updatePreview() {
+
+    const npr =
+        Number(
+            nprInput.value
+        ) || 0;
+
+    const inr =
+        Number(
+            inrInput.value
+        ) || 0;
+
+    const total =
+        npr
+        +
+        (
+            inr * 1.6
         );
 
+    previewNpr.textContent =
+        formatNPR(npr);
 
-        /* =========================================
-           CANCEL
-        ========================================== */
+    previewInr.textContent =
+        formatINR(inr);
+
+    previewTotal.textContent =
+        formatNPR(total);
+
+}
 
 
-        cancelButton.addEventListener(
-            "click",
-            () => {
+nprInput.addEventListener(
+    "input",
+    updatePreview
+);
 
-                resetForm();
+inrInput.addEventListener(
+    "input",
+    updatePreview
+);
 
-            }
+
+/* =========================
+   SAFE HTML
+========================= */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
         );
 
-
-        /* =========================================
-           EDIT
-        ========================================== */
+}
 
 
-        function startEdit(
-            id
-        ) {
+/* =========================
+   DATE FORMAT
+========================= */
 
-            const savings =
-                getSavings();
+function formatDate(value) {
 
+    if (!value) {
+        return "";
+    }
 
-            const item =
-                savings.find(
-                    saving =>
-                        saving.id === id
-                );
+    const date =
+        new Date(
+            value + "T00:00:00"
+        );
 
-
-            if (!item) {
-                return;
-            }
-
-
-            editingId =
-                id;
-
-
-            amountInput.value =
-                Number(
-                    item.amount
-                ) || 0;
-
-
-            categoryInput.value =
-                item.category
-                ||
-                "";
-
-
-            dateInput.value =
-                item.date
-                ||
-                today();
-
-
-            noteInput.value =
-                item.note
-                ||
-                "";
-
-
-            formTitle.textContent =
-                "Edit Saving";
-
-
-            formSubtitle.textContent =
-                "Correct this saving record";
-
-
-            saveButtonText.textContent =
-                "Update Saving";
-
-
-            editBadge.classList.remove(
-                "hidden"
-            );
-
-
-            window.scrollTo(
-                {
-                    top: 0,
-                    behavior: "smooth"
-                }
-            );
-
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
         }
+    );
+
+}
 
 
-        /* =========================================
-           DELETE
-        ========================================== */
+/* =========================
+   RENDER
+========================= */
+
+function renderSavings() {
+
+    const savings =
+        getSavings();
+
+    const groups =
+        getGroupedSavings();
+
+    const total =
+        getTotalSaving();
+
+    const totalNPR =
+        getTotalSavingNPR();
+
+    const totalINR =
+        getTotalSavingINR();
 
 
-        function removeSaving(
-            id
-        ) {
+    totalSavingEl.textContent =
+        formatNPR(total);
 
-            const savings =
-                getSavings();
+    recordCountEl.textContent =
+        savings.length;
 
-
-            const item =
-                savings.find(
-                    saving =>
-                        saving.id === id
-                );
+    groupCountEl.textContent =
+        `${groups.length} groups`;
 
 
-            if (!item) {
-                return;
-            }
+    if (
+        savings.length === 0
+    ) {
+
+        groupsContainer.innerHTML =
+            "";
+
+        emptyState.classList.remove(
+            "hidden"
+        );
+
+        return;
+    }
 
 
-            const confirmed =
-                window.confirm(
-                    "Delete this saving record?"
-                );
+    emptyState.classList.add(
+        "hidden"
+    );
 
 
-            if (!confirmed) {
-                return;
-            }
+    groupsContainer.innerHTML =
+        groups.map(
+            (
+                group,
+                index
+            ) => {
 
+                const groupId =
+                    `group_${index}`;
 
-            deleteSaving(
-                id
-            );
+                return `
 
-
-            if (
-                editingId === id
-            ) {
-
-                resetForm();
-
-            }
-
-
-            showToast(
-                "Saving deleted."
-            );
-
-
-            renderSavings();
-
-        }
-
-
-        /* =========================================
-           RENDER
-        ========================================== */
-
-
-        function renderSavings() {
-
-            const savings =
-                getSavings();
-
-
-            savingCountEl.textContent =
-                savings.length;
-
-
-            totalSavingEl.textContent =
-                `NPR ${money(
-                    getTotalSaving()
-                )}`;
-
-
-            if (
-                savings.length === 0
-            ) {
-
-                savingList.innerHTML =
-                    "";
-
-                emptyState.classList.remove(
-                    "hidden"
-                );
-
-                return;
-
-            }
-
-
-            emptyState.classList.add(
-                "hidden"
-            );
-
-
-            savingList.innerHTML =
-                savings
-                    .map(
-                        item =>
-                            renderSavingCard(
-                                item
-                            )
-                    )
-                    .join("");
-
-
-            attachRecordEvents();
-
-        }
-
-
-        /* =========================================
-           RECORD CARD
-        ========================================== */
-
-
-        function renderSavingCard(
-            item
-        ) {
-
-            return `
                 <div
-                    class="saving-card p-4"
+                    class="card bg-white rounded-2xl shadow overflow-hidden"
                 >
 
-                    <div
-                        class="flex
-                               items-start
-                               justify-between
-                               gap-3"
+                    <button
+                        type="button"
+                        class="w-full text-left p-4"
+                        data-group="${groupId}"
                     >
 
                         <div
-                            class="flex
-                                   items-center
-                                   gap-3
-                                   min-w-0"
+                            class="flex items-center justify-between gap-3"
                         >
 
                             <div
-                                class="w-11 h-11
-                                       rounded-xl
-                                       bg-emerald-500/10
-                                       flex items-center
-                                       justify-center
-                                       shrink-0"
+                                class="flex items-center gap-3"
                             >
 
-                                <i
-                                    class="fa-solid
-                                           fa-piggy-bank
-                                           text-emerald-400"
-                                ></i>
+                                <div
+                                    class="w-11 h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center"
+                                >
+                                    <i
+                                        class="fa-solid fa-piggy-bank"
+                                    ></i>
+                                </div>
+
+                                <div>
+
+                                    <h3
+                                        class="font-bold"
+                                    >
+                                        ${escapeHTML(
+                                            group.name
+                                        )}
+                                    </h3>
+
+                                    <p
+                                        class="text-xs text-gray-500"
+                                    >
+                                        ${group.records.length}
+                                        record${group.records.length === 1 ? "" : "s"}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <i
+                                class="fa-solid fa-chevron-down transition-transform"
+                                id="icon_${groupId}"
+                            ></i>
+
+                        </div>
+
+
+                        <div
+                            class="grid grid-cols-3 gap-2 mt-4 text-xs"
+                        >
+
+                            <div
+                                class="bg-gray-100 rounded-lg p-2"
+                            >
+
+                                <span
+                                    class="text-gray-500 block"
+                                >
+                                    NPR
+                                </span>
+
+                                <strong>
+                                    ${formatNPR(group.npr)}
+                                </strong>
 
                             </div>
 
 
                             <div
-                                class="min-w-0"
+                                class="bg-gray-100 rounded-lg p-2"
+                            >
+
+                                <span
+                                    class="text-gray-500 block"
+                                >
+                                    INR
+                                </span>
+
+                                <strong>
+                                    ${formatINR(group.inr)}
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="bg-gray-100 rounded-lg p-2"
+                            >
+
+                                <span
+                                    class="text-gray-500 block"
+                                >
+                                    Total
+                                </span>
+
+                                <strong>
+                                    ${formatNPR(group.total)}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </button>
+
+
+                    <div
+                        id="${groupId}"
+                        class="group-records border-t border-gray-200"
+                    >
+
+                        ${group.records.map(
+                            item => `
+
+                            <div
+                                class="p-4 border-b border-gray-200 last:border-b-0"
                             >
 
                                 <div
-                                    class="font-semibold
-                                           text-white
-                                           truncate"
+                                    class="flex items-start justify-between gap-3"
                                 >
-                                    ${
-                                        escapeHtml(
-                                            item.category
-                                            ||
-                                            "General Saving"
-                                        )
-                                    }
-                                </div>
 
+                                    <div>
 
-                                <div
-                                    class="text-xs
-                                           text-slate-400
-                                           mt-1"
-                                >
-                                    ${
-                                        escapeHtml(
-                                            formatDate(
+                                        <p
+                                            class="font-semibold text-sm"
+                                        >
+                                            ${formatDate(
                                                 item.date
-                                            )
-                                        )
-                                    }
+                                            )}
+                                        </p>
+
+                                        <p
+                                            class="text-xs text-gray-500 mt-1"
+                                        >
+                                            ${escapeHTML(
+                                                item.note
+                                                ||
+                                                "No note"
+                                            )}
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        class="text-right"
+                                    >
+
+                                        <p
+                                            class="font-bold"
+                                        >
+                                            ${formatNPR(
+                                                item.total
+                                            )}
+                                        </p>
+
+                                        <p
+                                            class="text-xs text-gray-500"
+                                        >
+                                            ${formatNPR(
+                                                item.npr
+                                            )}
+                                            +
+                                            ${formatINR(
+                                                item.inr
+                                            )}
+                                        </p>
+
+                                    </div>
+
                                 </div>
 
-                            </div>
 
-                        </div>
-
-
-                        <div
-                            class="text-right
-                                   shrink-0"
-                        >
-
-                            <div
-                                class="text-lg
-                                       font-bold
-                                       text-emerald-400"
-                            >
-                                NPR ${money(
-                                    item.amount
-                                )}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    ${
-                        item.note
-                            ? `
                                 <div
-                                    class="mt-3
-                                           pt-3
-                                           border-t
-                                           border-slate-800
-                                           text-sm
-                                           text-slate-400"
+                                    class="flex justify-end gap-2 mt-3"
                                 >
-                                    ${escapeHtml(
-                                        item.note
-                                    )}
+
+                                    <button
+                                        type="button"
+                                        class="edit-btn px-3 py-2 rounded-lg bg-gray-100 text-sm"
+                                        data-id="${item.id}"
+                                    >
+                                        <i
+                                            class="fa-solid fa-pen mr-1"
+                                        ></i>
+                                        Edit
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="delete-btn px-3 py-2 rounded-lg bg-red-50 text-red-600 text-sm"
+                                        data-id="${item.id}"
+                                    >
+                                        <i
+                                            class="fa-solid fa-trash mr-1"
+                                        ></i>
+                                        Delete
+                                    </button>
+
                                 </div>
+
+                            </div>
+
                             `
-                            : ""
-                    }
-
-
-                    <div
-                        class="flex
-                               justify-end
-                               gap-2
-                               mt-3"
-                    >
-
-                        <button
-                            type="button"
-                            class="edit-record
-                                   px-3 py-2
-                                   rounded-lg
-                                   bg-indigo-500/10
-                                   text-indigo-300
-                                   text-xs"
-                            data-id="${escapeHtml(
-                                item.id
-                            )}"
-                        >
-
-                            <i
-                                class="fa-solid
-                                       fa-pen mr-1"
-                            ></i>
-
-                            Edit
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="delete-record
-                                   px-3 py-2
-                                   rounded-lg
-                                   bg-red-500/10
-                                   text-red-300
-                                   text-xs"
-                            data-id="${escapeHtml(
-                                item.id
-                            )}"
-                        >
-
-                            <i
-                                class="fa-solid
-                                       fa-trash mr-1"
-                            ></i>
-
-                            Delete
-
-                        </button>
+                        ).join("")}
 
                     </div>
 
                 </div>
-            `;
 
-        }
-
-
-        /* =========================================
-           EVENTS
-        ========================================== */
-
-
-        function attachRecordEvents() {
-
-            document
-                .querySelectorAll(
-                    ".edit-record"
-                )
-                .forEach(
-                    button => {
-
-                        button.addEventListener(
-                            "click",
-                            () => {
-
-                                startEdit(
-                                    button.dataset.id
-                                );
-
-                            }
-                        );
-
-                    }
-                );
-
-
-            document
-                .querySelectorAll(
-                    ".delete-record"
-                )
-                .forEach(
-                    button => {
-
-                        button.addEventListener(
-                            "click",
-                            () => {
-
-                                removeSaving(
-                                    button.dataset.id
-                                );
-
-                            }
-                        );
-
-                    }
-                );
-
-        }
-
-
-        /* =========================================
-           DATE
-        ========================================== */
-
-
-        function formatDate(
-            value
-        ) {
-
-            if (!value) {
-                return "-";
-            }
-
-
-            const parts =
-                String(
-                    value
-                ).split("-");
-
-
-            if (
-                parts.length === 3
-            ) {
-
-                return `
-                    ${parts[2]}
-                    ${monthName(parts[1])}
-                    ${parts[0]}
                 `;
-
             }
+        ).join("");
 
 
-            return value;
+    document
+        .querySelectorAll(
+            "[data-group]"
+        )
+        .forEach(
+            button => {
 
-        }
+                button.addEventListener(
+                    "click",
+                    () => {
 
+                        const id =
+                            button.dataset.group;
 
-        function monthName(
-            month
-        ) {
+                        const records =
+                            document.getElementById(
+                                id
+                            );
 
-            const months = [
+                        const icon =
+                            document.getElementById(
+                                `icon_${id}`
+                            );
 
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
+                        records.classList.toggle(
+                            "open"
+                        );
 
-            ];
-
-
-            return (
-                months[
-                    Number(month) - 1
-                ]
-                ||
-                month
-            );
-
-        }
-
-
-        /* =========================================
-           PROFILE
-        ========================================== */
-
-
-        function getProfile() {
-
-            return {
-
-                name:
-                    getProfileValue(
-                        "profile_name",
-                        "Digital Notebook User"
-                    ),
-
-                address:
-                    getProfileValue(
-                        "profile_address",
-                        ""
-                    ),
-
-                mobile:
-                    getProfileValue(
-                        "profile_mobile",
-                        ""
-                    ),
-
-                email:
-                    getProfileValue(
-                        "profile_email",
-                        ""
-                    ),
-
-                avatar:
-                    getProfileValue(
-                        "profile_avatar",
-                        ""
-                    )
-
-            };
-
-        }
-
-
-        /* =========================================
-           WAIT FOR IMAGES
-        ========================================== */
-
-
-        async function waitForImages(
-            container
-        ) {
-
-            const images =
-                container.querySelectorAll(
-                    "img"
-                );
-
-
-            await Promise.all(
-
-                [
-                    ...images
-                ].map(
-                    img => {
-
-                        if (
-                            img.complete
-                            &&
-                            img.naturalWidth > 0
-                        ) {
-
-                            return Promise.resolve();
-
-                        }
-
-
-                        return new Promise(
-                            resolve => {
-
-                                img.onload =
-                                    resolve;
-
-                                img.onerror =
-                                    resolve;
-
-                            }
+                        icon.classList.toggle(
+                            "rotate"
                         );
 
                     }
-                )
+                );
 
-            );
-
-        }
-
-
-        /* =========================================
-           PDF BUTTON
-        ========================================== */
-
-
-        pdfButton.addEventListener(
-            "click",
-            generatePDF
+            }
         );
 
 
-        /* =========================================
-           GENERATE PDF
-        ========================================== */
+    document
+        .querySelectorAll(
+            ".edit-btn"
+        )
+        .forEach(
+            button => {
 
+                button.addEventListener(
+                    "click",
+                    () => {
 
-        async function generatePDF() {
+                        editSaving(
+                            button.dataset.id
+                        );
 
-            const savings =
-                getSavings();
-
-
-            if (
-                savings.length === 0
-            ) {
-
-                showToast(
-                    "There are no saving records for PDF.",
-                    "error"
+                    }
                 );
 
-                return;
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".delete-btn"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        removeSaving(
+                            button.dataset.id
+                        );
+
+                    }
+                );
 
             }
+        );
+
+}
 
 
-            pdfButton.disabled =
-                true;
+/* =========================
+   EDIT
+========================= */
+
+function editSaving(id) {
+
+    const savings =
+        getSavings();
+
+    const item =
+        savings.find(
+            saving =>
+                saving.id === id
+        );
+
+    if (!item) {
+        return;
+    }
+
+    editingId =
+        id;
+
+    categoryInput.value =
+        item.category || "";
+
+    nprInput.value =
+        item.npr || "";
+
+    inrInput.value =
+        item.inr || "";
+
+    dateInput.value =
+        item.date || today();
+
+    noteInput.value =
+        item.note || "";
 
 
-            pdfButton.innerHTML =
-                `
-                    <i
-                        class="fa-solid
-                               fa-spinner
-                               fa-spin mr-2"
-                    ></i>
+    formTitle.textContent =
+        "Edit Saving";
 
-                    Preparing...
-                `;
+    submitText.textContent =
+        "Update Saving";
 
-
-            try {
-
-                const profile =
-                    getProfile();
+    cancelEditBtn.classList.remove(
+        "hidden"
+    );
 
 
-                const pdfContent =
-                    document.getElementById(
-                        "pdf-content"
-                    );
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 
-                /*
-                 * Permanent app banner.
-                 *
-                 * Put your actual banner here:
-                 *
-                 * assets/bannerlogo.png
-                 */
+    updatePreview();
 
-                const bannerLogoUrl =
-                    new URL(
-                        "./assets/bannerlogo.png",
-                        window.location.href
-                    ).href;
+}
 
 
-                /*
-                 * User avatar.
-                 *
-                 * If user has no avatar,
-                 * use app icon.
-                 */
+/* =========================
+   DELETE
+========================= */
 
-                const avatarSrc =
-                    profile.avatar
-                    ||
-                    new URL(
-                        "./assets/N1024.png",
-                        window.location.href
-                    ).href;
+function removeSaving(id) {
 
+    const ok =
+        confirm(
+            "यो saving record delete गर्ने?"
+        );
 
-                const totalSaving =
-                    savings.reduce(
-                        (
-                            total,
-                            item
-                        ) => {
+    if (!ok) {
+        return;
+    }
 
-                            return (
-                                total
-                                +
-                                (
-                                    Number(
-                                        item.amount
-                                    )
-                                    ||
-                                    0
-                                )
-                            );
+    deleteSaving(
+        id
+    );
 
-                        },
-                        0
-                    );
+    if (
+        editingId === id
+    ) {
+        resetForm();
+    }
+
+    renderSavings();
+
+}
 
 
-                /*
-                 * Create every saving
-                 * record as a PDF row.
-                 */
+/* =========================
+   RESET FORM
+========================= */
 
-                const rows =
-                    savings
-                        .map(
-                            (
-                                item,
-                                index
-                            ) => {
+function resetForm() {
 
-                                return `
+    editingId =
+        null;
+
+    form.reset();
+
+    dateInput.value =
+        today();
+
+    formTitle.textContent =
+        "Add Saving";
+
+    submitText.textContent =
+        "Save Saving";
+
+    cancelEditBtn.classList.add(
+        "hidden"
+    );
+
+    updatePreview();
+
+}
+
+
+cancelEditBtn.addEventListener(
+    "click",
+    resetForm
+);
+
+
+/* =========================
+   SUBMIT
+========================= */
+
+form.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+
+        const category =
+            categoryInput.value.trim();
+
+        const npr =
+            Number(
+                nprInput.value
+            ) || 0;
+
+        const inr =
+            Number(
+                inrInput.value
+            ) || 0;
+
+
+        if (
+            !category
+        ) {
+
+            alert(
+                "Saving name/category लेख्नुहोस्।"
+            );
+
+            categoryInput.focus();
+
+            return;
+        }
+
+
+        if (
+            npr <= 0
+            &&
+            inr <= 0
+        ) {
+
+            alert(
+                "NPR वा INR मध्ये कम्तीमा एउटा amount राख्नुहोस्।"
+            );
+
+            return;
+        }
+
+
+        const data = {
+
+            category,
+
+            npr,
+
+            inr,
+
+            date:
+                dateInput.value
+                ||
+                today(),
+
+            note:
+                noteInput.value.trim()
+
+        };
+
+
+        if (
+            editingId
+        ) {
+
+            updateSaving(
+                editingId,
+                data
+            );
+
+        } else {
+
+            addSaving(
+                data
+            );
+
+        }
+
+
+        resetForm();
+
+        renderSavings();
+
+    }
+);
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function getProfile() {
+
+    return {
+
+        name:
+            getProfileValue(
+                "profile_name",
+                "Digital Notebook User"
+            ),
+
+        address:
+            getProfileValue(
+                "profile_address",
+                ""
+            ),
+
+        mobile:
+            getProfileValue(
+                "profile_mobile",
+                ""
+            ),
+
+        email:
+            getProfileValue(
+                "profile_email",
+                ""
+            ),
+
+        avatar:
+            getProfileValue(
+                "profile_avatar",
+                ""
+            )
+
+    };
+
+}
+
+
+/* =========================
+   PDF PROFILE
+========================= */
+
+function preparePDF() {
+
+    const profile =
+        getProfile();
+
+    const avatar =
+        document.getElementById(
+            "pdf-avatar"
+        );
+
+    avatar.src =
+        profile.avatar
+        ||
+        "./assets/N1024.png";
+
+
+    document.getElementById(
+        "pdf-profile"
+    ).innerHTML = `
+
+        <strong>
+            Name:
+        </strong>
+        ${escapeHTML(
+            profile.name
+        )}
+        <br>
+
+        <strong>
+            Mobile:
+        </strong>
+        ${escapeHTML(
+            profile.mobile
+            || "-"
+        )}
+        <br>
+
+        <strong>
+            Address:
+        </strong>
+        ${escapeHTML(
+            profile.address
+            || "-"
+        )}
+        <br>
+
+        <strong>
+            Email:
+        </strong>
+        ${escapeHTML(
+            profile.email
+            || "-"
+        )}
+
+    `;
+
+
+    const totalNPR =
+        getTotalSavingNPR();
+
+    const totalINR =
+        getTotalSavingINR();
+
+    const total =
+        getTotalSaving();
+
+    const records =
+        getSavings();
+
+
+    document.getElementById(
+        "pdf-summary"
+    ).innerHTML = `
+
+        <strong>
+            Saving Summary
+        </strong>
+
+        <br><br>
+
+        Total NPR:
+        <strong>
+            ${formatNPR(totalNPR)}
+        </strong>
+
+        &nbsp;&nbsp;
+
+        Total INR:
+        <strong>
+            ${formatINR(totalINR)}
+        </strong>
+
+        &nbsp;&nbsp;
+
+        Total:
+        <strong>
+            ${formatNPR(total)}
+        </strong>
+
+        <br>
+
+        Total Records:
+        <strong>
+            ${records.length}
+        </strong>
+
+    `;
+
+
+    const groups =
+        getGroupedSavings();
+
+
+    document.getElementById(
+        "pdf-table"
+    ).innerHTML = `
+
+        <h2
+            style="
+                font-size:18px;
+                font-weight:700;
+                margin-bottom:12px;
+            "
+        >
+            Saving Records
+        </h2>
+
+
+        <table
+            style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:11px;
+            "
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:left;
+                        "
+                    >
+                        Date
+                    </th>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:left;
+                        "
+                    >
+                        Saving
+                    </th>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:right;
+                        "
+                    >
+                        NPR
+                    </th>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:right;
+                        "
+                    >
+                        INR
+                    </th>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:right;
+                        "
+                    >
+                        Total NPR
+                    </th>
+
+                    <th
+                        style="
+                            border:1px solid #d1d5db;
+                            padding:7px;
+                            text-align:left;
+                        "
+                    >
+                        Note
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                ${groups.flatMap(
+                    group =>
+                        group.records
+                            .map(
+                                item => `
+
                                     <tr>
 
-                                        <td>
-                                            ${index + 1}
-                                        </td>
-
-                                        <td>
-                                            ${escapeHtml(
+                                        <td
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                            "
+                                        >
+                                            ${escapeHTML(
                                                 formatDate(
                                                     item.date
                                                 )
                                             )}
                                         </td>
 
-                                        <td>
-                                            ${escapeHtml(
+                                        <td
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                            "
+                                        >
+                                            ${escapeHTML(
                                                 item.category
-                                                ||
-                                                "General Saving"
                                             )}
                                         </td>
 
-                                        <td>
-                                            ${
-                                                escapeHtml(
-                                                    item.note
-                                                    ||
-                                                    "-"
-                                                )
-                                            }
+                                        <td
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                                text-align:right;
+                                            "
+                                        >
+                                            ${Number(
+                                                item.npr || 0
+                                            ).toLocaleString(
+                                                "en-IN"
+                                            )}
                                         </td>
 
                                         <td
-                                            class="pdf-total"
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                                text-align:right;
+                                            "
                                         >
-                                            NPR
-                                            ${money(
+                                            ${Number(
+                                                item.inr || 0
+                                            ).toLocaleString(
+                                                "en-IN"
+                                            )}
+                                        </td>
+
+                                        <td
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                                text-align:right;
+                                            "
+                                        >
+                                            ${Number(
+                                                item.total
+                                                ??
                                                 item.amount
+                                                ??
+                                                0
+                                            ).toLocaleString(
+                                                "en-IN",
+                                                {
+                                                    minimumFractionDigits: 2
+                                                }
+                                            )}
+                                        </td>
+
+                                        <td
+                                            style="
+                                                border:1px solid #d1d5db;
+                                                padding:7px;
+                                            "
+                                        >
+                                            ${escapeHTML(
+                                                item.note || ""
                                             )}
                                         </td>
 
                                     </tr>
-                                `;
-
-                            }
-                        )
-                        .join("");
-
-
-                /*
-                 * Build complete PDF page.
-                 */
-
-                pdfContent.innerHTML =
-                    `
-
-                        <div
-                            class="pdf-header"
-                        >
-
-                            <!-- USER -->
-
-                            <div
-                                class="pdf-user"
-                            >
-
-                                <img
-                                    src="${escapeHtml(
-                                        avatarSrc
-                                    )}"
-                                    class="pdf-avatar"
-                                    crossorigin="anonymous"
-                                    alt="User"
-                                >
-
-
-                                <div
-                                    class="pdf-user-info"
-                                >
-
-                                    <div
-                                        class="pdf-user-name"
-                                    >
-                                        ${escapeHtml(
-                                            profile.name
-                                        )}
-                                    </div>
 
+                                `
+                            )
+                ).join("")}
 
-                                    ${
-                                        profile.address
-                                            ? `
-                                                <div>
-                                                    📍
-                                                    ${escapeHtml(
-                                                        profile.address
-                                                    )}
-                                                </div>
-                                            `
-                                            : ""
-                                    }
+            </tbody>
 
+        </table>
 
-                                    ${
-                                        profile.mobile
-                                            ? `
-                                                <div>
-                                                    📞
-                                                    ${escapeHtml(
-                                                        profile.mobile
-                                                    )}
-                                                </div>
-                                            `
-                                            : ""
-                                    }
+    `;
 
+}
 
-                                    ${
-                                        profile.email
-                                            ? `
-                                                <div>
-                                                    ✉️
-                                                    ${escapeHtml(
-                                                        profile.email
-                                                    )}
-                                                </div>
-                                            `
-                                            : ""
-                                    }
 
-                                </div>
+/* =========================
+   PDF
+========================= */
 
-                            </div>
+async function generatePDF() {
 
+    const button =
+        document.getElementById(
+            "pdf-btn"
+        );
 
-                            <!-- APP BANNER -->
+    const oldText =
+        button.innerHTML;
 
-                            <div
-                                class="pdf-banner"
-                            >
+    try {
 
-                                <img
-                                    src="${escapeHtml(
-                                        bannerLogoUrl
-                                    )}"
-                                    class="pdf-banner-image"
-                                    crossorigin="anonymous"
-                                    alt="Digital Notebook"
-                                >
+        button.disabled =
+            true;
 
-                            </div>
+        button.innerHTML =
+            `
+            <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+            Creating...
+            `;
 
-                        </div>
 
+        preparePDF();
 
-                        <!-- TITLE -->
 
-                        <div
-                            class="pdf-title"
-                        >
+        const pdfContent =
+            document.getElementById(
+                "pdf-content"
+            );
 
-                            <h1>
-                                SAVING REPORT
-                            </h1>
 
-                            <p>
-                                Digital Notebook
-                                •
-                                Generated:
-                                ${formatDate(
-                                    today()
-                                )}
-                            </p>
-
-                        </div>
-
-
-                        <!-- TABLE -->
-
-                        <table
-                            class="pdf-table"
-                        >
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        #
-                                    </th>
-
-                                    <th>
-                                        Date
-                                    </th>
-
-                                    <th>
-                                        Category
-                                    </th>
-
-                                    <th>
-                                        Note
-                                    </th>
-
-                                    <th>
-                                        Amount
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-                                ${rows}
-
-                            </tbody>
-
-                        </table>
-
-
-                        <!-- SUMMARY -->
-
-                        <div
-                            class="pdf-summary"
-                        >
-
-                            <div
-                                class="pdf-summary-row"
-                            >
-
-                                <span>
-                                    Total Records:
-                                </span>
-
-                                <strong>
-                                    ${savings.length}
-                                </strong>
-
-                            </div>
-
-
-                            <div
-                                class="pdf-summary-row"
-                            >
-
-                                <span>
-                                    Total Saving:
-                                </span>
-
-                                <strong
-                                    class="pdf-total"
-                                >
-                                    NPR
-                                    ${money(
-                                        totalSaving
-                                    )}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- FOOTER -->
-
-                        <div
-                            class="pdf-footer"
-                        >
-                            Digital Notebook
-                        </div>
-
-                    `;
-
-
-                /*
-                 * Wait for avatar and banner.
-                 */
-
-                await waitForImages(
-                    pdfContent
-                );
-
-
-                /*
-                 * Small rendering delay.
-                 */
-
-                await new Promise(
-                    resolve =>
-                        setTimeout(
-                            resolve,
-                            300
-                        )
-                );
-
-
-                /*
-                 * Convert HTML to image.
-                 */
-
-                const canvas =
-                    await html2canvas(
-                        pdfContent,
-                        {
-                            scale: 2,
-
-                            useCORS:
-                                true,
-
-                            allowTaint:
-                                false,
-
-                            backgroundColor:
-                                "#ffffff"
-                        }
-                    );
-
-
-                /*
-                 * jsPDF
-                 */
-
-                const {
-                    jsPDF
-                } =
-                    window.jspdf;
-
-
-                const pdf =
-                    new jsPDF(
-                        {
-                            orientation:
-                                "portrait",
-
-                            unit:
-                                "mm",
-
-                            format:
-                                "a4"
-                        }
-                    );
-
-
-                const pageWidth =
-                    pdf.internal
-                        .pageSize
-                        .getWidth();
-
-
-                const pageHeight =
-                    pdf.internal
-                        .pageSize
-                        .getHeight();
-
-
-                const imageWidth =
-                    pageWidth;
-
-
-                const imageHeight =
-                    (
-                        canvas.height
-                        *
-                        imageWidth
-                    )
-                    /
-                    canvas.width;
-
-
-                let heightLeft =
-                    imageHeight;
-
-
-                let position =
-                    0;
-
-
-                const imageData =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.95
-                    );
-
-
-                /*
-                 * First page.
-                 */
-
-                pdf.addImage(
-                    imageData,
-                    "JPEG",
-                    0,
-                    position,
-                    imageWidth,
-                    imageHeight
-                );
-
-
-                heightLeft -=
-                    pageHeight;
-
-
-                /*
-                 * Additional pages.
-                 *
-                 * This means if saving records
-                 * are many, everything continues
-                 * into the same PDF.
-                 */
-
-                while (
-                    heightLeft > 0
-                ) {
-
-                    position =
-                        heightLeft
-                        -
-                        imageHeight;
-
-
-                    pdf.addPage();
-
-
-                    pdf.addImage(
-                        imageData,
-                        "JPEG",
-                        0,
-                        position,
-                        imageWidth,
-                        imageHeight
-                    );
-
-
-                    heightLeft -=
-                        pageHeight;
-
-                }
-
-
-                /*
-                 * Save.
-                 */
-
-                pdf.save(
-                    "Digital-Notebook-Saving-Report.pdf"
-                );
-
-
-                showToast(
-                    "Saving PDF created successfully."
-                );
-
-
-            } catch (
-                error
-            ) {
-
-                console.error(
-                    "Saving PDF error:",
-                    error
-                );
-
-
-                showToast(
-                    "PDF बनाउन समस्या भयो। फेरि प्रयास गर्नुहोस्।",
-                    "error"
-                );
-
-            } finally {
-
-                pdfButton.disabled =
-                    false;
-
-
-                pdfButton.innerHTML =
-                    `
-                        <i
-                            class="fa-solid
-                                   fa-file-pdf mr-2"
-                        ></i>
-
-                        PDF
-                    `;
-
-            }
-
-        }
-
-
-        /* =========================================
-           SERVICE WORKER
-        ========================================== */
-
-
-        if (
-            "serviceWorker"
-            in navigator
-        ) {
-
-            window.addEventListener(
-                "load",
-                () => {
-
-                    navigator.serviceWorker
-                        .register(
-                            "./sw.js"
-                        )
-                        .catch(
-                            error => {
-
-                                console.warn(
-                                    "Service worker error:",
-                                    error
-                                );
-
-                            }
-                        );
-
+        const canvas =
+            await html2canvas(
+                pdfContent,
+                {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor:
+                        "#ffffff"
                 }
             );
 
+
+        const {
+            jsPDF
+        } =
+            window.jspdf;
+
+
+        const pdf =
+            new jsPDF(
+                "p",
+                "mm",
+                "a4"
+            );
+
+
+        const pageWidth =
+            210;
+
+        const pageHeight =
+            297;
+
+        const margin =
+            10;
+
+        const usableWidth =
+            pageWidth
+            -
+            (
+                margin * 2
+            );
+
+        const imageWidth =
+            usableWidth;
+
+        const imageHeight =
+            canvas.height
+            *
+            imageWidth
+            /
+            canvas.width;
+
+
+        const pageImageHeight =
+            pageHeight
+            -
+            (
+                margin * 2
+            );
+
+
+        let renderedHeight =
+            0;
+
+        let pageNumber =
+            0;
+
+
+        while (
+            renderedHeight
+            <
+            imageHeight
+        ) {
+
+            if (
+                pageNumber > 0
+            ) {
+
+                pdf.addPage();
+
+            }
+
+
+            const sourceY =
+                renderedHeight
+                *
+                canvas.width
+                /
+                imageWidth;
+
+
+            const sourceHeight =
+                Math.min(
+                    pageImageHeight
+                    *
+                    canvas.width
+                    /
+                    imageWidth,
+                    canvas.height
+                    -
+                    sourceY
+                );
+
+
+            const pageCanvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            pageCanvas.width =
+                canvas.width;
+
+            pageCanvas.height =
+                Math.ceil(
+                    sourceHeight
+                );
+
+
+            const ctx =
+                pageCanvas.getContext(
+                    "2d"
+                );
+
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.fillRect(
+                0,
+                0,
+                pageCanvas.width,
+                pageCanvas.height
+            );
+
+
+            ctx.drawImage(
+                canvas,
+                0,
+                sourceY,
+                canvas.width,
+                sourceHeight,
+                0,
+                0,
+                canvas.width,
+                sourceHeight
+            );
+
+
+            const pageImage =
+                pageCanvas.toDataURL(
+                    "image/jpeg",
+                    0.92
+                );
+
+
+            const actualPageHeight =
+                sourceHeight
+                *
+                imageWidth
+                /
+                canvas.width;
+
+
+            pdf.addImage(
+                pageImage,
+                "JPEG",
+                margin,
+                margin,
+                imageWidth,
+                actualPageHeight
+            );
+
+
+            renderedHeight +=
+                pageImageHeight;
+
+            pageNumber++;
+
         }
 
 
-        /* =========================================
-           INITIAL
-        ========================================== */
+        pdf.save(
+            "Digital-Notebook-Saving-Report.pdf"
+        );
 
 
-        renderSavings();
+    } catch (error) {
 
-    </script>
+        console.error(
+            "PDF error:",
+            error
+        );
+
+        alert(
+            "PDF बनाउन समस्या भयो। फेरि प्रयास गर्नुहोस्।"
+        );
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.innerHTML =
+            oldText;
+
+    }
+
+}
+
+
+document
+    .getElementById(
+        "pdf-btn"
+    )
+    .addEventListener(
+        "click",
+        generatePDF
+    );
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+renderSavings();
+
+updatePreview();
+
+
+</script>
 
 </body>
-
 </html>
