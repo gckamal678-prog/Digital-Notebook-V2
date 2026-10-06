@@ -1,2172 +1,2086 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
+
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta charset="UTF-8">
 
-    <meta
-        name="theme-color"
-        content="#111827"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Digital NoteBook - Transaction</title>
+<meta
+    name="theme-color"
+    content="#111827"
+>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<title>Transactions - Digital Notebook</title>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+<link
+    rel="manifest"
+    href="./manifest.json"
+>
 
-    <link
-        rel="stylesheet"
-        href="./css/app.css"
-    >
 
-    <style>
-        * {
-            font-family: "Poppins", sans-serif;
-        }
+<link
+    rel="stylesheet"
+    href="./css/app.css"
+>
 
-        body {
-            background: #f3f4f6;
-            color: #111827;
-        }
 
-        html[data-theme="dark"] body {
-            background: #111827;
-            color: #f9fafb;
-        }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        .app-panel {
-            background: white;
-            border: 1px solid #e5e7eb;
-        }
 
-        html[data-theme="dark"] .app-panel {
-            background: #1f2937;
-            border-color: #374151;
-        }
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+</script>
 
-        .app-input {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: white;
-            color: #111827;
-        }
 
-        html[data-theme="dark"] .app-input {
-            background: #111827;
-            color: #f9fafb;
-            border-color: #4b5563;
-        }
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
 
-        .app-input:focus {
-            border-color: #6366f1;
-            box-shadow:
-                0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
 
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            color: #374151;
-            transition: 0.2s;
-        }
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
 
-        html[data-theme="dark"] .sidebar-link {
-            color: #d1d5db;
-        }
 
-        .sidebar-link:hover {
-            background: #f3f4f6;
-        }
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+>
 
-        html[data-theme="dark"] .sidebar-link:hover {
-            background: #374151;
-        }
 
-        .sidebar-link.active {
-            background: #4f46e5;
-            color: white !important;
-        }
+<style>
 
-        .transaction-row {
-            transition: 0.2s;
-        }
+body {
+    font-family: Poppins, sans-serif;
+}
 
-        .transaction-row:hover {
-            transform: translateY(-1px);
-        }
+.type-card {
+    transition: .2s;
+}
 
-        .type-expense {
-            color: #dc2626;
-        }
+.type-card:active {
+    transform: scale(.97);
+}
 
-        .type-receivable {
-            color: #2563eb;
-        }
+.selected-type {
+    outline: 2px solid #22c55e;
+    background: rgba(34,197,94,.12);
+}
 
-        .type-payable {
-            color: #d97706;
-        }
+.transaction-card {
+    transition: .2s;
+}
 
-        .type-badge {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 999px;
-            padding: 0.25rem 0.65rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+.transaction-card:active {
+    transform: scale(.99);
+}
 
-        .badge-expense {
-            background: #fee2e2;
-            color: #dc2626;
-        }
+.pdf-page {
+    width: 794px;
+    min-height: 1123px;
+    padding: 40px;
+    background: white;
+    color: #111827;
+}
 
-        .badge-receivable {
-            background: #dbeafe;
-            color: #2563eb;
-        }
+</style>
 
-        .badge-payable {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        html[data-theme="dark"] .badge-expense {
-            background: rgba(127, 29, 29, 0.35);
-        }
-
-        html[data-theme="dark"] .badge-receivable {
-            background: rgba(30, 64, 175, 0.35);
-        }
-
-        html[data-theme="dark"] .badge-payable {
-            background: rgba(146, 64, 14, 0.35);
-        }
-    </style>
 </head>
 
-<body>
 
-    <!-- MOBILE BACKDROP -->
+<body
+    class="bg-gray-950 text-white min-h-screen"
+>
 
-    <div
-        id="sidebar-backdrop"
-        class="fixed inset-0 z-40 hidden bg-black/50"
-    ></div>
 
+<header
+    class="sticky top-0 z-30 bg-gray-900/95 backdrop-blur border-b border-gray-800"
+>
 
-    <!-- SIDEBAR -->
+<div
+    class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3"
+>
 
-    <aside
-        id="sidebar"
-        class="fixed left-0 top-0 z-50 h-full w-72 -translate-x-full overflow-y-auto border-r bg-white p-4 transition-transform duration-300 dark:border-gray-700 dark:bg-gray-900 md:translate-x-0"
-    >
+<a
+    href="./index.html"
+    class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center"
+>
+    ←
+</a>
 
-        <div class="mb-6 flex items-center gap-3 px-2">
 
-            <div
-                class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white"
-            >
-                <i class="fa-solid fa-book"></i>
-            </div>
+<div>
 
-            <div>
-                <h1 class="text-lg font-bold">
-                    Digital NoteBook
-                </h1>
+<h1 class="font-bold text-lg">
+    लेनदेन
+</h1>
 
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                    Finance Manager
-                </p>
-            </div>
+<p class="text-xs text-gray-400">
+    व्यक्तिअनुसार पूरा हिसाब
+</p>
 
-        </div>
+</div>
 
+</div>
 
-        <!-- PROFILE -->
+</header>
 
-        <div
-            class="mb-5 rounded-2xl bg-gray-100 p-4 dark:bg-gray-800"
-        >
 
-            <div class="flex items-center gap-3">
+<main
+    class="max-w-3xl mx-auto px-4 py-5 pb-24"
+>
 
-                <div
-                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-bold text-white"
-                >
-
-                    <span id="sidebar-avatar-letter">
-                        U
-                    </span>
-
-                    <img
-                        id="sidebar-avatar-image"
-                        src=""
-                        alt="Avatar"
-                        class="hidden h-full w-full object-cover"
-                    >
-
-                </div>
-
-                <div class="min-w-0">
-
-                    <p
-                        id="sidebar-profile-name"
-                        class="truncate font-semibold"
-                    >
-                        User
-                    </p>
-
-                    <p class="truncate text-xs text-gray-500 dark:text-gray-400">
-                        Personal Account
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="mt-4 space-y-2">
-
-                <input
-                    id="input-full-name"
-                    type="text"
-                    placeholder="Full Name"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-address"
-                    type="text"
-                    placeholder="Address"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-mobile"
-                    type="tel"
-                    placeholder="Mobile Number"
-                    class="app-input text-sm"
-                >
-
-                <input
-                    id="input-email"
-                    type="email"
-                    placeholder="Email"
-                    class="app-input text-sm"
-                >
-
-            </div>
-
-        </div>
-
-
-        <!-- NAVIGATION -->
-
-        <nav class="space-y-1">
-
-            <a
-                href="./index.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-house w-5"></i>
-                <span data-i18n="dashboard">
-                    Dashboard
-                </span>
-            </a>
-
-            <a
-                href="./add-income.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-money-bill-trend-up w-5"></i>
-                <span data-i18n="income">
-                    Income
-                </span>
-            </a>
-
-            <a
-                href="./add-saving.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-piggy-bank w-5"></i>
-                <span data-i18n="saving">
-                    Saving
-                </span>
-            </a>
-
-            <a
-                href="./add-transaction.html"
-                class="sidebar-link active"
-            >
-                <i class="fa-solid fa-right-left w-5"></i>
-                <span data-i18n="transaction">
-                    Transaction
-                </span>
-            </a>
-
-            <a
-                href="./notebook.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-book-open w-5"></i>
-                <span data-i18n="notebook">
-                    Notebook
-                </span>
-            </a>
-
-            <a
-                href="./calendar.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-calendar-days w-5"></i>
-                <span data-i18n="calendar">
-                    Calendar
-                </span>
-            </a>
-
-            <a
-                href="./calculate.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-calculator w-5"></i>
-                <span data-i18n="calculator">
-                    Calculator
-                </span>
-            </a>
-
-            <a
-                href="./account.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-user w-5"></i>
-                <span data-i18n="account">
-                    Account
-                </span>
-            </a>
-
-            <a
-                href="./setting.html"
-                class="sidebar-link"
-            >
-                <i class="fa-solid fa-gear w-5"></i>
-                <span data-i18n="settings">
-                    Settings
-                </span>
-            </a>
-
-        </nav>
-
-    </aside>
-
-
-    <!-- MAIN -->
-
-    <main class="min-h-screen md:ml-72">
-
-        <!-- HEADER -->
-
-        <header
-            class="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-700 dark:bg-gray-900/95"
-        >
-
-            <div
-                class="flex items-center justify-between gap-3 px-4 py-3 md:px-6"
-            >
-
-                <div class="flex items-center gap-3">
-
-                    <button
-                        id="menu-button"
-                        type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 md:hidden"
-                    >
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-
-                    <div>
-
-                        <h2 class="text-lg font-bold md:text-xl">
-                            Transaction
-                        </h2>
-
-                        <p
-                            id="current-date-time"
-                            class="text-xs text-gray-500 dark:text-gray-400"
-                        ></p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="flex items-center gap-2">
-
-                    <button
-                        id="privacy-toggle"
-                        type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
-                    >
-                        <i
-                            id="privacy-icon"
-                            class="fa-solid fa-eye"
-                        ></i>
-                    </button>
-
-                    <button
-                        id="language-toggle"
-                        type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xs font-bold dark:bg-gray-800"
-                    >
-                        EN
-                    </button>
-
-                    <button
-                        id="theme-toggle"
-                        type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
-                    >
-                        <i
-                            id="theme-icon"
-                            class="fa-solid fa-moon"
-                        ></i>
-                    </button>
-
-                </div>
 
-            </div>
+<!-- SUMMARY -->
 
-        </header>
+<section
+    class="grid grid-cols-2 gap-3 mb-5"
+>
 
+<div
+    class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+>
 
-        <!-- CONTENT -->
+<p class="text-xs text-gray-400">
+    कुल लेनदेन
+</p>
 
-        <div class="mx-auto max-w-6xl p-4 md:p-6">
+<p
+    id="totalRecords"
+    class="text-2xl font-bold mt-1"
+>
+0
+</p>
 
+</div>
 
-            <!-- SUMMARY -->
 
-            <section
-                class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3"
-            >
+<div
+    class="bg-gray-900 border border-gray-800 rounded-2xl p-4"
+>
 
-                <div class="app-panel rounded-2xl p-5 shadow-sm">
+<p class="text-xs text-gray-400">
+    व्यक्तिहरू
+</p>
 
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Total Expense
-                    </p>
+<p
+    id="totalPeople"
+    class="text-2xl font-bold mt-1"
+>
+0
+</p>
 
-                    <h3
-                        id="total-expense"
-                        class="privacy-amount mt-1 text-2xl font-bold text-red-600"
-                    >
-                        NPR 0.00
-                    </h3>
+</div>
 
-                </div>
+</section>
 
 
-                <div class="app-panel rounded-2xl p-5 shadow-sm">
 
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Receivable
-                    </p>
+<!-- FORM -->
 
-                    <h3
-                        id="total-receivable"
-                        class="privacy-amount mt-1 text-2xl font-bold text-blue-600"
-                    >
-                        NPR 0.00
-                    </h3>
+<section
+    class="bg-gray-900 border border-gray-800 rounded-2xl p-4 mb-6"
+>
 
-                </div>
+<h2 class="font-semibold mb-4">
+    नयाँ लेनदेन
+</h2>
 
 
-                <div class="app-panel rounded-2xl p-5 shadow-sm">
+<input
+    type="hidden"
+    id="editId"
+>
 
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Payable
-                    </p>
 
-                    <h3
-                        id="total-payable"
-                        class="privacy-amount mt-1 text-2xl font-bold text-orange-600"
-                    >
-                        NPR 0.00
-                    </h3>
+<!-- PERSON -->
 
-                </div>
+<label class="text-sm text-gray-300">
+    व्यक्ति
+</label>
 
-            </section>
+<input
+    id="personName"
+    type="text"
+    placeholder="जस्तै: Kamal"
+    class="w-full mt-2 mb-4 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+>
 
 
-            <!-- FORM -->
 
-            <section
-                class="app-panel mb-6 rounded-2xl p-5 shadow-sm"
-            >
+<!-- TYPE -->
 
-                <div class="mb-5">
+<label class="text-sm text-gray-300">
+    प्रकार
+</label>
 
-                    <h3
-                        id="form-title"
-                        class="text-lg font-bold"
-                    >
-                        Add Transaction
-                    </h3>
 
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Record expense, receivable or payable
-                    </p>
+<div
+    class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 mb-4"
+>
 
-                </div>
 
+<button
+    type="button"
+    class="type-card selected-type bg-gray-800 rounded-xl p-3 text-left"
+    data-type="expense"
+>
 
-                <form id="transaction-form">
+<div class="font-semibold">
+    खर्च
+</div>
 
-                    <input
-                        type="hidden"
-                        id="edit-transaction-id"
-                    >
+<div class="text-xs text-gray-400">
+    Expense
+</div>
 
+</button>
 
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
+<button
+    type="button"
+    class="type-card bg-gray-800 rounded-xl p-3 text-left"
+    data-type="receivable"
+>
 
-                        <!-- TYPE -->
+<div class="font-semibold">
+    लिनुपर्ने
+</div>
 
-                        <div>
+<div class="text-xs text-gray-400">
+    Receivable
+</div>
 
-                            <label
-                                for="transaction-type"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Transaction Type
-                            </label>
+</button>
 
-                            <select
-                                id="transaction-type"
-                                class="app-input"
-                                required
-                            >
 
-                                <option value="expense">
-                                    Expense
-                                </option>
+<button
+    type="button"
+    class="type-card bg-gray-800 rounded-xl p-3 text-left"
+    data-type="payable"
+>
 
-                                <option value="receivable">
-                                    Receivable
-                                </option>
+<div class="font-semibold">
+    दिनुपर्ने
+</div>
 
-                                <option value="payable">
-                                    Payable
-                                </option>
+<div class="text-xs text-gray-400">
+    Payable
+</div>
 
-                            </select>
+</button>
 
-                        </div>
 
+<button
+    type="button"
+    class="type-card bg-gray-800 rounded-xl p-3 text-left"
+    data-type="given"
+>
 
-                        <!-- AMOUNT -->
+<div class="font-semibold">
+    दिएको पैसा
+</div>
 
-                        <div>
+<div class="text-xs text-gray-400">
+    केही समयका लागि
+</div>
 
-                            <label
-                                for="transaction-amount"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Amount (NPR)
-                            </label>
+</button>
 
-                            <input
-                                id="transaction-amount"
-                                type="number"
-                                inputmode="decimal"
-                                min="0"
-                                step="0.01"
-                                placeholder="Enter amount"
-                                class="app-input"
-                                required
-                            >
 
-                        </div>
+<button
+    type="button"
+    class="type-card bg-gray-800 rounded-xl p-3 text-left"
+    data-type="taken"
+>
 
+<div class="font-semibold">
+    लिएको पैसा
+</div>
 
-                        <!-- PARTY -->
+<div class="text-xs text-gray-400">
+    केही समयका लागि
+</div>
 
-                        <div>
+</button>
 
-                            <label
-                                for="transaction-party"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Party / Person
-                            </label>
 
-                            <input
-                                id="transaction-party"
-                                type="text"
-                                placeholder="Person or party name"
-                                class="app-input"
-                            >
+<button
+    type="button"
+    class="type-card bg-gray-800 rounded-xl p-3 text-left"
+    data-type="repayment"
+>
 
-                        </div>
+<div class="font-semibold">
+    फिर्ता
+</div>
 
+<div class="text-xs text-gray-400">
+    पैसा फिर्ता
+</div>
 
-                        <!-- DATE -->
+</button>
 
-                        <div>
+</div>
 
-                            <label
-                                for="transaction-date"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Date
-                            </label>
 
-                            <input
-                                id="transaction-date"
-                                type="date"
-                                class="app-input"
-                                required
-                            >
 
-                        </div>
+<!-- NPR -->
 
+<label class="text-sm text-gray-300">
+    नेपाली रुपैयाँ (NPR)
+</label>
 
-                        <!-- NOTE -->
+<input
+    id="npr"
+    type="number"
+    inputmode="decimal"
+    placeholder="0"
+    class="w-full mt-2 mb-3 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+/>
 
-                        <div class="md:col-span-2">
 
-                            <label
-                                for="transaction-note"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Note
-                            </label>
 
-                            <textarea
-                                id="transaction-note"
-                                rows="3"
-                                placeholder="Optional note"
-                                class="app-input resize-none"
-                            ></textarea>
+<!-- INR -->
 
-                        </div>
+<label class="text-sm text-gray-300">
+    भारतीय रुपैयाँ (INR)
+</label>
 
-                    </div>
+<input
+    id="inr"
+    type="number"
+    inputmode="decimal"
+    placeholder="0"
+    class="w-full mt-2 mb-3 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+/>
 
 
-                    <div class="mt-5 flex flex-wrap gap-3">
 
-                        <button
-                            type="submit"
-                            class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700"
-                        >
-                            <i class="fa-solid fa-plus mr-2"></i>
+<!-- TOTAL -->
 
-                            <span id="save-button-text">
-                                Save Transaction
-                            </span>
+<div
+    class="rounded-2xl bg-green-500/10 border border-green-500/30 p-4 mb-4"
+>
 
-                        </button>
+<p class="text-sm text-gray-400">
+    जम्मा रकम
+</p>
 
+<p
+    id="liveTotal"
+    class="text-3xl font-bold text-green-400"
+>
+NPR 0.00
+</p>
 
-                        <button
-                            type="button"
-                            id="cancel-edit"
-                            class="hidden rounded-xl bg-gray-200 px-5 py-3 font-semibold text-gray-800 dark:bg-gray-700 dark:text-white"
-                        >
-                            <i class="fa-solid fa-xmark mr-2"></i>
-                            Cancel
-                        </button>
+<p
+    id="conversionText"
+    class="text-xs text-gray-400 mt-1"
+>
+1 INR = 1.6 NPR
+</p>
 
-                    </div>
+</div>
 
-                </form>
 
-            </section>
 
+<!-- DATE -->
 
-            <!-- LEDGER -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-            <section
-                class="app-panel rounded-2xl p-5 shadow-sm"
-            >
+<div>
 
-                <div
-                    class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-                >
+<label class="text-sm text-gray-300">
+    मिति
+</label>
 
-                    <div>
+<input
+    id="date"
+    type="date"
+    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+/>
 
-                        <h3 class="text-lg font-bold">
-                            Transaction Ledger
-                        </h3>
+</div>
 
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            All transaction records
-                        </p>
 
-                    </div>
+<div>
 
+<label class="text-sm text-gray-300">
+    फिर्ता / Due Date
+</label>
 
-                    <div class="flex flex-col gap-2 sm:flex-row">
+<input
+    id="dueDate"
+    type="date"
+    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+/>
 
-                        <div class="relative">
+</div>
 
-                            <i
-                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                            ></i>
+</div>
 
-                            <input
-                                id="search-transaction"
-                                type="search"
-                                placeholder="Search..."
-                                class="app-input pl-10"
-                            >
 
-                        </div>
 
+<!-- NOTE -->
 
-                        <select
-                            id="sort-transaction"
-                            class="app-input sm:w-48"
-                        >
+<label class="text-sm text-gray-300 block mt-4">
+    नोट
+</label>
 
-                            <option value="date_desc">
-                                Newest First
-                            </option>
+<textarea
+    id="note"
+    rows="3"
+    placeholder="आवश्यक भएमा विवरण लेख्नुहोस्"
+    class="w-full mt-2 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700"
+></textarea>
 
-                            <option value="date_asc">
-                                Oldest First
-                            </option>
 
-                            <option value="amount_desc">
-                                Amount High → Low
-                            </option>
 
-                            <option value="amount_asc">
-                                Amount Low → High
-                            </option>
+<!-- BUTTON -->
 
-                        </select>
+<button
+    id="saveBtn"
+    class="w-full mt-4 py-3 rounded-xl bg-green-600 hover:bg-green-500 font-semibold"
+>
+लेनदेन सुरक्षित गर्नुहोस्
+</button>
 
-                    </div>
 
-                </div>
+<button
+    id="cancelEditBtn"
+    class="hidden w-full mt-2 py-3 rounded-xl bg-gray-700 font-semibold"
+>
+Edit बन्द गर्नुहोस्
+</button>
 
 
-                <!-- DESKTOP TABLE -->
+</section>
 
-                <div class="hidden overflow-x-auto md:block">
 
-                    <table class="w-full text-left">
 
-                        <thead>
+<!-- SEARCH -->
 
-                            <tr
-                                class="border-b border-gray-200 text-sm text-gray-500 dark:border-gray-700"
-                            >
+<section class="mb-4">
 
-                                <th class="px-3 py-3">
-                                    Date
-                                </th>
+<input
+    id="searchInput"
+    type="search"
+    placeholder="व्यक्तिको नाम खोज्नुहोस्..."
+    class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800"
+/>
 
-                                <th class="px-3 py-3">
-                                    Type
-                                </th>
+</section>
 
-                                <th class="px-3 py-3">
-                                    Party
-                                </th>
 
-                                <th class="px-3 py-3">
-                                    Note
-                                </th>
 
-                                <th class="px-3 py-3 text-right">
-                                    Amount
-                                </th>
+<!-- PEOPLE -->
 
-                                <th class="px-3 py-3 text-center">
-                                    Action
-                                </th>
+<section>
 
-                            </tr>
+<div class="flex items-center justify-between mb-3">
 
-                        </thead>
+<h2 class="font-semibold">
+    व्यक्तिअनुसार हिसाब
+</h2>
 
-                        <tbody id="transaction-table-body">
-                        </tbody>
+<span
+    id="resultCount"
+    class="text-xs text-gray-400"
+>
+</span>
 
-                    </table>
+</div>
 
-                </div>
 
+<div
+    id="peopleList"
+    class="space-y-3"
+></div>
 
-                <!-- MOBILE -->
 
-                <div
-                    id="transaction-mobile-list"
-                    class="space-y-3 md:hidden"
-                >
-                </div>
+<div
+    id="emptyState"
+    class="hidden text-center py-12 text-gray-500"
+>
 
+<p class="text-lg">
+    अहिलेसम्म कुनै लेनदेन छैन।
+</p>
 
-                <!-- EMPTY -->
+<p class="text-sm mt-1">
+    माथिबाट पहिलो लेनदेन थप्नुहोस्।
+</p>
 
-                <div
-                    id="transaction-empty"
-                    class="hidden py-12 text-center"
-                >
+</div>
 
-                    <div
-                        class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800"
-                    >
-                        <i class="fa-solid fa-right-left text-2xl"></i>
-                    </div>
+</section>
 
-                    <h4 class="font-semibold">
-                        No transaction records
-                    </h4>
 
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Add your first transaction above.
-                    </p>
+</main>
 
-                </div>
 
-            </section>
 
-        </div>
+<!-- PDF AREA -->
 
-    </main>
+<div
+    id="pdfArea"
+    class="hidden"
+></div>
 
 
-    <!-- TOAST -->
 
-    <div
-        id="toast-container"
-        class="fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2"
-    >
+<script type="module">
 
-        <div
-            id="toast"
-            class="rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl"
-        >
-            Saved
-        </div>
+import "../js/app.js";
 
-    </div>
+import {
+    getTransactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction
+} from "./js/transactions.js";
 
+import {
+    getProfileValue
+} from "./js/storage.js";
 
-    <!-- JAVASCRIPT -->
 
-    <script type="module">
+const INR_RATE = 1.6;
 
-        import {
-            getTransactions,
-            addTransaction,
-            updateTransaction,
-            deleteTransaction
-        } from "./js/transactions.js";
 
-        import {
-            initTheme,
-            getTheme,
-            setTheme
-        } from "./js/theme.js";
+let selectedType = "expense";
 
-        import {
-            getLanguage,
-            setLanguage,
-            applyTranslations
-        } from "./js/language.js";
 
+let transactions =
+    getTransactions();
 
-        /* =========================================
-           ELEMENTS
-           ========================================= */
 
-        const form =
-            document.getElementById(
-                "transaction-form"
-            );
 
-        const typeInput =
-            document.getElementById(
-                "transaction-type"
-            );
+const personName =
+    document.getElementById(
+        "personName"
+    );
 
-        const amountInput =
-            document.getElementById(
-                "transaction-amount"
-            );
 
-        const partyInput =
-            document.getElementById(
-                "transaction-party"
-            );
+const npr =
+    document.getElementById(
+        "npr"
+    );
 
-        const dateInput =
-            document.getElementById(
-                "transaction-date"
-            );
 
-        const noteInput =
-            document.getElementById(
-                "transaction-note"
-            );
+const inr =
+    document.getElementById(
+        "inr"
+    );
 
-        const editIdInput =
-            document.getElementById(
-                "edit-transaction-id"
-            );
 
-        const cancelEdit =
-            document.getElementById(
-                "cancel-edit"
-            );
+const date =
+    document.getElementById(
+        "date"
+    );
 
-        const formTitle =
-            document.getElementById(
-                "form-title"
-            );
 
-        const saveButtonText =
-            document.getElementById(
-                "save-button-text"
-            );
+const dueDate =
+    document.getElementById(
+        "dueDate"
+    );
 
-        const tableBody =
-            document.getElementById(
-                "transaction-table-body"
-            );
 
-        const mobileList =
-            document.getElementById(
-                "transaction-mobile-list"
-            );
+const note =
+    document.getElementById(
+        "note"
+    );
 
-        const emptyState =
-            document.getElementById(
-                "transaction-empty"
-            );
 
+const liveTotal =
+    document.getElementById(
+        "liveTotal"
+    );
 
-        /* =========================================
-           INIT
-           ========================================= */
 
-        initTheme();
+const saveBtn =
+    document.getElementById(
+        "saveBtn"
+    );
 
-        setToday();
 
-        loadProfile();
+const editId =
+    document.getElementById(
+        "editId"
+    );
 
-        updateThemeIcon();
 
-        updateLanguageButton();
+const cancelEditBtn =
+    document.getElementById(
+        "cancelEditBtn"
+    );
 
-        renderTransactions();
 
-        updateDateTime();
+const peopleList =
+    document.getElementById(
+        "peopleList"
+    );
 
-        setInterval(
-            updateDateTime,
-            1000
-        );
 
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
 
-        /* =========================================
-           DATE
-           ========================================= */
 
-        function setToday() {
 
-            if (!dateInput.value) {
+date.value =
+    new Date()
+        .toISOString()
+        .split("T")[0];
 
-                dateInput.value =
-                    new Date()
-                        .toISOString()
-                        .split("T")[0];
 
-            }
 
-        }
+/* TYPE */
 
+document
+    .querySelectorAll(
+        ".type-card"
+    )
+    .forEach(
+        button => {
 
-        function updateDateTime() {
-
-            const element =
-                document.getElementById(
-                    "current-date-time"
-                );
-
-            element.textContent =
-                new Date().toLocaleString(
-                    getLanguage() === "ne"
-                        ? "ne-NP"
-                        : "en-US",
-                    {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                );
-
-        }
-
-
-        /* =========================================
-           PROFILE
-           ========================================= */
-
-        function loadProfile() {
-
-            const name =
-                localStorage.getItem(
-                    "profile_name"
-                ) || "";
-
-            const address =
-                localStorage.getItem(
-                    "profile_address"
-                ) || "";
-
-            const mobile =
-                localStorage.getItem(
-                    "profile_mobile"
-                ) || "";
-
-            const email =
-                localStorage.getItem(
-                    "profile_email"
-                ) || "";
-
-            const avatar =
-                localStorage.getItem(
-                    "profile_avatar"
-                ) || "";
-
-
-            document.getElementById(
-                "input-full-name"
-            ).value = name;
-
-            document.getElementById(
-                "input-address"
-            ).value = address;
-
-            document.getElementById(
-                "input-mobile"
-            ).value = mobile;
-
-            document.getElementById(
-                "input-email"
-            ).value = email;
-
-            document.getElementById(
-                "sidebar-profile-name"
-            ).textContent =
-                name || "User";
-
-
-            if (avatar) {
-
-                const image =
-                    document.getElementById(
-                        "sidebar-avatar-image"
-                    );
-
-                const letter =
-                    document.getElementById(
-                        "sidebar-avatar-letter"
-                    );
-
-                image.src = avatar;
-
-                image.classList.remove(
-                    "hidden"
-                );
-
-                letter.classList.add(
-                    "hidden"
-                );
-
-            } else {
-
-                document.getElementById(
-                    "sidebar-avatar-letter"
-                ).textContent =
-                    (
-                        name
-                        ? name.charAt(0)
-                        : "U"
-                    ).toUpperCase();
-
-            }
-
-        }
-
-
-        function saveProfileField(
-            element,
-            key
-        ) {
-
-            element.addEventListener(
-                "change",
+            button.addEventListener(
+                "click",
                 () => {
 
-                    localStorage.setItem(
-                        key,
-                        element.value.trim()
+                    document
+                        .querySelectorAll(
+                            ".type-card"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "selected-type"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "selected-type"
                     );
 
-                    if (
-                        key ===
-                        "profile_name"
-                    ) {
 
-                        document.getElementById(
-                            "sidebar-profile-name"
-                        ).textContent =
-                            element.value.trim()
-                            || "User";
-
-                    }
+                    selectedType =
+                        button.dataset.type;
 
                 }
             );
 
         }
+    );
 
 
-        saveProfileField(
-            document.getElementById(
-                "input-full-name"
-            ),
-            "profile_name"
+
+/* LIVE TOTAL */
+
+function updateTotal() {
+
+    const nprValue =
+        Number(
+            npr.value
+        ) || 0;
+
+
+    const inrValue =
+        Number(
+            inr.value
+        ) || 0;
+
+
+    const converted =
+        inrValue
+        *
+        INR_RATE;
+
+
+    const total =
+        nprValue
+        +
+        converted;
+
+
+    liveTotal.textContent =
+        `NPR ${formatMoney(total)}`;
+
+
+    document.getElementById(
+        "conversionText"
+    ).textContent =
+        `INR ${formatMoney(inrValue)} × 1.6 = NPR ${formatMoney(converted)}`;
+
+}
+
+
+npr.addEventListener(
+    "input",
+    updateTotal
+);
+
+
+inr.addEventListener(
+    "input",
+    updateTotal
+);
+
+
+
+/* SAVE */
+
+saveBtn.addEventListener(
+    "click",
+    () => {
+
+        const name =
+            cleanName(
+                personName.value
+            );
+
+
+        const nprValue =
+            Number(
+                npr.value
+            ) || 0;
+
+
+        const inrValue =
+            Number(
+                inr.value
+            ) || 0;
+
+
+        const total =
+            nprValue
+            +
+            (
+                inrValue
+                *
+                INR_RATE
+            );
+
+
+        if (!name) {
+
+            alert(
+                "व्यक्तिको नाम लेख्नुहोस्।"
+            );
+
+            personName.focus();
+
+            return;
+
+        }
+
+
+        if (
+            total <= 0
+        ) {
+
+            alert(
+                "रकम लेख्नुहोस्।"
+            );
+
+            return;
+
+        }
+
+
+        const data = {
+
+            type:
+                selectedType,
+
+            partyName:
+                name,
+
+            npr:
+                nprValue,
+
+            inr:
+                inrValue,
+
+            amount:
+                total,
+
+            date:
+                date.value,
+
+            dueDate:
+                dueDate.value,
+
+            note:
+                note.value.trim(),
+
+            status:
+                "pending"
+
+        };
+
+
+        if (
+            editId.value
+        ) {
+
+            updateTransaction(
+                editId.value,
+                data
+            );
+
+        } else {
+
+            addTransaction(
+                data
+            );
+
+        }
+
+
+        transactions =
+            getTransactions();
+
+
+        resetForm();
+
+        render();
+
+    }
+);
+
+
+
+/* EDIT */
+
+window.editTransaction =
+    function(id) {
+
+        const item =
+            transactions.find(
+                x =>
+                    x.id === id
+            );
+
+
+        if (!item) {
+            return;
+        }
+
+
+        personName.value =
+            item.partyName || "";
+
+
+        npr.value =
+            item.npr || "";
+
+
+        inr.value =
+            item.inr || "";
+
+
+        date.value =
+            item.date || "";
+
+
+        dueDate.value =
+            item.dueDate || "";
+
+
+        note.value =
+            item.note || "";
+
+
+        editId.value =
+            item.id;
+
+
+        selectedType =
+            item.type;
+
+
+        document
+            .querySelectorAll(
+                ".type-card"
+            )
+            .forEach(
+                button => {
+
+                    button.classList.toggle(
+                        "selected-type",
+                        button.dataset.type ===
+                        item.type
+                    );
+
+                }
+            );
+
+
+        saveBtn.textContent =
+            "लेनदेन Update गर्नुहोस्";
+
+
+        cancelEditBtn.classList.remove(
+            "hidden"
         );
 
-        saveProfileField(
-            document.getElementById(
-                "input-address"
-            ),
-            "profile_address"
+
+        updateTotal();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    };
+
+
+
+/* DELETE */
+
+window.deleteTransaction =
+    function(id) {
+
+        if (
+            !confirm(
+                "यो लेनदेन हटाउने?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        deleteTransaction(
+            id
         );
 
-        saveProfileField(
-            document.getElementById(
-                "input-mobile"
-            ),
-            "profile_mobile"
+
+        transactions =
+            getTransactions();
+
+
+        render();
+
+    };
+
+
+
+/* CANCEL EDIT */
+
+cancelEditBtn.addEventListener(
+    "click",
+    resetForm
+);
+
+
+
+function resetForm() {
+
+    personName.value = "";
+
+    npr.value = "";
+
+    inr.value = "";
+
+    note.value = "";
+
+    dueDate.value = "";
+
+    date.value =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    editId.value = "";
+
+    selectedType =
+        "expense";
+
+
+    document
+        .querySelectorAll(
+            ".type-card"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+                    "selected-type",
+                    button.dataset.type ===
+                    "expense"
+                );
+
+            }
         );
 
-        saveProfileField(
-            document.getElementById(
-                "input-email"
-            ),
-            "profile_email"
+
+    saveBtn.textContent =
+        "लेनदेन सुरक्षित गर्नुहोस्";
+
+
+    cancelEditBtn.classList.add(
+        "hidden"
+    );
+
+
+    updateTotal();
+
+}
+
+
+
+/* SEARCH */
+
+searchInput.addEventListener(
+    "input",
+    render
+);
+
+
+
+/* GROUP */
+
+function groupPeople() {
+
+    const groups = {};
+
+
+    for (
+        const item
+        of transactions
+    ) {
+
+        const name =
+            cleanName(
+                item.partyName
+            );
+
+
+        if (!name) {
+            continue;
+        }
+
+
+        const key =
+            name.toLowerCase();
+
+
+        if (!groups[key]) {
+
+            groups[key] = {
+
+                name,
+
+                records: []
+
+            };
+
+        }
+
+
+        groups[key].records.push(
+            item
+        );
+
+    }
+
+
+    return Object.values(
+        groups
+    );
+
+}
+
+
+
+/* RENDER */
+
+function render() {
+
+    transactions =
+        getTransactions();
+
+
+    const groups =
+        groupPeople();
+
+
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        groups.filter(
+            group =>
+                group.name
+                    .toLowerCase()
+                    .includes(
+                        search
+                    )
         );
 
 
-        /* =========================================
-           FORM
-           ========================================= */
+    document.getElementById(
+        "totalRecords"
+    ).textContent =
+        transactions.length;
 
-        form.addEventListener(
-            "submit",
-            event => {
 
-                event.preventDefault();
+    document.getElementById(
+        "totalPeople"
+    ).textContent =
+        groups.length;
 
+
+    document.getElementById(
+        "resultCount"
+    ).textContent =
+        `${filtered.length} व्यक्ति`;
+
+
+    peopleList.innerHTML = "";
+
+
+    document.getElementById(
+        "emptyState"
+    ).classList.toggle(
+        "hidden",
+        filtered.length !== 0
+    );
+
+
+    filtered.forEach(
+        group => {
+
+            peopleList.appendChild(
+                createPersonCard(
+                    group
+                )
+            );
+
+        }
+    );
+
+}
+
+
+
+function createPersonCard(
+    group
+) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "transaction-card bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden";
+
+
+    const records =
+        group.records;
+
+
+    let given = 0;
+    let taken = 0;
+    let expense = 0;
+    let receivable = 0;
+    let payable = 0;
+    let repayment = 0;
+
+
+    records.forEach(
+        item => {
+
+            const amount =
+                Number(
+                    item.amount
+                ) || 0;
+
+
+            if (
+                item.type === "given"
+            ) given += amount;
+
+
+            if (
+                item.type === "taken"
+            ) taken += amount;
+
+
+            if (
+                item.type === "expense"
+            ) expense += amount;
+
+
+            if (
+                item.type === "receivable"
+            ) receivable += amount;
+
+
+            if (
+                item.type === "payable"
+            ) payable += amount;
+
+
+            if (
+                item.type === "repayment"
+            ) repayment += amount;
+
+        }
+    );
+
+
+    const balance =
+        receivable
+        +
+        given
+        -
+        payable
+        -
+        taken
+        -
+        repayment;
+
+
+    const header =
+        document.createElement(
+            "div"
+        );
+
+
+    header.className =
+        "p-4";
+
+
+    header.innerHTML = `
+
+        <div class="flex items-center justify-between gap-3">
+
+            <div>
+
+                <h3 class="font-bold text-lg">
+                    ${escapeHtml(group.name)}
+                </h3>
+
+                <p class="text-xs text-gray-400">
+                    ${records.length} वटा लेनदेन
+                </p>
+
+            </div>
+
+
+            <div class="text-right">
+
+                <p class="text-xs text-gray-400">
+                    हिसाब
+                </p>
+
+                <p class="font-bold ${
+                    balance >= 0
+                        ? "text-green-400"
+                        : "text-red-400"
+                }">
+
+                    NPR ${formatMoney(
+                        Math.abs(balance)
+                    )}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+
+            <div class="bg-gray-800 rounded-xl p-3">
+
+                <p class="text-xs text-gray-400">
+                    दिएको
+                </p>
+
+                <p class="font-semibold">
+                    NPR ${formatMoney(given)}
+                </p>
+
+            </div>
+
+
+            <div class="bg-gray-800 rounded-xl p-3">
+
+                <p class="text-xs text-gray-400">
+                    लिएको
+                </p>
+
+                <p class="font-semibold">
+                    NPR ${formatMoney(taken)}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="flex gap-2 mt-3">
+
+            <button
+                class="flex-1 bg-green-600 rounded-xl py-2 text-sm font-semibold"
+                onclick="generatePersonPDF('${escapeAttr(group.name)}')"
+            >
+                PDF
+            </button>
+
+
+            <button
+                class="flex-1 bg-gray-800 rounded-xl py-2 text-sm"
+                onclick="togglePerson('${escapeAttr(group.name)}')"
+            >
+                विवरण
+            </button>
+
+        </div>
+
+    `;
+
+
+    const details =
+        document.createElement(
+            "div"
+        );
+
+
+    details.id =
+        `person_${safeId(group.name)}`;
+
+
+    details.className =
+        "hidden border-t border-gray-800 p-3 space-y-2";
+
+
+    records.forEach(
+        item => {
+
+            details.appendChild(
+                createRecordRow(
+                    item
+                )
+            );
+
+        }
+    );
+
+
+    card.appendChild(
+        header
+    );
+
+
+    card.appendChild(
+        details
+    );
+
+
+    return card;
+
+}
+
+
+
+/* RECORD ROW */
+
+function createRecordRow(
+    item
+) {
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        "bg-gray-800 rounded-xl p-3";
+
+
+    const type =
+        getTypeName(
+            item.type
+        );
+
+
+    const amount =
+        Number(
+            item.amount
+        ) || 0;
+
+
+    row.innerHTML = `
+
+        <div class="flex justify-between gap-3">
+
+            <div>
+
+                <p class="font-semibold">
+                    ${type}
+                </p>
+
+                <p class="text-xs text-gray-400">
+                    ${escapeHtml(
+                        item.date || ""
+                    )}
+                </p>
+
+                ${
+                    item.dueDate
+                    ?
+                    `<p class="text-xs text-yellow-400 mt-1">
+                        Due: ${escapeHtml(item.dueDate)}
+                    </p>`
+                    :
+                    ""
+                }
+
+                ${
+                    item.note
+                    ?
+                    `<p class="text-xs text-gray-400 mt-1">
+                        ${escapeHtml(item.note)}
+                    </p>`
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <div class="text-right">
+
+                <p class="font-bold">
+                    NPR ${formatMoney(amount)}
+                </p>
+
+                <div class="flex gap-2 mt-2">
+
+                    <button
+                        class="text-xs text-blue-400"
+                        onclick="editTransaction('${item.id}')"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="text-xs text-red-400"
+                        onclick="deleteTransaction('${item.id}')"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return row;
+
+}
+
+
+
+/* TOGGLE */
+
+window.togglePerson =
+    function(name) {
+
+        const element =
+            document.getElementById(
+                `person_${safeId(name)}`
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.classList.toggle(
+            "hidden"
+        );
+
+    };
+
+
+
+/* PDF */
+
+window.generatePersonPDF =
+    async function(name) {
+
+        const records =
+            getTransactions()
+                .filter(
+                    item =>
+                        cleanName(
+                            item.partyName
+                        ).toLowerCase()
+                        ===
+                        cleanName(
+                            name
+                        ).toLowerCase()
+                );
+
+
+        if (!records.length) {
+
+            alert(
+                "यस व्यक्तिको कुनै लेनदेन भेटिएन।"
+            );
+
+            return;
+
+        }
+
+
+        const profileName =
+            getProfileValue(
+                "profile_name",
+                ""
+            );
+
+
+        const profileAddress =
+            getProfileValue(
+                "profile_address",
+                ""
+            );
+
+
+        const profileMobile =
+            getProfileValue(
+                "profile_mobile",
+                ""
+            );
+
+
+        const profileEmail =
+            getProfileValue(
+                "profile_email",
+                ""
+            );
+
+
+        let totalExpense = 0;
+        let totalGiven = 0;
+        let totalTaken = 0;
+        let totalReceivable = 0;
+        let totalPayable = 0;
+        let totalRepayment = 0;
+
+
+        records.forEach(
+            item => {
 
                 const amount =
                     Number(
-                        amountInput.value
+                        item.amount
                     ) || 0;
 
 
-                if (amount <= 0) {
-
-                    showToast(
-                        "Please enter a valid amount."
-                    );
-
-                    amountInput.focus();
-
-                    return;
-
-                }
+                if (
+                    item.type === "expense"
+                )
+                    totalExpense += amount;
 
 
-                const data = {
-
-                    type:
-                        typeInput.value,
-
-                    amount,
-
-                    partyId:
-                        partyInput.value.trim(),
-
-                    date:
-                        dateInput.value,
-
-                    note:
-                        noteInput.value.trim()
-
-                };
+                if (
+                    item.type === "given"
+                )
+                    totalGiven += amount;
 
 
-                const editId =
-                    editIdInput.value;
+                if (
+                    item.type === "taken"
+                )
+                    totalTaken += amount;
 
 
-                if (editId) {
-
-                    updateTransaction(
-                        editId,
-                        data
-                    );
-
-                    showToast(
-                        "Transaction updated successfully."
-                    );
-
-                } else {
-
-                    addTransaction(
-                        data
-                    );
-
-                    showToast(
-                        "Transaction added successfully."
-                    );
-
-                }
+                if (
+                    item.type === "receivable"
+                )
+                    totalReceivable += amount;
 
 
-                resetForm();
+                if (
+                    item.type === "payable"
+                )
+                    totalPayable += amount;
 
-                renderTransactions();
+
+                if (
+                    item.type === "repayment"
+                )
+                    totalRepayment += amount;
 
             }
         );
 
 
-        /* =========================================
-           RESET
-           ========================================= */
-
-        function resetForm() {
-
-            form.reset();
-
-            editIdInput.value = "";
-
-            formTitle.textContent =
-                "Add Transaction";
-
-            saveButtonText.textContent =
-                "Save Transaction";
-
-            cancelEdit.classList.add(
-                "hidden"
-            );
-
-            setToday();
-
-        }
-
-
-        cancelEdit.addEventListener(
-            "click",
-            resetForm
-        );
-
-
-        /* =========================================
-           RENDER
-           ========================================= */
-
-        function renderTransactions() {
-
-            let transactions =
-                getTransactions();
-
-
-            const search =
-                document
-                    .getElementById(
-                        "search-transaction"
-                    )
-                    .value
-                    .trim()
-                    .toLowerCase();
-
-
-            const sort =
-                document
-                    .getElementById(
-                        "sort-transaction"
-                    )
-                    .value;
-
-
-            if (search) {
-
-                transactions =
-                    transactions.filter(
-                        item => {
-
-                            const type =
-                                String(
-                                    item.type || ""
-                                ).toLowerCase();
-
-                            const party =
-                                String(
-                                    item.partyId || ""
-                                ).toLowerCase();
-
-                            const note =
-                                String(
-                                    item.note || ""
-                                ).toLowerCase();
-
-                            const date =
-                                String(
-                                    item.date || ""
-                                ).toLowerCase();
-
-                            return (
-                                type.includes(search)
-                                ||
-                                party.includes(search)
-                                ||
-                                note.includes(search)
-                                ||
-                                date.includes(search)
-                            );
-
-                        }
-                    );
-
-            }
-
-
-            transactions.sort(
-                (a, b) => {
-
-                    if (
-                        sort ===
-                        "amount_desc"
-                    ) {
-
-                        return (
-                            Number(b.amount || 0)
-                            -
-                            Number(a.amount || 0)
-                        );
-
-                    }
-
-
-                    if (
-                        sort ===
-                        "amount_asc"
-                    ) {
-
-                        return (
-                            Number(a.amount || 0)
-                            -
-                            Number(b.amount || 0)
-                        );
-
-                    }
-
-
-                    if (
-                        sort ===
-                        "date_asc"
-                    ) {
-
-                        return String(
-                            a.date || ""
-                        ).localeCompare(
-                            String(
-                                b.date || ""
-                            )
-                        );
-
-                    }
-
-
-                    return String(
-                        b.date || ""
-                    ).localeCompare(
-                        String(
-                            a.date || ""
-                        )
-                    );
-
-                }
-            );
-
-
-            tableBody.innerHTML = "";
-
-            mobileList.innerHTML = "";
-
-
-            emptyState.classList.toggle(
-                "hidden",
-                transactions.length !== 0
-            );
-
-
-            /* SUMMARY */
-
-            const allTransactions =
-                getTransactions();
-
-
-            let expense = 0;
-            let receivable = 0;
-            let payable = 0;
-
-
-            allTransactions.forEach(
-                item => {
-
-                    const amount =
-                        Number(
-                            item.amount
-                        ) || 0;
-
-
-                    if (
-                        item.type ===
-                        "expense"
-                    ) {
-
-                        expense += amount;
-
-                    } else if (
-                        item.type ===
-                        "receivable"
-                    ) {
-
-                        receivable += amount;
-
-                    } else if (
-                        item.type ===
-                        "payable"
-                    ) {
-
-                        payable += amount;
-
-                    }
-
-                }
-            );
-
-
+        const balance =
+            totalReceivable
+            +
+            totalGiven
+            -
+            totalPayable
+            -
+            totalTaken
+            -
+            totalRepayment;
+
+
+        const pdfArea =
             document.getElementById(
-                "total-expense"
-            ).textContent =
-                formatAmount(expense);
-
-            document.getElementById(
-                "total-receivable"
-            ).textContent =
-                formatAmount(receivable);
-
-            document.getElementById(
-                "total-payable"
-            ).textContent =
-                formatAmount(payable);
-
-
-            /* DESKTOP */
-
-            transactions.forEach(
-                item => {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-                    row.className =
-                        "transaction-row border-b border-gray-100 dark:border-gray-700";
-
-
-                    row.innerHTML = `
-
-                        <td class="px-3 py-4 text-sm">
-                            ${escapeHTML(item.date || "-")}
-                        </td>
-
-                        <td class="px-3 py-4">
-                            ${typeBadge(item.type)}
-                        </td>
-
-                        <td class="px-3 py-4 text-sm">
-                            ${escapeHTML(item.partyId || "-")}
-                        </td>
-
-                        <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            ${escapeHTML(item.note || "-")}
-                        </td>
-
-                        <td class="privacy-amount px-3 py-4 text-right text-sm font-semibold">
-                            ${formatAmount(item.amount)}
-                        </td>
-
-                        <td class="px-3 py-4 text-center">
-
-                            <div class="flex justify-center gap-2">
-
-                                <button
-                                    type="button"
-                                    data-edit-id="${escapeAttribute(item.id)}"
-                                    class="edit-transaction flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                                >
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    data-delete-id="${escapeAttribute(item.id)}"
-                                    class="delete-transaction flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    `;
-
-                    tableBody.appendChild(row);
-
-                }
+                "pdfArea"
             );
 
 
-            /* MOBILE */
+        pdfArea.innerHTML = `
 
-            transactions.forEach(
-                item => {
+            <div class="pdf-page">
 
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
+                <h1
+                    style="
+                        font-size:28px;
+                        font-weight:bold;
+                        margin-bottom:8px;
+                    "
+                >
+                    Digital Notebook
+                </h1>
 
-                    card.className =
-                        "transaction-row rounded-2xl border border-gray-200 p-4 dark:border-gray-700";
+
+                <p
+                    style="
+                        font-size:18px;
+                        font-weight:bold;
+                        margin-bottom:20px;
+                    "
+                >
+                    ${escapeHtml(name)} — पूरा हिसाब
+                </p>
 
 
-                    card.innerHTML = `
+                <div
+                    style="
+                        border:1px solid #ddd;
+                        padding:15px;
+                        margin-bottom:20px;
+                    "
+                >
 
-                        <div class="flex items-start justify-between gap-3">
+                    ${
+                        profileName
+                        ?
+                        `<p><b>नाम:</b> ${escapeHtml(profileName)}</p>`
+                        :
+                        ""
+                    }
 
-                            <div>
+                    ${
+                        profileMobile
+                        ?
+                        `<p><b>Mobile:</b> ${escapeHtml(profileMobile)}</p>`
+                        :
+                        ""
+                    }
 
-                                ${typeBadge(item.type)}
+                    ${
+                        profileAddress
+                        ?
+                        `<p><b>Address:</b> ${escapeHtml(profileAddress)}</p>`
+                        :
+                        ""
+                    }
 
-                                <p class="mt-2 font-semibold">
-                                    ${escapeHTML(item.partyId || "Transaction")}
-                                </p>
+                    ${
+                        profileEmail
+                        ?
+                        `<p><b>Email:</b> ${escapeHtml(profileEmail)}</p>`
+                        :
+                        ""
+                    }
 
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    ${escapeHTML(item.date || "-")}
-                                </p>
+                </div>
 
-                            </div>
 
-                            <p class="privacy-amount whitespace-nowrap font-bold">
-                                ${formatAmount(item.amount)}
-                            </p>
+                <h2
+                    style="
+                        font-size:20px;
+                        font-weight:bold;
+                        margin-bottom:12px;
+                    "
+                >
+                    ${escapeHtml(name)}
+                </h2>
 
-                        </div>
 
-                        ${
-                            item.note
-                            ?
+                <table
+                    style="
+                        width:100%;
+                        border-collapse:collapse;
+                        margin-bottom:25px;
+                    "
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+                                मिति
+                            </th>
+
+                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+                                प्रकार
+                            </th>
+
+                            <th style="border:1px solid #ccc;padding:8px;text-align:right;">
+                                रकम
+                            </th>
+
+                            <th style="border:1px solid #ccc;padding:8px;text-align:left;">
+                                Due
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${records.map(
+                            item => `
+
+                            <tr>
+
+                                <td style="border:1px solid #ccc;padding:8px;">
+                                    ${escapeHtml(item.date || "")}
+                                </td>
+
+                                <td style="border:1px solid #ccc;padding:8px;">
+                                    ${getTypeName(item.type)}
+                                </td>
+
+                                <td style="border:1px solid #ccc;padding:8px;text-align:right;">
+                                    NPR ${formatMoney(item.amount)}
+                                </td>
+
+                                <td style="border:1px solid #ccc;padding:8px;">
+                                    ${escapeHtml(item.dueDate || "-")}
+                                </td>
+
+                            </tr>
+
                             `
-                            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                                ${escapeHTML(item.note)}
-                            </p>
-                            `
-                            :
-                            ""
-                        }
+                        ).join("")}
 
-                        <div class="mt-4 flex justify-end gap-2">
+                    </tbody>
 
-                            <button
-                                type="button"
-                                data-edit-id="${escapeAttribute(item.id)}"
-                                class="edit-transaction rounded-lg bg-indigo-100 px-4 py-2 text-sm text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                            >
-                                <i class="fa-solid fa-pen mr-1"></i>
-                                Edit
-                            </button>
-
-                            <button
-                                type="button"
-                                data-delete-id="${escapeAttribute(item.id)}"
-                                class="delete-transaction rounded-lg bg-red-100 px-4 py-2 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                            >
-                                <i class="fa-solid fa-trash mr-1"></i>
-                                Delete
-                            </button>
-
-                        </div>
-
-                    `;
-
-                    mobileList.appendChild(card);
-
-                }
-            );
+                </table>
 
 
-            updatePrivacy();
+                <div
+                    style="
+                        border:1px solid #ccc;
+                        padding:15px;
+                    "
+                >
 
-        }
+                    <p>
+                        <b>कुल खर्च:</b>
+                        NPR ${formatMoney(totalExpense)}
+                    </p>
 
+                    <p>
+                        <b>दिएको पैसा:</b>
+                        NPR ${formatMoney(totalGiven)}
+                    </p>
 
-        /* =========================================
-           TYPE BADGE
-           ========================================= */
+                    <p>
+                        <b>लिएको पैसा:</b>
+                        NPR ${formatMoney(totalTaken)}
+                    </p>
 
-        function typeBadge(type) {
+                    <p>
+                        <b>लिनुपर्ने:</b>
+                        NPR ${formatMoney(totalReceivable)}
+                    </p>
 
-            if (type === "expense") {
+                    <p>
+                        <b>दिनुपर्ने:</b>
+                        NPR ${formatMoney(totalPayable)}
+                    </p>
 
-                return `
-                    <span class="type-badge badge-expense">
-                        Expense
-                    </span>
-                `;
+                    <p>
+                        <b>फिर्ता:</b>
+                        NPR ${formatMoney(totalRepayment)}
+                    </p>
 
-            }
+                    <hr
+                        style="
+                            margin:12px 0;
+                            border:0;
+                            border-top:1px solid #ccc;
+                        "
+                    >
 
+                    <p
+                        style="
+                            font-size:18px;
+                            font-weight:bold;
+                        "
+                    >
+                        बाँकी हिसाब:
+                        NPR ${formatMoney(
+                            Math.abs(balance)
+                        )}
+                    </p>
 
-            if (type === "receivable") {
-
-                return `
-                    <span class="type-badge badge-receivable">
-                        Receivable
-                    </span>
-                `;
-
-            }
-
-
-            return `
-                <span class="type-badge badge-payable">
-                    Payable
-                </span>
-            `;
-
-        }
-
-
-        /* =========================================
-           EDIT / DELETE
-           ========================================= */
-
-        document.addEventListener(
-            "click",
-            event => {
-
-                const editButton =
-                    event.target.closest(
-                        ".edit-transaction"
-                    );
-
-
-                if (editButton) {
-
-                    editTransaction(
-                        editButton.dataset.editId
-                    );
-
-                    return;
-
-                }
+                </div>
 
 
-                const deleteButton =
-                    event.target.closest(
-                        ".delete-transaction"
-                    );
+                <p
+                    style="
+                        margin-top:30px;
+                        font-size:11px;
+                        color:#666;
+                    "
+                >
+                    Generated by Digital Notebook
+                </p>
+
+            </div>
+
+        `;
 
 
-                if (deleteButton) {
+        pdfArea.classList.remove(
+            "hidden"
+        );
 
-                    deleteTransactionRecord(
-                        deleteButton.dataset.deleteId
-                    );
 
+        const filename =
+            `${cleanName(name).replace(/\s+/g, "_")}_Transaction_Report.pdf`;
+
+
+        await html2pdf()
+            .set({
+
+                margin: 0,
+
+                filename,
+
+                image: {
+                    type: "jpeg",
+                    quality: .95
+                },
+
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true
+                },
+
+                jsPDF: {
+                    unit: "pt",
+                    format: "a4",
+                    orientation: "portrait"
                 }
 
-            }
+            })
+            .from(pdfArea)
+            .save();
+
+
+        pdfArea.classList.add(
+            "hidden"
         );
 
-
-        function editTransaction(id) {
-
-            const transactions =
-                getTransactions();
+    };
 
 
-            const item =
-                transactions.find(
-                    transaction =>
-                        transaction.id === id
-                );
 
+/* HELPERS */
 
-            if (!item) {
-                return;
-            }
+function cleanName(
+    name
+) {
 
-
-            editIdInput.value =
-                item.id;
-
-            typeInput.value =
-                item.type || "expense";
-
-            amountInput.value =
-                item.amount ?? "";
-
-            partyInput.value =
-                item.partyId ?? "";
-
-            dateInput.value =
-                item.date ?? "";
-
-            noteInput.value =
-                item.note ?? "";
-
-
-            formTitle.textContent =
-                "Edit Transaction";
-
-            saveButtonText.textContent =
-                "Update Transaction";
-
-            cancelEdit.classList.remove(
-                "hidden"
-            );
-
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-
-
-        function deleteTransactionRecord(id) {
-
-            const confirmed =
-                window.confirm(
-                    "Delete this transaction?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            deleteTransaction(id);
-
-
-            showToast(
-                "Transaction deleted successfully."
-            );
-
-
-            renderTransactions();
-
-        }
-
-
-        /* =========================================
-           SEARCH / SORT
-           ========================================= */
-
-        document.getElementById(
-            "search-transaction"
-        ).addEventListener(
-            "input",
-            renderTransactions
+    return String(
+        name || ""
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            " "
         );
 
+}
 
-        document.getElementById(
-            "sort-transaction"
-        ).addEventListener(
-            "change",
-            renderTransactions
+
+function formatMoney(
+    value
+) {
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+function getTypeName(
+    type
+) {
+
+    const map = {
+
+        expense:
+            "खर्च",
+
+        receivable:
+            "लिनुपर्ने",
+
+        payable:
+            "दिनुपर्ने",
+
+        given:
+            "दिएको पैसा",
+
+        taken:
+            "लिएको पैसा",
+
+        repayment:
+            "फिर्ता"
+
+    };
+
+
+    return (
+        map[type]
+        ||
+        type
+    );
+
+}
+
+
+function safeId(
+    value
+) {
+
+    return btoa(
+        unescape(
+            encodeURIComponent(
+                value
+            )
+        )
+    )
+        .replace(
+            /[^a-zA-Z0-9]/g,
+            ""
         );
 
-
-        /* =========================================
-           PRIVACY
-           ========================================= */
-
-        let privacyMode =
-            localStorage.getItem(
-                "privacy_mode"
-            ) === "true";
+}
 
 
-        document.getElementById(
-            "privacy-toggle"
-        ).addEventListener(
-            "click",
-            () => {
+function escapeHtml(
+    value
+) {
 
-                privacyMode =
-                    !privacyMode;
-
-                localStorage.setItem(
-                    "privacy_mode",
-                    privacyMode
-                );
-
-                updatePrivacy();
-
-            }
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
         );
 
-
-        function updatePrivacy() {
-
-            document
-                .querySelectorAll(
-                    ".privacy-amount"
-                )
-                .forEach(
-                    element => {
-
-                        if (privacyMode) {
-
-                            if (
-                                !element.dataset.original
-                            ) {
-
-                                element.dataset.original =
-                                    element.textContent;
-
-                            }
-
-                            element.textContent =
-                                "••••••";
-
-                        } else {
-
-                            if (
-                                element.dataset.original
-                            ) {
-
-                                element.textContent =
-                                    element.dataset.original;
-
-                            }
-
-                        }
-
-                    }
-                );
+}
 
 
-            document.getElementById(
-                "privacy-icon"
-            ).className =
-                privacyMode
-                    ? "fa-solid fa-eye-slash"
-                    : "fa-solid fa-eye";
+function escapeAttr(
+    value
+) {
 
-        }
-
-
-        /* =========================================
-           LANGUAGE
-           ========================================= */
-
-        document.getElementById(
-            "language-toggle"
-        ).addEventListener(
-            "click",
-            () => {
-
-                const current =
-                    getLanguage();
-
-                const next =
-                    current === "en"
-                        ? "ne"
-                        : "en";
-
-                setLanguage(next);
-
-                applyTranslations(next);
-
-                updateLanguageButton();
-
-                updateDateTime();
-
-            }
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
         );
 
-
-        function updateLanguageButton() {
-
-            document.getElementById(
-                "language-toggle"
-            ).textContent =
-                getLanguage() === "ne"
-                    ? "ने"
-                    : "EN";
-
-        }
+}
 
 
-        /* =========================================
-           THEME
-           ========================================= */
+render();
 
-        document.getElementById(
-            "theme-toggle"
-        ).addEventListener(
-            "click",
-            () => {
+updateTotal();
 
-                const current =
-                    getTheme();
+</script>
 
-                const next =
-                    current === "dark"
-                        ? "light"
-                        : "dark";
-
-                setTheme(next);
-
-                updateThemeIcon();
-
-            }
-        );
-
-
-        function updateThemeIcon() {
-
-            document.getElementById(
-                "theme-icon"
-            ).className =
-                getTheme() === "dark"
-                    ? "fa-solid fa-sun"
-                    : "fa-solid fa-moon";
-
-        }
-
-
-        /* =========================================
-           MOBILE SIDEBAR
-           ========================================= */
-
-        document.getElementById(
-            "menu-button"
-        ).addEventListener(
-            "click",
-            () => {
-
-                document
-                    .getElementById("sidebar")
-                    .classList.remove(
-                        "-translate-x-full"
-                    );
-
-                document
-                    .getElementById("sidebar-backdrop")
-                    .classList.remove(
-                        "hidden"
-                    );
-
-            }
-        );
-
-
-        document.getElementById(
-            "sidebar-backdrop"
-        ).addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-        function closeSidebar() {
-
-            document
-                .getElementById("sidebar")
-                .classList.add(
-                    "-translate-x-full"
-                );
-
-            document
-                .getElementById("sidebar-backdrop")
-                .classList.add(
-                    "hidden"
-                );
-
-        }
-
-
-        /* =========================================
-           TOAST
-           ========================================= */
-
-        let toastTimer;
-
-
-        function showToast(message) {
-
-            const container =
-                document.getElementById(
-                    "toast-container"
-                );
-
-            const toast =
-                document.getElementById(
-                    "toast"
-                );
-
-
-            toast.textContent =
-                message;
-
-            container.classList.remove(
-                "hidden"
-            );
-
-
-            clearTimeout(
-                toastTimer
-            );
-
-
-            toastTimer =
-                setTimeout(
-                    () => {
-
-                        container.classList.add(
-                            "hidden"
-                        );
-
-                    },
-                    2200
-                );
-
-        }
-
-
-        /* =========================================
-           FORMAT
-           ========================================= */
-
-        function formatAmount(amount) {
-
-            return (
-                "NPR " +
-                (
-                    Number(amount) || 0
-                ).toLocaleString(
-                    "en-IN",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                )
-            );
-
-        }
-
-
-        /* =========================================
-           HTML SAFETY
-           ========================================= */
-
-        function escapeHTML(value) {
-
-            return String(value)
-                .replaceAll(
-                    "&",
-                    "&amp;"
-                )
-                .replaceAll(
-                    "<",
-                    "&lt;"
-                )
-                .replaceAll(
-                    ">",
-                    "&gt;"
-                )
-                .replaceAll(
-                    '"',
-                    "&quot;"
-                )
-                .replaceAll(
-                    "'",
-                    "&#039;"
-                );
-
-        }
-
-
-        function escapeAttribute(value) {
-
-            return escapeHTML(value);
-
-        }
-
-    </script>
 
 </body>
+
 </html>
