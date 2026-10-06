@@ -1,19 +1,7 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
-   FIREBASE SYNC ENGINE
-
-   Responsibilities:
-   - Local → Firebase backup
-   - Firebase → Local restore
-   - Collection sync
-   - Cloud record delete
-   - Full local backup
-   - User UID based data path
-   - Guest-safe operation
-
-   IMPORTANT:
-   Automatic cloud restore is NOT performed here.
-   Restore must be explicitly requested by the app.
+   CLOUD SYNC ENGINE
+   Firebase Realtime Database
 ========================================================= */
 
 import {
@@ -21,101 +9,232 @@ import {
     ref,
     get,
     set,
-    update,
     remove
 } from "./firebase.js";
 
 import {
-    getUserId,
-    isLoggedIn
+    isLoggedIn,
+    getUserId
 } from "./auth.js";
 
 import {
     getData,
-    saveData
+    saveData,
+    getProfileValue,
+    saveProfileValue,
+    getSetting,
+    saveSetting
 } from "./storage.js";
 
 
 /* =========================================================
-   CONFIGURATION
+   COLLECTIONS
 ========================================================= */
 
-const SYNC_DELAY = 1200;
-
-let syncTimers = {};
-
-
-/* =========================================================
-   COLLECTION NAMES
-========================================================= */
-
-export const COLLECTIONS = {
-
+const COLLECTIONS = {
     profile: "profile",
-
     incomes: "incomes",
-
     savings: "savings",
-
     transactions: "transactions",
-
     notes: "notes",
-
     settings: "settings"
-
 };
 
 
 /* =========================================================
-   GET USER ROOT PATH
+   USER PATH
 ========================================================= */
 
-export function getUserRootPath() {
+function getUserPath() {
+    const uid = getUserId();
 
-    const userId =
-        getUserId();
-
-    if (!userId) {
-
+    if (!uid) {
         return null;
-
     }
 
-    return `users/${userId}`;
-
+    return `users/${uid}`;
 }
 
 
 /* =========================================================
-   GET COLLECTION PATH
+   COLLECTION PATH
 ========================================================= */
 
-export function getCollectionPath(
-    collection
-) {
+function getCollectionPath(collection) {
+    const userPath = getUserPath();
 
-    const root =
-        getUserRootPath();
-
-    if (!root) {
-
+    if (!userPath) {
         return null;
-
     }
 
-    return `${root}/${collection}`;
+    if (!COLLECTIONS[collection]) {
+        return null;
+    }
 
+    return `${userPath}/${COLLECTIONS[collection]}`;
 }
 
 
 /* =========================================================
-   CHECK CLOUD SYNC AVAILABILITY
+   ARRAY → OBJECT
+   Firebase Realtime Database friendly format
 ========================================================= */
 
-export function canSyncToCloud() {
+function arrayToObject(items) {
+    if (!Array.isArray(items)) {
+        return {};
+    }
 
-    return isLoggedIn();
+    const result = {};
 
+    items.forEach((item, index) => {
+        if (!item) {
+            return;
+        }
+
+        const id =
+            item.id !== undefined &&
+            item.id !== null &&
+            String(item.id).trim() !== ""
+                ? String(item.id)
+                : String(index);
+
+        result[id] = item;
+    });
+
+    return result;
+}
+
+
+/* =========================================================
+   OBJECT → ARRAY
+========================================================= */
+
+function objectToArray(data) {
+    if (!data || typeof data !== "object") {
+        return [];
+    }
+
+    return Object.entries(data).map(([key, value]) => {
+        if (
+            value &&
+            typeof value === "object" &&
+            !Array.isArray(value)
+        ) {
+            return {
+                id:
+                    value.id !== undefined &&
+                    value.id !== null
+                        ? value.id
+                        : key,
+                ...value
+            };
+        }
+
+        return {
+            id: key,
+            value
+        };
+    });
+}
+
+
+/* =========================================================
+   PROFILE LOCAL DATA
+========================================================= */
+
+function getLocalProfile() {
+    return {
+        name:
+            getProfileValue("name", "") || "",
+
+        email:
+            getProfileValue("email", "") || "",
+
+        address:
+            getProfileValue("address", "") || "",
+
+        mobile:
+            getProfileValue("mobile", "") || "",
+
+        avatar:
+            getProfileValue("avatar", "") || ""
+    };
+}
+
+
+/* =========================================================
+   SETTINGS LOCAL DATA
+========================================================= */
+
+function getLocalSettings() {
+    return {
+        theme:
+            getSetting("theme", "dark") || "dark",
+
+        language:
+            getSetting("language", "en") || "en",
+
+        balance_privacy:
+            getSetting(
+                "balance_privacy",
+                false
+            )
+    };
+}
+
+
+/* =========================================================
+   RESTORE PROFILE LOCALLY
+========================================================= */
+
+function restoreLocalProfile(profile) {
+    if (!profile || typeof profile !== "object") {
+        return false;
+    }
+
+    const fields = [
+        "name",
+        "email",
+        "address",
+        "mobile",
+        "avatar"
+    ];
+
+    fields.forEach((field) => {
+        if (
+            Object.prototype.hasOwnProperty.call(
+                profile,
+                field
+            )
+        ) {
+            saveProfileValue(
+                field,
+                profile[field] ?? ""
+            );
+        }
+    });
+
+    return true;
+}
+
+
+/* =========================================================
+   RESTORE SETTINGS LOCALLY
+========================================================= */
+
+function restoreLocalSettings(settings) {
+    if (!settings || typeof settings !== "object") {
+        return false;
+    }
+
+    Object.entries(settings).forEach(
+        ([key, value]) => {
+            saveSetting(key, value);
+        }
+    );
+
+    return true;
 }
 
 
@@ -123,756 +242,540 @@ export function canSyncToCloud() {
    SYNC ONE COLLECTION
 ========================================================= */
 
-export async function syncToCloud(
+async function syncToCloud(
     collection,
     data
 ) {
-
-    const userId =
-        getUserId();
-
-
-    /*
-       Guest mode:
-       Keep working locally.
-       Do not attempt private cloud write
-       without a Firebase UID.
-    */
-
-    if (!userId) {
-
+    if (!isLoggedIn()) {
         return {
             success: false,
             skipped: true,
             reason: "not_logged_in"
         };
-
     }
 
+    const path =
+        getCollectionPath(collection);
 
-    if (
-        !collection
-    ) {
-
+    if (!path) {
         return {
             success: false,
-            skipped: true,
-            reason: "missing_collection"
+            reason: "invalid_collection"
         };
-
     }
 
+    let cloudData = data;
+
+    /*
+       Arrays are converted into Firebase objects.
+    */
+    if (Array.isArray(data)) {
+        cloudData = arrayToObject(data);
+    }
+
+    /*
+       Profile and settings remain objects.
+    */
+    if (
+        collection === "profile" ||
+        collection === "settings"
+    ) {
+        if (
+            !cloudData ||
+            typeof cloudData !== "object" ||
+            Array.isArray(cloudData)
+        ) {
+            cloudData = {};
+        }
+    }
 
     try {
-
-        const path =
-            `users/${userId}/${collection}`;
-
-        const collectionRef =
-            ref(
-                db,
-                path
-            );
-
-
-        /*
-           Object collection
-        */
-
-        if (
-            data &&
-            typeof data === "object" &&
-            !Array.isArray(data)
-        ) {
-
-            await set(
-                collectionRef,
-                data
-            );
-
-        }
-
-        /*
-           Array collection
-        */
-
-        else if (
-            Array.isArray(data)
-        ) {
-
-            const objectData = {};
-
-
-            data.forEach(
-                (item, index) => {
-
-                    if (
-                        item &&
-                        typeof item === "object"
-                    ) {
-
-                        const id =
-                            item.id ||
-                            String(index);
-
-                        objectData[id] =
-                            item;
-
-                    }
-
-                }
-            );
-
-
-            await set(
-                collectionRef,
-                objectData
-            );
-
-        }
-
-        /*
-           Empty / null
-        */
-
-        else {
-
-            await set(
-                collectionRef,
-                {}
-            );
-
-        }
-
+        await set(
+            ref(db, path),
+            cloudData
+        );
 
         return {
-
             success: true,
-
-            skipped: false,
-
             collection,
-
             path
-
         };
-
     } catch (error) {
-
         console.error(
-            "Firebase sync error:",
+            "Cloud sync failed:",
             error
         );
 
-
         return {
-
             success: false,
-
-            skipped: false,
-
             collection,
-
             error
-
         };
-
     }
-
 }
 
 
 /* =========================================================
-   SCHEDULE COLLECTION SYNC
+   SCHEDULED SYNC
+   Small debounce to prevent repeated writes
 ========================================================= */
 
-export function scheduleSync(
+const syncTimers = {};
+
+
+function scheduleSync(
     collection,
-    data
+    data,
+    delay = 500
 ) {
+    if (!isLoggedIn()) {
+        return;
+    }
 
-    if (
-        syncTimers[collection]
-    ) {
-
+    if (syncTimers[collection]) {
         clearTimeout(
             syncTimers[collection]
         );
-
     }
 
-
     syncTimers[collection] =
-        setTimeout(
-            async () => {
+        setTimeout(async () => {
+            await syncToCloud(
+                collection,
+                data
+            );
 
-                delete syncTimers[
-                    collection
-                ];
-
-
-                await syncToCloud(
-                    collection,
-                    data
-                );
-
-            },
-            SYNC_DELAY
-        );
-
+            delete syncTimers[collection];
+        }, delay);
 }
 
 
 /* =========================================================
-   READ COLLECTION FROM FIREBASE
+   GET CLOUD COLLECTION
 ========================================================= */
 
-export async function getCloudCollection(
+async function getCloudCollection(
     collection
 ) {
-
-    const userId =
-        getUserId();
-
-
-    if (!userId) {
-
-        return null;
-
+    if (!isLoggedIn()) {
+        return {
+            success: false,
+            skipped: true,
+            reason: "not_logged_in"
+        };
     }
 
+    const path =
+        getCollectionPath(collection);
 
-    if (!collection) {
-
-        return null;
-
+    if (!path) {
+        return {
+            success: false,
+            reason: "invalid_collection"
+        };
     }
-
 
     try {
-
         const snapshot =
             await get(
-                ref(
-                    db,
-                    `users/${userId}/${collection}`
-                )
+                ref(db, path)
             );
 
-
-        if (
-            !snapshot.exists()
-        ) {
-
-            return null;
-
+        if (!snapshot.exists()) {
+            return {
+                success: true,
+                exists: false,
+                data:
+                    collection === "profile" ||
+                    collection === "settings"
+                        ? {}
+                        : []
+            };
         }
 
+        const data =
+            snapshot.val();
 
-        return snapshot.val();
+        if (
+            collection === "profile" ||
+            collection === "settings"
+        ) {
+            return {
+                success: true,
+                exists: true,
+                data:
+                    data &&
+                    typeof data === "object"
+                        ? data
+                        : {}
+            };
+        }
+
+        return {
+            success: true,
+            exists: true,
+            data: objectToArray(data)
+        };
 
     } catch (error) {
-
         console.error(
-            "Firebase read error:",
+            "Cloud read failed:",
             error
         );
 
-        return null;
-
+        return {
+            success: false,
+            collection,
+            error
+        };
     }
-
 }
 
 
 /* =========================================================
    RESTORE ONE COLLECTION
-   EXPLICIT ONLY
 ========================================================= */
 
-export async function restoreCollection(
-    collection,
-    localKey = collection
+async function restoreCollection(
+    collection
 ) {
-
-    const cloudData =
+    const result =
         await getCloudCollection(
             collection
         );
 
+    if (!result.success) {
+        return result;
+    }
 
     if (
-        cloudData === null
+        collection === "profile"
     ) {
+        restoreLocalProfile(
+            result.data
+        );
 
         return {
-
-            success: false,
-
-            restored: false,
-
-            reason: "no_cloud_data"
-
+            success: true,
+            collection,
+            data: result.data
         };
-
     }
-
-
-    let localData;
-
-
-    /*
-       Firebase collections are stored
-       as objects keyed by record ID.
-    */
 
     if (
-        cloudData &&
-        typeof cloudData === "object" &&
-        !Array.isArray(cloudData)
+        collection === "settings"
     ) {
+        restoreLocalSettings(
+            result.data
+        );
 
-        localData =
-            Object.values(
-                cloudData
-            );
-
-    } else {
-
-        localData =
-            cloudData;
-
+        return {
+            success: true,
+            collection,
+            data: result.data
+        };
     }
 
-
-    saveData(
-        localKey,
-        localData
+    await saveData(
+        collection,
+        result.data
     );
 
-
     return {
-
         success: true,
-
-        restored: true,
-
         collection,
-
-        data: localData
-
+        data: result.data
     };
-
 }
 
 
 /* =========================================================
-   DELETE CLOUD RECORD
+   DELETE ONE CLOUD RECORD
 ========================================================= */
 
-export async function deleteCloudRecord(
+async function deleteCloudRecord(
     collection,
     recordId
 ) {
-
-    const userId =
-        getUserId();
-
-
-    if (!userId) {
-
+    if (!isLoggedIn()) {
         return {
-
             success: false,
-
             skipped: true,
-
             reason: "not_logged_in"
-
         };
-
     }
-
 
     if (
-        !collection ||
-        !recordId
+        !recordId &&
+        recordId !== 0
     ) {
-
         return {
-
             success: false,
-
-            skipped: true,
-
-            reason: "missing_data"
-
+            reason: "missing_record_id"
         };
-
     }
 
+    const path =
+        getCollectionPath(
+            collection
+        );
+
+    if (!path) {
+        return {
+            success: false,
+            reason: "invalid_collection"
+        };
+    }
 
     try {
-
         await remove(
             ref(
                 db,
-                `users/${userId}/${collection}/${recordId}`
+                `${path}/${String(recordId)}`
             )
         );
 
-
         return {
-
-            success: true
-
+            success: true,
+            collection,
+            recordId
         };
 
     } catch (error) {
-
         console.error(
-            "Cloud delete error:",
+            "Cloud delete failed:",
             error
         );
 
-
         return {
-
             success: false,
-
+            collection,
+            recordId,
             error
-
         };
-
     }
-
 }
 
 
 /* =========================================================
-   BACKUP LOCAL COLLECTION
+   BACKUP ONE LOCAL COLLECTION
 ========================================================= */
 
-export async function backupLocalCollection(
-    collection,
-    localKey = collection
+async function backupLocalCollection(
+    collection
 ) {
+    if (!isLoggedIn()) {
+        return {
+            success: false,
+            skipped: true,
+            reason: "not_logged_in"
+        };
+    }
 
-    const localData =
+    if (
+        collection === "profile"
+    ) {
+        return syncToCloud(
+            "profile",
+            getLocalProfile()
+        );
+    }
+
+    if (
+        collection === "settings"
+    ) {
+        return syncToCloud(
+            "settings",
+            getLocalSettings()
+        );
+    }
+
+    const data =
         getData(
-            localKey,
+            collection,
             []
         );
 
-
-    return await syncToCloud(
+    return syncToCloud(
         collection,
-        localData
+        Array.isArray(data)
+            ? data
+            : []
     );
-
 }
 
 
 /* =========================================================
-   BACKUP ALL MAIN LOCAL DATA
+   BACKUP ALL LOCAL DATA
+   EXPLICIT USER ACTION ONLY
 ========================================================= */
 
-export async function backupAllLocalData() {
-
-    const userId =
-        getUserId();
-
-
-    if (!userId) {
-
+async function backupAllLocalData() {
+    if (!isLoggedIn()) {
         return {
-
             success: false,
-
             skipped: true,
-
             reason: "not_logged_in"
-
         };
-
     }
 
+    const results = {};
 
-    const data = {
+    const collections = [
+        "profile",
+        "incomes",
+        "savings",
+        "transactions",
+        "notes",
+        "settings"
+    ];
 
-        profile:
-            getData(
-                "profile",
-                {}
-            ),
+    for (
+        const collection
+        of collections
+    ) {
+        results[collection] =
+            await backupLocalCollection(
+                collection
+            );
+    }
 
-        incomes:
-            getData(
-                "incomes",
-                []
-            ),
-
-        savings:
-            getData(
-                "savings",
-                []
-            ),
-
-        transactions:
-            getData(
-                "transactions",
-                []
-            ),
-
-        notes:
-            getData(
-                "notes",
-                []
-            ),
-
-        settings:
-            getData(
-                "settings",
-                {}
-            )
-
-    };
-
-
-    try {
-
-        const rootRef =
-            ref(
-                db,
-                `users/${userId}`
+    const failed =
+        Object.values(results)
+            .some(
+                (result) =>
+                    !result ||
+                    result.success !== true
             );
 
-
-        /*
-           Do not replace the whole user root.
-           Update only known application collections.
-        */
-
-        await update(
-            rootRef,
-            data
-        );
-
-
-        return {
-
-            success: true,
-
-            skipped: false,
-
-            collections: Object.keys(
-                data
-            )
-
-        };
-
-    } catch (error) {
-
-        console.error(
-            "Full Firebase backup error:",
-            error
-        );
-
-
-        return {
-
-            success: false,
-
-            skipped: false,
-
-            error
-
-        };
-
-    }
-
+    return {
+        success: !failed,
+        results
+    };
 }
 
 
 /* =========================================================
    RESTORE ALL CLOUD DATA
-   EXPLICIT ACTION ONLY
+   EXPLICIT USER ACTION ONLY
 ========================================================= */
 
-export async function restoreAllCloudData() {
-
-    const userId =
-        getUserId();
-
-
-    if (!userId) {
-
+async function restoreAllCloudData() {
+    if (!isLoggedIn()) {
         return {
-
             success: false,
-
-            restored: false,
-
+            skipped: true,
             reason: "not_logged_in"
-
         };
-
     }
 
+    const results = {};
 
-    try {
+    const collections = [
+        "profile",
+        "incomes",
+        "savings",
+        "transactions",
+        "notes",
+        "settings"
+    ];
 
-        const snapshot =
-            await get(
-                ref(
-                    db,
-                    `users/${userId}`
-                )
+    for (
+        const collection
+        of collections
+    ) {
+        results[collection] =
+            await restoreCollection(
+                collection
             );
-
-
-        if (
-            !snapshot.exists()
-        ) {
-
-            return {
-
-                success: false,
-
-                restored: false,
-
-                reason: "no_cloud_data"
-
-            };
-
-        }
-
-
-        const cloudData =
-            snapshot.val();
-
-
-        const collections = [
-            "incomes",
-            "savings",
-            "transactions",
-            "notes"
-        ];
-
-
-        collections.forEach(
-            (collection) => {
-
-                if (
-                    cloudData[
-                        collection
-                    ]
-                ) {
-
-                    const value =
-                        cloudData[
-                            collection
-                        ];
-
-
-                    const localValue =
-                        Array.isArray(value)
-                            ? value
-                            : Object.values(
-                                value
-                            );
-
-
-                    saveData(
-                        collection,
-                        localValue
-                    );
-
-                }
-
-            }
-        );
-
-
-        if (
-            cloudData.profile
-        ) {
-
-            saveData(
-                "profile",
-                cloudData.profile
-            );
-
-        }
-
-
-        if (
-            cloudData.settings
-        ) {
-
-            saveData(
-                "settings",
-                cloudData.settings
-            );
-
-        }
-
-
-        return {
-
-            success: true,
-
-            restored: true,
-
-            data: cloudData
-
-        };
-
-    } catch (error) {
-
-        console.error(
-            "Full cloud restore error:",
-            error
-        );
-
-
-        return {
-
-            success: false,
-
-            restored: false,
-
-            error
-
-        };
-
     }
 
+    const failed =
+        Object.values(results)
+            .some(
+                (result) =>
+                    !result ||
+                    result.success !== true
+            );
+
+    return {
+        success: !failed,
+        results
+    };
 }
 
 
 /* =========================================================
-   EXPORT SYNC STATUS
+   SYNC STATUS
 ========================================================= */
 
-export function getSyncStatus() {
+function getSyncStatus() {
+    const loggedIn =
+        isLoggedIn();
 
     return {
+        loggedIn,
+        uid:
+            loggedIn
+                ? getUserId()
+                : null,
 
-        loggedIn:
-            isLoggedIn(),
+        mode:
+            loggedIn
+                ? "cloud"
+                : "local",
 
-        userId:
-            getUserId(),
-
-        cloudReady:
-            isLoggedIn(),
-
-        pendingCollections:
-            Object.keys(
-                syncTimers
-            )
-
+        cloudSyncAvailable:
+            loggedIn
     };
-
 }
+
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+export {
+    COLLECTIONS,
+
+    getUserPath,
+    getCollectionPath,
+
+    syncToCloud,
+    scheduleSync,
+
+    getCloudCollection,
+    restoreCollection,
+
+    deleteCloudRecord,
+
+    backupLocalCollection,
+    backupAllLocalData,
+
+    restoreAllCloudData,
+
+    getSyncStatus
+};
+
+
+export default {
+    COLLECTIONS,
+
+    getUserPath,
+    getCollectionPath,
+
+    syncToCloud,
+    scheduleSync,
+
+    getCloudCollection,
+    restoreCollection,
+
+    deleteCloudRecord,
+
+    backupLocalCollection,
+    backupAllLocalData,
+
+    restoreAllCloudData,
+
+    getSyncStatus
+};
