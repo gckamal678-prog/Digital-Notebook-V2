@@ -1,251 +1,678 @@
-import {
-    getIncomes
-} from "./incomes.js";
+/* =========================================================
+   DIGITAL NOTEBOOK V2
+   FINANCE CALCULATION ENGINE
+
+   Transaction types:
+   - expense
+   - receivable
+   - payable
+   - given
+   - taken
+   - repayment
+
+   Main calculation:
+
+   Money In
+   = Income + Receivable + Taken
+
+   Money Out
+   = Expense + Payable + Given
+
+   Balance
+   = Money In - Money Out
+
+   Saving is kept separate.
+
+   Balance After Saving
+   = Balance - Saving
+
+   Repayment is kept separate because its direction
+   is not known automatically.
+========================================================= */
 
 import {
-    getSavings
-} from "./savings.js";
-
-import {
-    getTransactions
-} from "./transactions.js";
+    getDataWithLegacy
+} from "./storage.js";
 
 
-const INR_RATE = 1.6;
+/* =========================================================
+   STORAGE KEYS
+========================================================= */
+
+const INCOME_KEY =
+    "incomes";
+
+const SAVING_KEY =
+    "savings";
+
+const TRANSACTION_KEY =
+    "transactions";
 
 
-/*
-    Calculate complete financial summary.
+/* =========================================================
+   LEGACY KEYS
+========================================================= */
 
-    Income:
-        + Income
+const INCOME_LEGACY_KEYS = [
 
-    Expense:
-        - Expense
+    "incomes",
 
-    Receivable:
-        + Receivable
+    "income",
 
-    Payable:
-        - Payable
+    "incomeData",
 
-    Given:
-        - Given
+    "incomeRecords",
 
-    Taken:
-        + Taken
+    "incomeHistory",
 
-    Repayment:
-        Repayment is kept separately.
-        It is NOT automatically added/subtracted
-        because repayment direction can vary.
-*/
+    "digital_notebook_incomes"
+
+];
 
 
-export function calculateFinance(
-    incomes = getIncomes(),
-    transactions = getTransactions(),
-    savings = getSavings()
+const SAVING_LEGACY_KEYS = [
+
+    "savings",
+
+    "saving",
+
+    "savingData",
+
+    "savingRecords",
+
+    "savingHistory",
+
+    "digital_notebook_savings"
+
+];
+
+
+const TRANSACTION_LEGACY_KEYS = [
+
+    "transactions",
+
+    "transaction",
+
+    "transactionData",
+
+    "transactionRecords",
+
+    "transactionHistory",
+
+    "digital_notebook_transactions"
+
+];
+
+
+/* =========================================================
+   NUMBER NORMALIZER
+========================================================= */
+
+function toNumber(
+    value
 ) {
 
-    let totalIncome = 0;
-
-    let totalExpense = 0;
-
-    let totalReceivable = 0;
-
-    let totalPayable = 0;
-
-    let totalGiven = 0;
-
-    let totalTaken = 0;
-
-    let totalRepayment = 0;
-
-    let totalSaving = 0;
+    const number =
+        Number(value);
 
 
-    /*
-        INCOME
-    */
-
-    for (
-        const item
-        of incomes
+    if (
+        Number.isFinite(number)
     ) {
 
-        const amount =
-            getIncomeAmount(
-                item
-            );
+        return number;
 
-        totalIncome +=
-            amount;
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   RECORD TOTAL
+========================================================= */
+
+function getRecordAmount(
+    record
+) {
+
+    if (
+        !record ||
+        typeof record !== "object"
+    ) {
+
+        return 0;
 
     }
 
 
     /*
-        SAVING
+       Preferred total
     */
 
-    for (
-        const item
-        of savings
+    if (
+        record.total !== undefined &&
+        record.total !== null &&
+        record.total !== ""
     ) {
 
-        const amount =
-            Number(
-                item.amount
-            ) || 0;
-
-        totalSaving +=
-            amount;
+        return toNumber(
+            record.total
+        );
 
     }
 
 
     /*
-        TRANSACTIONS
+       Normal amount
     */
 
-    for (
-        const item
-        of transactions
+    if (
+        record.amount !== undefined &&
+        record.amount !== null &&
+        record.amount !== ""
     ) {
 
-        const amount =
-            getTransactionAmount(
-                item
-            );
-
-
-        const type =
-            normalizeTransactionType(
-                item.type
-            );
-
-
-        switch (type) {
-
-            case "expense":
-
-                totalExpense +=
-                    amount;
-
-                break;
-
-
-            case "receivable":
-
-                totalReceivable +=
-                    amount;
-
-                break;
-
-
-            case "payable":
-
-                totalPayable +=
-                    amount;
-
-                break;
-
-
-            case "given":
-
-                totalGiven +=
-                    amount;
-
-                break;
-
-
-            case "taken":
-
-                totalTaken +=
-                    amount;
-
-                break;
-
-
-            case "repayment":
-
-                totalRepayment +=
-                    amount;
-
-                break;
-
-        }
+        return toNumber(
+            record.amount
+        );
 
     }
 
 
     /*
-        CURRENT BALANCE
-
-        Money coming in:
-            Income
-            Receivable
-            Taken
-
-        Money going out:
-            Expense
-            Payable
-            Given
-
-        Repayment is separate because
-        "Repayment" alone does not tell
-        whether money was received or paid.
+       NPR only
     */
 
-    const balance =
+    if (
+        record.npr !== undefined &&
+        record.npr !== null &&
+        record.npr !== ""
+    ) {
+
+        return toNumber(
+            record.npr
+        );
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   GET INCOMES
+========================================================= */
+
+export function getFinanceIncomes() {
+
+    return getDataWithLegacy(
+        INCOME_KEY,
+        INCOME_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET SAVINGS
+========================================================= */
+
+export function getFinanceSavings() {
+
+    return getDataWithLegacy(
+        SAVING_KEY,
+        SAVING_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET TRANSACTIONS
+========================================================= */
+
+export function getFinanceTransactions() {
+
+    return getDataWithLegacy(
+        TRANSACTION_KEY,
+        TRANSACTION_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL INCOME
+========================================================= */
+
+export function getTotalIncome(
+    incomes = getFinanceIncomes()
+) {
+
+    if (
+        !Array.isArray(incomes)
+    ) {
+
+        return 0;
+
+    }
+
+
+    return incomes.reduce(
         (
-            totalIncome
-            +
-            totalReceivable
-            +
-            totalTaken
+            total,
+            record
+        ) => {
+
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL TRANSACTION BY TYPE
+========================================================= */
+
+function getTotalByType(
+    transactions,
+    type
+) {
+
+    if (
+        !Array.isArray(
+            transactions
         )
-        -
+    ) {
+
+        return 0;
+
+    }
+
+
+    return transactions.reduce(
         (
-            totalExpense
-            +
-            totalPayable
-            +
-            totalGiven
+            total,
+            record
+        ) => {
+
+            if (
+                !record ||
+                record.type !== type
+            ) {
+
+                return total;
+
+            }
+
+
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   EXPENSE
+========================================================= */
+
+export function getTotalExpense(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "expense"
+    );
+
+}
+
+
+/* =========================================================
+   RECEIVABLE
+========================================================= */
+
+export function getTotalReceivable(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "receivable"
+    );
+
+}
+
+
+/* =========================================================
+   PAYABLE
+========================================================= */
+
+export function getTotalPayable(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "payable"
+    );
+
+}
+
+
+/* =========================================================
+   GIVEN
+========================================================= */
+
+export function getTotalGiven(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "given"
+    );
+
+}
+
+
+/* =========================================================
+   TAKEN
+========================================================= */
+
+export function getTotalTaken(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "taken"
+    );
+
+}
+
+
+/* =========================================================
+   REPAYMENT
+========================================================= */
+
+export function getTotalRepayment(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "repayment"
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL SAVING
+========================================================= */
+
+export function getTotalSaving(
+    savings = getFinanceSavings()
+) {
+
+    if (
+        !Array.isArray(savings)
+    ) {
+
+        return 0;
+
+    }
+
+
+    return savings.reduce(
+        (
+            total,
+            record
+        ) => {
+
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================================
+   MONEY IN
+========================================================= */
+
+export function getMoneyIn(
+    incomes,
+    transactions
+) {
+
+    const totalIncome =
+        getTotalIncome(
+            incomes
+        );
+
+    const totalReceivable =
+        getTotalReceivable(
+            transactions
+        );
+
+    const totalTaken =
+        getTotalTaken(
+            transactions
         );
 
 
-    /*
-        MONEY FLOW
-    */
+    return (
+        totalIncome +
+        totalReceivable +
+        totalTaken
+    );
+
+}
+
+
+/* =========================================================
+   MONEY OUT
+========================================================= */
+
+export function getMoneyOut(
+    transactions
+) {
+
+    const totalExpense =
+        getTotalExpense(
+            transactions
+        );
+
+    const totalPayable =
+        getTotalPayable(
+            transactions
+        );
+
+    const totalGiven =
+        getTotalGiven(
+            transactions
+        );
+
+
+    return (
+        totalExpense +
+        totalPayable +
+        totalGiven
+    );
+
+}
+
+
+/* =========================================================
+   BALANCE
+========================================================= */
+
+export function getBalance(
+    incomes,
+    transactions
+) {
 
     const moneyIn =
-        totalIncome
-        +
-        totalReceivable
-        +
+        getMoneyIn(
+            incomes,
+            transactions
+        );
+
+    const moneyOut =
+        getMoneyOut(
+            transactions
+        );
+
+
+    return (
+        moneyIn -
+        moneyOut
+    );
+
+}
+
+
+/* =========================================================
+   BALANCE AFTER SAVING
+========================================================= */
+
+export function getBalanceAfterSaving(
+    incomes,
+    transactions,
+    savings
+) {
+
+    const balance =
+        getBalance(
+            incomes,
+            transactions
+        );
+
+    const saving =
+        getTotalSaving(
+            savings
+        );
+
+
+    return (
+        balance -
+        saving
+    );
+
+}
+
+
+/* =========================================================
+   COMPLETE FINANCIAL SUMMARY
+========================================================= */
+
+export function calculateFinance(
+    incomes = getFinanceIncomes(),
+    transactions =
+        getFinanceTransactions(),
+    savings =
+        getFinanceSavings()
+) {
+
+    const totalIncome =
+        getTotalIncome(
+            incomes
+        );
+
+    const totalExpense =
+        getTotalExpense(
+            transactions
+        );
+
+    const totalReceivable =
+        getTotalReceivable(
+            transactions
+        );
+
+    const totalPayable =
+        getTotalPayable(
+            transactions
+        );
+
+    const totalGiven =
+        getTotalGiven(
+            transactions
+        );
+
+    const totalTaken =
+        getTotalTaken(
+            transactions
+        );
+
+    const totalRepayment =
+        getTotalRepayment(
+            transactions
+        );
+
+    const totalSaving =
+        getTotalSaving(
+            savings
+        );
+
+
+    const moneyIn =
+        totalIncome +
+        totalReceivable +
         totalTaken;
 
 
     const moneyOut =
-        totalExpense
-        +
-        totalPayable
-        +
+        totalExpense +
+        totalPayable +
         totalGiven;
 
 
-    /*
-        NET AFTER SAVING
+    const balance =
+        moneyIn -
+        moneyOut;
 
-        Saving is treated separately from
-        transaction balance.
-    */
 
     const balanceAfterSaving =
-        balance
-        -
+        balance -
         totalSaving;
 
 
@@ -280,299 +707,70 @@ export function calculateFinance(
 }
 
 
-/*
-    Income amount
+/* =========================================================
+   FORMAT NUMBER
+========================================================= */
 
-    New income records normally have:
-        total
-
-    Older records may have:
-        amount
-
-    If only NPR + INR exists,
-    calculate from those.
-*/
-
-function getIncomeAmount(
-    item
-) {
-
-    if (
-        item.total !== undefined
-    ) {
-
-        return (
-            Number(
-                item.total
-            ) || 0
-        );
-
-    }
-
-
-    if (
-        item.amount !== undefined
-    ) {
-
-        return (
-            Number(
-                item.amount
-            ) || 0
-        );
-
-    }
-
-
-    const npr =
-        Number(
-            item.npr
-        ) || 0;
-
-
-    const inr =
-        Number(
-            item.inr
-        ) || 0;
-
-
-    return (
-        npr
-        +
-        (inr * INR_RATE)
-    );
-
-}
-
-
-/*
-    Transaction amount
-
-    New records:
-        total
-
-    Old records:
-        amount
-
-    Older records may also contain:
-        npr
-        inr
-*/
-
-function getTransactionAmount(
-    item
-) {
-
-    if (
-        item.total !== undefined
-    ) {
-
-        return (
-            Number(
-                item.total
-            ) || 0
-        );
-
-    }
-
-
-    if (
-        item.amount !== undefined
-    ) {
-
-        return (
-            Number(
-                item.amount
-            ) || 0
-        );
-
-    }
-
-
-    const npr =
-        Number(
-            item.npr
-        ) || 0;
-
-
-    const inr =
-        Number(
-            item.inr
-        ) || 0;
-
-
-    return (
-        npr
-        +
-        (inr * INR_RATE)
-    );
-
-}
-
-
-/*
-    Normalize old and new type names.
-*/
-
-function normalizeTransactionType(
-    type
+export function formatMoney(
+    amount,
+    currency = "NPR"
 ) {
 
     const value =
-        String(
-            type || ""
-        )
-        .trim()
-        .toLowerCase();
+        toNumber(
+            amount
+        );
 
 
-    switch (value) {
+    try {
 
-        case "expense":
+        return new Intl.NumberFormat(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        ).format(value);
 
-            return "expense";
+    } catch {
 
-
-        case "receivable":
-        case "receive":
-
-            return "receivable";
-
-
-        case "payable":
-        case "pay":
-
-            return "payable";
-
-
-        case "given":
-        case "give":
-        case "gave":
-        case "lent":
-        case "lend":
-
-            return "given";
-
-
-        case "taken":
-        case "take":
-        case "took":
-        case "borrowed":
-        case "borrow":
-
-            return "taken";
-
-
-        case "repayment":
-        case "repay":
-        case "returned":
-
-            return "repayment";
-
-
-        default:
-
-            return null;
+        return value.toFixed(2);
 
     }
 
 }
 
 
-/*
-    Individual helpers
-*/
+/* =========================================================
+   DEFAULT EXPORT
+========================================================= */
 
-export function getTotalIncome() {
+export default {
 
-    return calculateFinance()
-        .totalIncome;
+    calculateFinance,
 
-}
+    getFinanceIncomes,
+    getFinanceSavings,
+    getFinanceTransactions,
 
+    getTotalIncome,
+    getTotalExpense,
 
-export function getTotalExpense() {
+    getTotalReceivable,
+    getTotalPayable,
 
-    return calculateFinance()
-        .totalExpense;
+    getTotalGiven,
+    getTotalTaken,
 
-}
+    getTotalRepayment,
+    getTotalSaving,
 
+    getMoneyIn,
+    getMoneyOut,
 
-export function getTotalReceivable() {
+    getBalance,
+    getBalanceAfterSaving,
 
-    return calculateFinance()
-        .totalReceivable;
+    formatMoney
 
-}
-
-
-export function getTotalPayable() {
-
-    return calculateFinance()
-        .totalPayable;
-
-}
-
-
-export function getTotalGiven() {
-
-    return calculateFinance()
-        .totalGiven;
-
-}
-
-
-export function getTotalTaken() {
-
-    return calculateFinance()
-        .totalTaken;
-
-}
-
-
-export function getTotalRepayment() {
-
-    return calculateFinance()
-        .totalRepayment;
-
-}
-
-
-export function getTotalSaving() {
-
-    return calculateFinance()
-        .totalSaving;
-
-}
-
-
-export function getBalance() {
-
-    return calculateFinance()
-        .balance;
-
-}
-
-
-export function getBalanceAfterSaving() {
-
-    return calculateFinance()
-        .balanceAfterSaving;
-
-}
-
-
-export function getMoneyIn() {
-
-    return calculateFinance()
-        .moneyIn;
-
-}
-
-
-export function getMoneyOut() {
-
-    return calculateFinance()
-        .moneyOut;
-
-}
+};
