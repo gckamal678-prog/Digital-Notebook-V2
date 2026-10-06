@@ -1,23 +1,6 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
    TRANSACTION DATA ENGINE
-
-   Supported transaction types:
-   - expense
-   - receivable
-   - payable
-   - given
-   - taken
-   - repayment
-
-   Responsibilities:
-   - Transaction CRUD
-   - Local storage
-   - Legacy V1 migration
-   - NPR / INR support
-   - Firebase sync
-   - Search / filtering
-   - Dashboard compatibility
 ========================================================= */
 
 import {
@@ -30,1337 +13,618 @@ import {
     deleteCloudRecord
 } from "./sync.js";
 
-
-/* =========================================================
-   STORAGE CONFIGURATION
-========================================================= */
-
-const STORAGE_KEY =
-    "transactions";
-
+const STORAGE_KEY = "transactions";
 
 const LEGACY_KEYS = [
-
     "transactions",
-
     "transaction",
-
     "transactionData",
-
     "transactionRecords",
-
     "transactionHistory",
-
     "digital_notebook_transactions"
-
 ];
-
-
-/* =========================================================
-   INR RATE
-========================================================= */
 
 const INR_RATE = 1.6;
 
-
-/* =========================================================
-   SUPPORTED TYPES
-========================================================= */
-
-export const TRANSACTION_TYPES = [
-
+const TRANSACTION_TYPES = [
     "expense",
-
     "receivable",
-
     "payable",
-
     "given",
-
     "taken",
-
     "repayment"
-
 ];
 
+function createId() {
+    return (
+        Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 8)
+    );
+}
 
-/* =========================================================
-   NUMBER HELPER
-========================================================= */
-
-function toNumber(
-    value
-) {
-
-    const number =
-        Number(value);
-
-
+function toNumber(value) {
     if (
-        Number.isFinite(number)
+        value === null ||
+        value === undefined ||
+        value === ""
     ) {
-
-        return number;
-
+        return 0;
     }
 
-
-    return 0;
-
-}
-
-
-/* =========================================================
-   DATE HELPER
-========================================================= */
-
-function getToday() {
-
-    const date =
-        new Date();
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-/* =========================================================
-   ID GENERATOR
-========================================================= */
-
-function createId() {
-
-    return (
-        "transaction_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 8)
+    const number = Number(
+        String(value)
+            .replace(/,/g, "")
+            .trim()
     );
 
+    return Number.isFinite(number)
+        ? number
+        : 0;
 }
 
+function nowISO() {
+    return new Date().toISOString();
+}
 
-/* =========================================================
-   NORMALIZE TRANSACTION TYPE
-========================================================= */
-
-function normalizeType(
-    type
-) {
-
+function normalizeType(type) {
     const value =
-        String(
-            type || ""
-        )
-        .trim()
-        .toLowerCase();
-
+        String(type ?? "")
+            .trim()
+            .toLowerCase();
 
     const aliases = {
+        expense: "expense",
+        खर्च: "expense",
 
-        expense:
-            "expense",
+        receivable: "receivable",
+        receive: "receivable",
 
-        expenses:
-            "expense",
+        payable: "payable",
+        pay: "payable",
 
-        खर्च:
-            "expense",
+        given: "given",
 
+        taken: "taken",
 
-        receivable:
-            "receivable",
-
-        receive:
-            "receivable",
-
-        receivables:
-            "receivable",
-
-
-        payable:
-            "payable",
-
-        payables:
-            "payable",
-
-
-        given:
-            "given",
-
-        give:
-            "given",
-
-
-        taken:
-            "taken",
-
-        take:
-            "taken",
-
-
-        repayment:
-            "repayment",
-
-        repay:
-            "repayment"
-
+        repayment: "repayment",
+        repay: "repayment"
     };
-
 
     return (
         aliases[value] ||
         "expense"
     );
-
 }
 
-
-/* =========================================================
-   NORMALIZE TRANSACTION RECORD
-========================================================= */
-
 function normalizeTransaction(
-    record
+    item = {}
 ) {
+    const id =
+        item.id !== undefined &&
+        item.id !== null &&
+        String(item.id).trim() !== ""
+            ? String(item.id)
+            : createId();
 
-    if (
-        !record ||
-        typeof record !== "object"
-    ) {
-
-        return null;
-
-    }
-
-
-    const npr =
-        toNumber(
-            record.npr
-        );
-
+    const npr = toNumber(
+        item.npr ??
+        item.amount ??
+        item.total
+    );
 
     const inr =
-        toNumber(
-            record.inr
-        );
+        item.inr !== undefined &&
+        item.inr !== null &&
+        item.inr !== ""
+            ? toNumber(item.inr)
+            : npr / INR_RATE;
 
+    const total =
+        item.total !== undefined &&
+        item.total !== null &&
+        item.total !== ""
+            ? toNumber(item.total)
+            : npr;
 
-    let total =
-        toNumber(
-            record.total
-        );
-
-
-    /*
-       Calculate total from NPR + INR.
-    */
-
-    if (
-        total === 0 &&
-        (
-            npr !== 0 ||
-            inr !== 0
-        )
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    /*
-       Old V1 records may only
-       have amount.
-    */
-
-    if (
-        total === 0 &&
-        record.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                record.amount
-            );
-
-    }
-
-
-    const now =
-        Date.now();
-
+    const person =
+        String(
+            item.personName ??
+            item.partyName ??
+            ""
+        ).trim();
 
     return {
-
-        id:
-            record.id ||
-            createId(),
-
+        id,
 
         type:
             normalizeType(
-                record.type
+                item.type
             ),
 
+        title: String(
+            item.title ??
+            item.name ??
+            ""
+        ).trim(),
 
-        title:
-            String(
-                record.title ??
-                record.name ??
-                ""
-            ).trim(),
+        personName: person,
+        partyName: person,
 
-
-        personName:
-            String(
-                record.personName ??
-                record.partyName ??
-                record.person ??
-                ""
-            ).trim(),
-
-
-        partyName:
-            String(
-                record.partyName ??
-                record.personName ??
-                ""
-            ).trim(),
-
-
-        category:
-            String(
-                record.category ??
-                ""
-            ).trim(),
-
+        category: String(
+            item.category ?? ""
+        ).trim(),
 
         date:
-            record.date ||
-            getToday(),
-
+            item.date ||
+            new Date().toISOString().slice(0, 10),
 
         npr,
-
         inr,
-
         total,
+        amount: total,
 
-        amount:
-            total,
-
-
-        note:
-            String(
-                record.note ??
-                record.description ??
-                ""
-            ).trim(),
-
+        note: String(
+            item.note ?? ""
+        ).trim(),
 
         createdAt:
-            record.createdAt ||
-            now,
-
+            item.createdAt ||
+            nowISO(),
 
         updatedAt:
-            now
-
+            item.updatedAt ||
+            nowISO()
     };
-
 }
 
+function getTransactions() {
+    const result = getDataWithLegacy(
+        STORAGE_KEY,
+        [],
+        LEGACY_KEYS
+    );
 
-/* =========================================================
-   GET ALL TRANSACTIONS
-========================================================= */
-
-export function getTransactions() {
-
-    const data =
-        getDataWithLegacy(
-            STORAGE_KEY,
-            LEGACY_KEYS,
-            []
-        );
-
-
-    if (
-        !Array.isArray(data)
-    ) {
-
-        return [];
-
-    }
-
-
-    return data
-        .map(
-            normalizeTransaction
-        )
-        .filter(
-            Boolean
-        );
-
+    return (
+        Array.isArray(result)
+            ? result
+            : []
+    ).map(
+        normalizeTransaction
+    );
 }
 
-
-/* =========================================================
-   SAVE ALL TRANSACTIONS
-========================================================= */
-
-export function saveTransactions(
+function saveTransactions(
     transactions
 ) {
-
-    if (
-        !Array.isArray(
-            transactions
-        )
-    ) {
-
-        return false;
-
-    }
-
-
     const normalized =
-        transactions
-            .map(
+        Array.isArray(transactions)
+            ? transactions.map(
                 normalizeTransaction
             )
-            .filter(
-                Boolean
-            );
+            : [];
 
+    saveData(
+        STORAGE_KEY,
+        normalized
+    );
 
-    const saved =
-        saveData(
-            STORAGE_KEY,
-            normalized
-        );
+    scheduleSync(
+        STORAGE_KEY,
+        normalized
+    );
 
-
-    if (
-        saved
-    ) {
-
-        scheduleSync(
-            STORAGE_KEY,
-            normalized
-        );
-
-    }
-
-
-    return saved;
-
+    return normalized;
 }
 
-
-/* =========================================================
-   ADD TRANSACTION
-========================================================= */
-
-export function addTransaction(
-    transactionData = {}
+function addTransaction(
+    data = {}
 ) {
-
     const transactions =
         getTransactions();
 
+    const transaction =
+        normalizeTransaction({
+            ...data,
 
-    const now =
-        Date.now();
+            id:
+                data.id ||
+                createId(),
 
+            createdAt:
+                data.createdAt ||
+                nowISO(),
 
-    const npr =
-        toNumber(
-            transactionData.npr
-        );
-
-
-    const inr =
-        toNumber(
-            transactionData.inr
-        );
-
-
-    let total =
-        toNumber(
-            transactionData.total
-        );
-
-
-    if (
-        total === 0
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        total === 0 &&
-        transactionData.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                transactionData.amount
-            );
-
-    }
-
-
-    const type =
-        normalizeType(
-            transactionData.type
-        );
-
-
-    const transaction = {
-
-        id:
-            transactionData.id ||
-            createId(),
-
-
-        type,
-
-
-        title:
-            String(
-                transactionData.title ??
-                transactionData.name ??
-                ""
-            ).trim(),
-
-
-        personName:
-            String(
-                transactionData.personName ??
-                transactionData.partyName ??
-                ""
-            ).trim(),
-
-
-        partyName:
-            String(
-                transactionData.partyName ??
-                transactionData.personName ??
-                ""
-            ).trim(),
-
-
-        category:
-            String(
-                transactionData.category ??
-                ""
-            ).trim(),
-
-
-        date:
-            transactionData.date ||
-            getToday(),
-
-
-        npr,
-
-        inr,
-
-        total,
-
-        amount:
-            total,
-
-
-        note:
-            String(
-                transactionData.note ??
-                transactionData.description ??
-                ""
-            ).trim(),
-
-
-        createdAt:
-            transactionData.createdAt ||
-            now,
-
-
-        updatedAt:
-            now
-
-    };
-
+            updatedAt:
+                nowISO()
+        });
 
     transactions.push(
         transaction
     );
 
-
     saveTransactions(
         transactions
     );
 
-
     return transaction;
-
 }
 
-
-/* =========================================================
-   UPDATE TRANSACTION
-========================================================= */
-
-export function updateTransaction(
+function updateTransaction(
     id,
-    changes = {}
+    data = {}
 ) {
-
     const transactions =
         getTransactions();
 
-
     const index =
         transactions.findIndex(
-            (item) =>
-                item.id === id
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-
-    if (
-        index === -1
-    ) {
-
+    if (index === -1) {
         return null;
-
     }
 
+    const updated =
+        normalizeTransaction({
+            ...transactions[index],
+            ...data,
 
-    const oldTransaction =
-        transactions[index];
+            id:
+                transactions[index].id,
 
+            createdAt:
+                transactions[index]
+                    .createdAt,
 
-    const updated = {
-
-        ...oldTransaction,
-
-        ...changes,
-
-        id:
-            oldTransaction.id,
-
-
-        updatedAt:
-            Date.now()
-
-    };
-
-
-    /*
-       Normalize type.
-    */
-
-    updated.type =
-        normalizeType(
-            updated.type
-        );
-
-
-    /*
-       Recalculate currency values.
-    */
-
-    const npr =
-        toNumber(
-            updated.npr
-        );
-
-
-    const inr =
-        toNumber(
-            updated.inr
-        );
-
-
-    let total =
-        toNumber(
-            updated.total
-        );
-
-
-    if (
-        changes.npr !== undefined ||
-        changes.inr !== undefined
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        changes.amount !== undefined &&
-        changes.npr === undefined &&
-        changes.inr === undefined &&
-        changes.total === undefined
-    ) {
-
-        total =
-            toNumber(
-                changes.amount
-            );
-
-    }
-
-
-    updated.npr =
-        npr;
-
-
-    updated.inr =
-        inr;
-
-
-    updated.total =
-        total;
-
-
-    updated.amount =
-        total;
-
-
-    updated.title =
-        String(
-            updated.title ??
-            ""
-        ).trim();
-
-
-    updated.personName =
-        String(
-            updated.personName ??
-            updated.partyName ??
-            ""
-        ).trim();
-
-
-    updated.partyName =
-        String(
-            updated.partyName ??
-            updated.personName ??
-            ""
-        ).trim();
-
-
-    updated.category =
-        String(
-            updated.category ??
-            ""
-        ).trim();
-
-
-    updated.note =
-        String(
-            updated.note ??
-            ""
-        ).trim();
-
+            updatedAt:
+                nowISO()
+        });
 
     transactions[index] =
         updated;
 
-
     saveTransactions(
         transactions
     );
 
-
     return updated;
-
 }
 
-
-/* =========================================================
-   DELETE TRANSACTION
-========================================================= */
-
-export async function deleteTransaction(
+async function deleteTransaction(
     id
 ) {
-
     const transactions =
         getTransactions();
 
-
-    const exists =
-        transactions.some(
-            (item) =>
-                item.id === id
+    const index =
+        transactions.findIndex(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-
-    if (!exists) {
-
+    if (index === -1) {
         return false;
-
     }
 
+    const removed =
+        transactions[index];
 
-    const filtered =
-        transactions.filter(
-            (item) =>
-                item.id !== id
-        );
-
-
-    saveTransactions(
-        filtered
+    transactions.splice(
+        index,
+        1
     );
 
+    saveData(
+        STORAGE_KEY,
+        transactions
+    );
 
-    /*
-       If user is logged in,
-       also remove the cloud record.
+    await deleteCloudRecord(
+        STORAGE_KEY,
+        removed.id
+    );
 
-       Guest mode safely skips this.
-    */
-
-    try {
-
-        await deleteCloudRecord(
-            STORAGE_KEY,
-            id
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "Cloud transaction delete skipped:",
-            error
-        );
-
-    }
-
+    scheduleSync(
+        STORAGE_KEY,
+        transactions
+    );
 
     return true;
-
 }
 
-
-/* =========================================================
-   GET TRANSACTION BY ID
-========================================================= */
-
-export function getTransactionById(
-    id
-) {
-
-    const transactions =
-        getTransactions();
-
-
+function getTransactionById(id) {
     return (
-        transactions.find(
-            (item) =>
-                item.id === id
-        ) ||
-        null
+        getTransactions().find(
+            item =>
+                String(item.id) ===
+                String(id)
+        ) || null
     );
-
 }
 
-
-/* =========================================================
-   GET TRANSACTIONS BY TYPE
-========================================================= */
-
-export function getTransactionsByType(
-    type
+function getTransactionsByType(
+    type,
+    transactions = getTransactions()
 ) {
+    const normalized =
+        normalizeType(type);
 
-    const target =
-        normalizeType(
-            type
-        );
-
-
-    return getTransactions().filter(
-        (transaction) =>
-            transaction.type === target
+    return transactions.filter(
+        item =>
+            normalizeType(
+                item.type
+            ) === normalized
     );
-
 }
 
-
-/* =========================================================
-   TOTAL BY TYPE
-========================================================= */
-
-export function getTotalByType(
-    type
+function getTotalByType(
+    type,
+    transactions = getTransactions()
 ) {
-
     return getTransactionsByType(
-        type
+        type,
+        transactions
     ).reduce(
-        (
-            total,
-            transaction
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    transaction.total ??
-                    transaction.amount
-                )
-            );
-
-        },
+        (sum, item) =>
+            sum +
+            toNumber(
+                item.total ??
+                item.amount ??
+                item.npr
+            ),
         0
     );
-
 }
 
-
-/* =========================================================
-   TOTAL EXPENSE
-========================================================= */
-
-export function getTotalExpense() {
-
-    return getTotalByType(
-        "expense"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL RECEIVABLE
-========================================================= */
-
-export function getTotalReceivable() {
-
-    return getTotalByType(
-        "receivable"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL PAYABLE
-========================================================= */
-
-export function getTotalPayable() {
-
-    return getTotalByType(
-        "payable"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL GIVEN
-========================================================= */
-
-export function getTotalGiven() {
-
-    return getTotalByType(
-        "given"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL TAKEN
-========================================================= */
-
-export function getTotalTaken() {
-
-    return getTotalByType(
-        "taken"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL REPAYMENT
-========================================================= */
-
-export function getTotalRepayment() {
-
-    return getTotalByType(
-        "repayment"
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL NPR
-========================================================= */
-
-export function getTotalTransactionNPR() {
-
-    return getTransactions().reduce(
-        (
-            total,
-            transaction
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    transaction.npr
-                )
-            );
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   TOTAL INR
-========================================================= */
-
-export function getTotalTransactionINR() {
-
-    return getTransactions().reduce(
-        (
-            total,
-            transaction
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    transaction.inr
-                )
-            );
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   GET TRANSACTIONS BY DATE
-========================================================= */
-
-export function getTransactionsByDate(
-    date
+function getTotalNPR(
+    transactions = getTransactions()
 ) {
-
-    return getTransactions().filter(
-        (transaction) =>
-            transaction.date === date
+    return transactions.reduce(
+        (sum, item) =>
+            sum + toNumber(item.npr),
+        0
     );
-
 }
 
-
-/* =========================================================
-   GET TRANSACTIONS BY PERSON
-========================================================= */
-
-export function getTransactionsByPerson(
-    personName
+function getTotalINR(
+    transactions = getTransactions()
 ) {
+    return transactions.reduce(
+        (sum, item) =>
+            sum + toNumber(item.inr),
+        0
+    );
+}
 
-    const target =
-        String(
-            personName || ""
-        )
-        .trim()
-        .toLowerCase();
+function filterTransactions(
+    transactions = getTransactions(),
+    filters = {}
+) {
+    const {
+        type,
+        startDate,
+        endDate,
+        personName,
+        search,
+        category
+    } = filters;
 
+    return transactions.filter(
+        item => {
+            if (
+                type &&
+                normalizeType(item.type) !==
+                normalizeType(type)
+            ) {
+                return false;
+            }
 
-    return getTransactions().filter(
-        (transaction) => {
+            if (
+                startDate &&
+                item.date < startDate
+            ) {
+                return false;
+            }
 
-            const person =
-                String(
-                    transaction.personName ||
-                    transaction.partyName ||
-                    ""
+            if (
+                endDate &&
+                item.date > endDate
+            ) {
+                return false;
+            }
+
+            if (
+                personName &&
+                !String(
+                    item.personName
                 )
-                .trim()
-                .toLowerCase();
+                    .toLowerCase()
+                    .includes(
+                        String(
+                            personName
+                        ).toLowerCase()
+                    )
+            ) {
+                return false;
+            }
 
+            if (
+                category &&
+                item.category !== category
+            ) {
+                return false;
+            }
 
-            return (
-                person === target
-            );
+            if (search) {
+                const query =
+                    String(search)
+                        .toLowerCase()
+                        .trim();
 
+                const text = [
+                    item.title,
+                    item.personName,
+                    item.partyName,
+                    item.category,
+                    item.note,
+                    item.type,
+                    item.date
+                ]
+                    .join(" ")
+                    .toLowerCase();
+
+                if (
+                    !text.includes(query)
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     );
-
 }
 
-
-/* =========================================================
-   SEARCH TRANSACTIONS
-========================================================= */
-
-export function searchTransactions(
-    query
+function searchTransactions(
+    query,
+    transactions = getTransactions()
 ) {
-
-    const target =
-        String(
-            query || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    if (!target) {
-
-        return getTransactions();
-
-    }
-
-
-    return getTransactions().filter(
-        (transaction) => {
-
-            const text = [
-
-                transaction.type,
-
-                transaction.title,
-
-                transaction.personName,
-
-                transaction.partyName,
-
-                transaction.category,
-
-                transaction.note,
-
-                transaction.date,
-
-                transaction.amount,
-
-                transaction.total
-
-            ]
-            .join(" ")
-            .toLowerCase();
-
-
-            return text.includes(
-                target
-            );
-
-        }
+    return filterTransactions(
+        transactions,
+        { search: query }
     );
-
 }
 
+function getTransactionsByDate(
+    date,
+    transactions = getTransactions()
+) {
+    return transactions.filter(
+        item =>
+            item.date === date
+    );
+}
 
-/* =========================================================
-   GET RECENT TRANSACTIONS
-========================================================= */
-
-export function getRecentTransactions(
+function getRecentTransactions(
     limit = 10
 ) {
-
-    const count =
-        Math.max(
-            0,
-            Number(limit) || 0
-        );
-
-
-    return getTransactions()
+    return [...getTransactions()]
         .sort(
-            (
-                a,
-                b
-            ) =>
-                (
-                    Number(
-                        b.createdAt
-                    ) || 0
+            (a, b) =>
+                new Date(
+                    b.date || b.createdAt
                 ) -
-                (
-                    Number(
-                        a.createdAt
-                    ) || 0
+                new Date(
+                    a.date || a.createdAt
                 )
         )
-        .slice(
-            0,
-            count
-        );
-
+        .slice(0, limit);
 }
 
-
-/* =========================================================
-   GET TRANSACTION SUMMARY
-========================================================= */
-
-export function getTransactionSummary() {
-
+function getTransactionSummary(
+    transactions = getTransactions()
+) {
     return {
-
         expense:
-            getTotalExpense(),
+            getTotalByType(
+                "expense",
+                transactions
+            ),
 
         receivable:
-            getTotalReceivable(),
+            getTotalByType(
+                "receivable",
+                transactions
+            ),
 
         payable:
-            getTotalPayable(),
+            getTotalByType(
+                "payable",
+                transactions
+            ),
 
         given:
-            getTotalGiven(),
+            getTotalByType(
+                "given",
+                transactions
+            ),
 
         taken:
-            getTotalTaken(),
+            getTotalByType(
+                "taken",
+                transactions
+            ),
 
         repayment:
-            getTotalRepayment()
-
+            getTotalByType(
+                "repayment",
+                transactions
+            )
     };
-
 }
 
-
-/* =========================================================
-   CLEAR ALL TRANSACTIONS
-========================================================= */
-
-export function clearTransactions() {
-
-    saveTransactions(
+function clearTransactions() {
+    saveData(
+        STORAGE_KEY,
         []
     );
 
+    scheduleSync(
+        STORAGE_KEY,
+        []
+    );
 
     return true;
-
 }
 
-
-/* =========================================================
-   EXPORT RATE
-========================================================= */
-
 export {
-    INR_RATE
+    STORAGE_KEY,
+    TRANSACTION_TYPES,
+    getTransactions,
+    saveTransactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    getTransactionById,
+    getTransactionsByType,
+    getTotalByType,
+    getTotalNPR,
+    getTotalINR,
+    filterTransactions,
+    searchTransactions,
+    getTransactionsByDate,
+    getRecentTransactions,
+    getTransactionSummary,
+    clearTransactions,
+    normalizeTransaction,
+    normalizeType,
+    toNumber
 };
 
-
-/* =========================================================
-   DEFAULT EXPORT
-========================================================= */
-
 export default {
-
+    STORAGE_KEY,
     TRANSACTION_TYPES,
-
     getTransactions,
-
     saveTransactions,
-
     addTransaction,
-
     updateTransaction,
-
     deleteTransaction,
-
     getTransactionById,
-
     getTransactionsByType,
-
     getTotalByType,
-
-    getTotalExpense,
-
-    getTotalReceivable,
-
-    getTotalPayable,
-
-    getTotalGiven,
-
-    getTotalTaken,
-
-    getTotalRepayment,
-
-    getTotalTransactionNPR,
-
-    getTotalTransactionINR,
-
-    getTransactionsByDate,
-
-    getTransactionsByPerson,
-
+    getTotalNPR,
+    getTotalINR,
+    filterTransactions,
     searchTransactions,
-
+    getTransactionsByDate,
     getRecentTransactions,
-
     getTransactionSummary,
-
     clearTransactions,
-
-    INR_RATE
-
+    normalizeTransaction,
+    normalizeType,
+    toNumber
 };
