@@ -1,1023 +1,777 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
-   INCOME MANAGER
+   FINANCE CALCULATION ENGINE
+
+   Transaction types:
+   - expense
+   - receivable
+   - payable
+   - given
+   - taken
+   - repayment
+
+   Main calculation:
+
+   Money In
+   = Income + Receivable + Taken
+
+   Money Out
+   = Expense + Payable + Given
+
+   Balance
+   = Money In - Money Out
+
+   Saving is kept separate.
+
+   Balance After Saving
+   = Balance - Saving
+
+   Repayment is kept separate because its direction
+   is not known automatically.
 ========================================================= */
 
 import {
-    getDataWithLegacy,
-    saveData,
-    getProfileValue
+    getDataWithLegacy
 } from "./storage.js";
 
-import {
-    scheduleSync,
-    deleteCloudRecord
-} from "./sync.js";
 
+/* =========================================================
+   STORAGE KEYS
+========================================================= */
 
-const STORAGE_KEY = "incomes";
-const LEGACY_KEY = "digital_notebook_incomes";
+const INCOME_KEY =
+    "incomes";
 
-const INR_RATE = 1.6;
+const SAVING_KEY =
+    "savings";
+
+const TRANSACTION_KEY =
+    "transactions";
 
 
 /* =========================================================
-   HELPERS
+   LEGACY KEYS
 ========================================================= */
 
-function number(value) {
-    const n = Number(value);
+const INCOME_LEGACY_KEYS = [
 
-    return Number.isFinite(n)
-        ? n
-        : 0;
-}
+    "incomes",
 
+    "income",
 
-function createId() {
-    if (
-        typeof crypto !== "undefined" &&
-        crypto.randomUUID
-    ) {
-        return crypto.randomUUID();
-    }
+    "incomeData",
 
-    return (
-        Date.now().toString(36) +
-        Math.random()
-            .toString(36)
-            .slice(2)
-    );
-}
+    "incomeRecords",
+
+    "incomeHistory",
+
+    "digital_notebook_incomes"
+
+];
 
 
-function getToday() {
-    const date = new Date();
+const SAVING_LEGACY_KEYS = [
 
-    const year =
-        date.getFullYear();
+    "savings",
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
+    "saving",
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
+    "savingData",
 
-    return `${year}-${month}-${day}`;
-}
+    "savingRecords",
+
+    "savingHistory",
+
+    "digital_notebook_savings"
+
+];
+
+
+const TRANSACTION_LEGACY_KEYS = [
+
+    "transactions",
+
+    "transaction",
+
+    "transactionData",
+
+    "transactionRecords",
+
+    "transactionHistory",
+
+    "digital_notebook_transactions"
+
+];
+
+const NPR_TO_INR_RATE = 1.6;
 
 
 /* =========================================================
-   NORMALIZE
+   NUMBER NORMALIZER
 ========================================================= */
 
-function normalizeIncome(item = {}) {
-
-    const npr =
-        number(
-            item.npr ??
-            item.amountNpr ??
-            0
-        );
-
-    const inr =
-        number(
-            item.inr ??
-            item.amountInr ??
-            0
-        );
-
-    const calculated =
-        npr +
-        (inr * INR_RATE);
-
-    const total =
-        calculated;
-
-    return {
-
-        id:
-            item.id
-                ? String(item.id)
-                : createId(),
-
-        sourceName:
-            String(
-                item.sourceName ??
-                item.source ??
-                ""
-            ).trim(),
-
-        date:
-            item.date ||
-            getToday(),
-
-        npr,
-
-        inr,
-
-        total,
-
-        createdAt:
-            item.createdAt ||
-            Date.now(),
-
-        updatedAt:
-            Date.now()
-    };
-}
-
-
-/* =========================================================
-   GET
-========================================================= */
-
-function getIncomes() {
-
-    const data =
-        getDataWithLegacy(
-            STORAGE_KEY,
-            LEGACY_KEY,
-            []
-        );
-
-    if (
-        !Array.isArray(data)
-    ) {
-        return [];
-    }
-
-    return data.map(
-        normalizeIncome
-    );
-}
-
-
-/* =========================================================
-   SAVE ALL
-========================================================= */
-
-function saveIncomes(
-    incomes
+function toNumber(
+    value
 ) {
 
-    const data =
-        Array.isArray(incomes)
-            ? incomes.map(
-                normalizeIncome
-            )
-            : [];
+    const number =
+        Number(value);
 
-    saveData(
-        STORAGE_KEY,
-        data
-    );
-
-    scheduleSync(
-        STORAGE_KEY,
-        data
-    );
-
-    return data;
-}
-
-
-/* =========================================================
-   ADD
-========================================================= */
-
-function addIncome(
-    data
-) {
-
-    const incomes =
-        getIncomes();
-
-    const item =
-        normalizeIncome(
-            data
-        );
-
-    incomes.unshift(
-        item
-    );
-
-    saveIncomes(
-        incomes
-    );
-
-    return item;
-}
-
-
-/* =========================================================
-   UPDATE
-========================================================= */
-
-function updateIncome(
-    id,
-    data
-) {
-
-    const incomes =
-        getIncomes();
-
-    const index =
-        incomes.findIndex(
-            item =>
-                String(item.id) ===
-                String(id)
-        );
 
     if (
-        index === -1
+        Number.isFinite(number)
     ) {
-        return null;
+
+        return number;
+
     }
 
-    const updated =
-        normalizeIncome({
 
-            ...incomes[index],
+    return 0;
 
-            ...data,
-
-            id:
-                incomes[index].id,
-
-            createdAt:
-                incomes[index]
-                    .createdAt
-
-        });
-
-    incomes[index] =
-        updated;
-
-    saveIncomes(
-        incomes
-    );
-
-    return updated;
 }
 
 
-/* =========================================================
-   DELETE BY ID
-========================================================= */
-
-async function deleteIncomeById(
-    id
-) {
-
-    const incomes =
-        getIncomes();
-
-    const index =
-        incomes.findIndex(
-            item =>
-                String(item.id) ===
-                String(id)
-        );
+function normalizeCurrencyAmount(record) {
 
     if (
-        index === -1
+        !record ||
+        typeof record !== "object"
     ) {
-        return false;
+
+        return 0;
+
     }
 
-    const removed =
-        incomes[index];
-
-    incomes.splice(
-        index,
-        1
+    const npr = toNumber(
+        record.npr ??
+        record.amountNpr ??
+        record.amount ??
+        0
     );
 
-    saveData(
-        STORAGE_KEY,
-        incomes
+    const inr = toNumber(
+        record.inr ??
+        record.amountInr ??
+        0
     );
 
-    try {
+    if (
+        record.total !== undefined &&
+        record.total !== null &&
+        record.total !== ""
+    ) {
 
-        await deleteCloudRecord(
-            STORAGE_KEY,
-            removed.id
-        );
+        return toNumber(record.total);
 
-    } catch (error) {
-
-        console.error(
-            "Income delete:",
-            error
-        );
     }
 
-    scheduleSync(
-        STORAGE_KEY,
-        incomes
-    );
+    if (
+        record.amount !== undefined &&
+        record.amount !== null &&
+        record.amount !== ""
+    ) {
 
-    return true;
+        return toNumber(record.amount);
+
+    }
+
+    if (
+        record.npr !== undefined ||
+        record.inr !== undefined ||
+        record.amountNpr !== undefined ||
+        record.amountInr !== undefined
+    ) {
+
+        return npr + (inr * NPR_TO_INR_RATE);
+
+    }
+
+    return 0;
+
 }
 
 
 /* =========================================================
-   TOTAL
+   RECORD TOTAL
 ========================================================= */
 
-function getTotalIncome(
-    incomes = getIncomes()
+function getRecordAmount(
+    record
+) {
+
+    return normalizeCurrencyAmount(record);
+
+}
+
+
+/* =========================================================
+   GET INCOMES
+========================================================= */
+
+export function getFinanceIncomes() {
+
+    return getDataWithLegacy(
+        INCOME_KEY,
+        INCOME_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET SAVINGS
+========================================================= */
+
+export function getFinanceSavings() {
+
+    return getDataWithLegacy(
+        SAVING_KEY,
+        SAVING_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   GET TRANSACTIONS
+========================================================= */
+
+export function getFinanceTransactions() {
+
+    return getDataWithLegacy(
+        TRANSACTION_KEY,
+        TRANSACTION_LEGACY_KEYS,
+        []
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL INCOME
+========================================================= */
+
+export function getTotalIncome(
+    incomes = getFinanceIncomes()
 ) {
 
     if (
         !Array.isArray(incomes)
     ) {
+
         return 0;
+
     }
+
 
     return incomes.reduce(
         (
             total,
-            item
-        ) =>
-            total +
-            number(item.total),
+            record
+        ) => {
 
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
+            );
+
+        },
         0
     );
+
 }
 
 
 /* =========================================================
-   SEARCH
+   TOTAL TRANSACTION BY TYPE
 ========================================================= */
 
-function searchIncomes(
-    query = ""
+function getTotalByType(
+    transactions,
+    type
 ) {
 
-    const q =
-        String(query)
-            .trim()
-            .toLowerCase();
-
-    if (!q) {
-        return getIncomes();
-    }
-
-    return getIncomes()
-        .filter(
-            item =>
-                item.sourceName
-                    .toLowerCase()
-                    .includes(q)
-        );
-}
-
-
-/* =========================================================
-   RECENT
-========================================================= */
-
-function getRecentIncomes(
-    limit = 10
-) {
-
-    return getIncomes()
-        .sort(
-            (a, b) =>
-                new Date(b.date) -
-                new Date(a.date)
+    if (
+        !Array.isArray(
+            transactions
         )
-        .slice(
-            0,
-            limit
-        );
-}
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearIncomes() {
-
-    saveData(
-        STORAGE_KEY,
-        []
-    );
-
-    scheduleSync(
-        STORAGE_KEY,
-        []
-    );
-
-    return true;
-}
-
-
-/* =========================================================
-   LIVE CALCULATION
-========================================================= */
-
-function calculateIncomeTotal() {
-
-    const nprInput =
-        document.getElementById(
-            "income-amount-npr"
-        );
-
-    const inrInput =
-        document.getElementById(
-            "income-amount-inr"
-        );
-
-    const totalInput =
-        document.getElementById(
-            "income-total-calc"
-        );
-
-    if (
-        !nprInput ||
-        !inrInput ||
-        !totalInput
     ) {
+
         return 0;
+
     }
 
-    const npr =
-        number(
-            nprInput.value
-        );
 
-    const inr =
-        number(
-            inrInput.value
-        );
-
-    const total =
-        npr +
+    return transactions.reduce(
         (
-            inr *
-            INR_RATE
-        );
+            total,
+            record
+        ) => {
 
-    totalInput.value =
-        total.toFixed(2);
+            if (
+                !record ||
+                record.type !== type
+            ) {
 
-    totalInput.dataset.value =
-        total.toFixed(2);
+                return total;
 
-    return total;
+            }
+
+
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
+            );
+
+        },
+        0
+    );
+
 }
 
 
 /* =========================================================
-   FORM STATUS
+   EXPENSE
 ========================================================= */
 
-function setStatus(
-    message,
-    type = "success"
+export function getTotalExpense(
+    transactions =
+        getFinanceTransactions()
 ) {
 
-    const element =
-        document.getElementById(
-            "income-form-status"
-        );
+    return getTotalByType(
+        transactions,
+        "expense"
+    );
 
-    if (!element) {
-        return;
-    }
-
-    element.textContent =
-        message;
-
-    element.className =
-        "form-status " +
-        type;
 }
 
 
 /* =========================================================
-   SAVE FORM
+   RECEIVABLE
 ========================================================= */
 
-async function saveIncome(
-    event
+export function getTotalReceivable(
+    transactions =
+        getFinanceTransactions()
 ) {
 
-    if (event) {
-        event.preventDefault();
-    }
+    return getTotalByType(
+        transactions,
+        "receivable"
+    );
 
-    const source =
-        document.getElementById(
-            "income-source-name"
-        );
+}
 
-    const date =
-        document.getElementById(
-            "income-date"
-        );
 
-    const npr =
-        document.getElementById(
-            "income-amount-npr"
-        );
+/* =========================================================
+   PAYABLE
+========================================================= */
 
-    const inr =
-        document.getElementById(
-            "income-amount-inr"
-        );
+export function getTotalPayable(
+    transactions =
+        getFinanceTransactions()
+) {
 
-    const editIndex =
-        document.getElementById(
-            "edit-income-index"
-        );
+    return getTotalByType(
+        transactions,
+        "payable"
+    );
+
+}
+
+
+/* =========================================================
+   GIVEN
+========================================================= */
+
+export function getTotalGiven(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "given"
+    );
+
+}
+
+
+/* =========================================================
+   TAKEN
+========================================================= */
+
+export function getTotalTaken(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "taken"
+    );
+
+}
+
+
+/* =========================================================
+   REPAYMENT
+========================================================= */
+
+export function getTotalRepayment(
+    transactions =
+        getFinanceTransactions()
+) {
+
+    return getTotalByType(
+        transactions,
+        "repayment"
+    );
+
+}
+
+
+/* =========================================================
+   TOTAL SAVING
+========================================================= */
+
+export function getTotalSaving(
+    savings = getFinanceSavings()
+) {
 
     if (
-        !source ||
-        !date ||
-        !npr ||
-        !inr
+        !Array.isArray(savings)
     ) {
-        return false;
+
+        return 0;
+
     }
 
-    const sourceName =
-        source.value.trim();
 
-    const dateValue =
-        date.value;
-
-    const nprValue =
-        number(npr.value);
-
-    const inrValue =
-        number(inr.value);
-
-    const total =
-        nprValue +
+    return savings.reduce(
         (
-            inrValue *
-            INR_RATE
-        );
+            total,
+            record
+        ) => {
 
-    if (!sourceName) {
-
-        setStatus(
-            "Income source is required.",
-            "error"
-        );
-
-        return false;
-    }
-
-    if (!dateValue) {
-
-        setStatus(
-            "Date is required.",
-            "error"
-        );
-
-        return false;
-    }
-
-    if (
-        nprValue <= 0 &&
-        inrValue <= 0
-    ) {
-
-        setStatus(
-            "Please enter NPR or INR amount.",
-            "error"
-        );
-
-        return false;
-    }
-
-    const incomes =
-        getIncomes();
-
-    const index =
-        editIndex
-            ? editIndex.value
-            : "";
-
-    const item = {
-
-        sourceName,
-
-        date:
-            dateValue,
-
-        npr:
-            nprValue,
-
-        inr:
-            inrValue,
-
-        total
-    };
-
-
-    /* EDIT */
-
-    if (
-        index !== ""
-    ) {
-
-        const i =
-            Number(index);
-
-        if (
-            Number.isInteger(i) &&
-            incomes[i]
-        ) {
-
-            incomes[i] =
-                normalizeIncome({
-
-                    ...incomes[i],
-
-                    ...item,
-
-                    id:
-                        incomes[i].id,
-
-                    createdAt:
-                        incomes[i]
-                            .createdAt
-
-                });
-
-            saveIncomes(
-                incomes
+            return (
+                total +
+                getRecordAmount(
+                    record
+                )
             );
 
-            setStatus(
-                "Income record updated.",
-                "success"
-            );
-        }
+        },
+        0
+    );
 
-    }
+}
 
-    /* NEW */
 
-    else {
+/* =========================================================
+   MONEY IN
+========================================================= */
 
-        incomes.unshift(
-            normalizeIncome({
-                ...item,
-                id: createId()
-            })
-        );
+export function getMoneyIn(
+    incomes,
+    transactions
+) {
 
-        saveIncomes(
+    const totalIncome =
+        getTotalIncome(
             incomes
         );
 
-        setStatus(
-            "Income record saved.",
-            "success"
-        );
-    }
-
-
-    resetIncomeForm();
-
-    renderIncomePage();
-
-    return false;
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function resetIncomeForm() {
-
-    const form =
-        document.getElementById(
-            "income-form"
+    const totalReceivable =
+        getTotalReceivable(
+            transactions
         );
 
-    const editIndex =
-        document.getElementById(
-            "edit-income-index"
+    const totalTaken =
+        getTotalTaken(
+            transactions
         );
 
-    const date =
-        document.getElementById(
-            "income-date"
-        );
 
-    const submit =
-        document.getElementById(
-            "income-submit-btn"
-        );
-
-    const cancel =
-        document.getElementById(
-            "income-cancel-btn"
-        );
-
-    if (form) {
-        form.reset();
-    }
-
-    if (editIndex) {
-        editIndex.value = "";
-    }
-
-    if (date) {
-        date.value =
-            getToday();
-    }
-
-    if (submit) {
-        submit.textContent =
-            "Save Income";
-    }
-
-    if (cancel) {
-        cancel.classList.add(
-            "hidden"
-        );
-    }
-
-    calculateIncomeTotal();
-}
-
-
-/* =========================================================
-   EDIT
-========================================================= */
-
-function editIncome(
-    index
-) {
-
-    const incomes =
-        getIncomes();
-
-    const item =
-        incomes[
-            Number(index)
-        ];
-
-    if (!item) {
-        return;
-    }
-
-    document.getElementById(
-        "edit-income-index"
-    ).value =
-        index;
-
-    document.getElementById(
-        "income-source-name"
-    ).value =
-        item.sourceName;
-
-    document.getElementById(
-        "income-date"
-    ).value =
-        item.date;
-
-    document.getElementById(
-        "income-amount-npr"
-    ).value =
-        item.npr;
-
-    document.getElementById(
-        "income-amount-inr"
-    ).value =
-        item.inr;
-
-    document.getElementById(
-        "income-submit-btn"
-    ).textContent =
-        "Update Income";
-
-    document.getElementById(
-        "income-cancel-btn"
-    ).classList.remove(
-        "hidden"
+    return (
+        totalIncome +
+        totalReceivable +
+        totalTaken
     );
 
-    calculateIncomeTotal();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 }
 
 
 /* =========================================================
-   DELETE
+   MONEY OUT
 ========================================================= */
 
-async function deleteIncome(
-    index
+export function getMoneyOut(
+    transactions
 ) {
 
-    const incomes =
-        getIncomes();
+    const totalExpense =
+        getTotalExpense(
+            transactions
+        );
 
-    const item =
-        incomes[
-            Number(index)
-        ];
+    const totalPayable =
+        getTotalPayable(
+            transactions
+        );
 
-    if (!item) {
-        return;
-    }
+    const totalGiven =
+        getTotalGiven(
+            transactions
+        );
 
-    await deleteIncomeById(
-        item.id
+
+    return (
+        totalExpense +
+        totalPayable +
+        totalGiven
     );
 
-    renderIncomePage();
 }
 
 
 /* =========================================================
-   PROFILE
+   BALANCE
 ========================================================= */
 
-function getProfile() {
+export function getBalance(
+    incomes,
+    transactions
+) {
+
+    const moneyIn =
+        getMoneyIn(
+            incomes,
+            transactions
+        );
+
+    const moneyOut =
+        getMoneyOut(
+            transactions
+        );
+
+
+    return (
+        moneyIn -
+        moneyOut
+    );
+
+}
+
+
+/* =========================================================
+   BALANCE AFTER SAVING
+========================================================= */
+
+export function getBalanceAfterSaving(
+    incomes,
+    transactions,
+    savings
+) {
+
+    const balance =
+        getBalance(
+            incomes,
+            transactions
+        );
+
+    const saving =
+        getTotalSaving(
+            savings
+        );
+
+
+    return (
+        balance -
+        saving
+    );
+
+}
+
+
+/* =========================================================
+   COMPLETE FINANCIAL SUMMARY
+========================================================= */
+
+export function calculateFinance(
+    incomes = getFinanceIncomes(),
+    transactions =
+        getFinanceTransactions(),
+    savings =
+        getFinanceSavings()
+) {
+
+    const totalIncome =
+        getTotalIncome(
+            incomes
+        );
+
+    const totalExpense =
+        getTotalExpense(
+            transactions
+        );
+
+    const totalReceivable =
+        getTotalReceivable(
+            transactions
+        );
+
+    const totalPayable =
+        getTotalPayable(
+            transactions
+        );
+
+    const totalGiven =
+        getTotalGiven(
+            transactions
+        );
+
+    const totalTaken =
+        getTotalTaken(
+            transactions
+        );
+
+    const totalRepayment =
+        getTotalRepayment(
+            transactions
+        );
+
+    const totalSaving =
+        getTotalSaving(
+            savings
+        );
+
+
+    const moneyIn =
+        totalIncome +
+        totalReceivable +
+        totalTaken;
+
+
+    const moneyOut =
+        totalExpense +
+        totalPayable +
+        totalGiven;
+
+
+    const balance =
+        moneyIn -
+        moneyOut;
+
+
+    const balanceAfterSaving =
+        balance -
+        totalSaving;
+
 
     return {
 
-        name:
-            getProfileValue(
-                "name",
-                ""
-            ),
+        totalIncome,
 
-        mobile:
-            getProfileValue(
-                "mobile",
-                ""
-            ),
+        totalExpense,
 
-        email:
-            getProfileValue(
-                "email",
-                ""
-            ),
+        totalReceivable,
 
-        address:
-            getProfileValue(
-                "address",
-                ""
-            ),
+        totalPayable,
 
-        avatar:
-            getProfileValue(
-                "avatar",
-                ""
-            )
+        totalGiven,
+
+        totalTaken,
+
+        totalRepayment,
+
+        totalSaving,
+
+        moneyIn,
+
+        moneyOut,
+
+        balance,
+
+        balanceAfterSaving
+
     };
+
 }
 
 
 /* =========================================================
-   GLOBAL BRIDGE
+   FORMAT NUMBER
 ========================================================= */
 
-window.calculateIncomeTotal =
-    calculateIncomeTotal;
+export function formatMoney(
+    amount,
+    currency = "NPR"
+) {
 
-window.saveIncome =
-    saveIncome;
-
-window.resetIncomeForm =
-    resetIncomeForm;
-
-window.editIncome =
-    editIncome;
-
-window.deleteIncome =
-    deleteIncome;
-
-
-/* =========================================================
-   PAGE RENDER CALLBACK
-========================================================= */
-
-function renderIncomePage() {
-
-    if (
-        typeof window.renderIncomes ===
-        "function" &&
-        window.renderIncomes !==
-        renderIncomePage
-    ) {
-        window.renderIncomes();
-    }
-
-    const event =
-        new CustomEvent(
-            "incomeDataChanged"
+    const value =
+        toNumber(
+            amount
         );
 
-    document.dispatchEvent(
-        event
-    );
+
+    try {
+
+        return new Intl.NumberFormat(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        ).format(value);
+
+    } catch {
+
+        return value.toFixed(2);
+
+    }
+
 }
 
 
 /* =========================================================
-   EXPORT
+   DEFAULT EXPORT
 ========================================================= */
-
-export {
-
-    INR_RATE,
-
-    getToday,
-
-    normalizeIncome,
-
-    getIncomes,
-
-    saveIncomes,
-
-    addIncome,
-
-    updateIncome,
-
-    deleteIncomeById,
-
-    getTotalIncome,
-
-    searchIncomes,
-
-    getRecentIncomes,
-
-    clearIncomes,
-
-    calculateIncomeTotal,
-
-    saveIncome,
-
-    resetIncomeForm,
-
-    editIncome,
-
-    deleteIncome,
-
-    getProfile
-};
-
 
 export default {
 
-    INR_RATE,
+    calculateFinance,
 
-    getToday,
-
-    normalizeIncome,
-
-    getIncomes,
-
-    saveIncomes,
-
-    addIncome,
-
-    updateIncome,
-
-    deleteIncomeById,
+    getFinanceIncomes,
+    getFinanceSavings,
+    getFinanceTransactions,
 
     getTotalIncome,
+    getTotalExpense,
 
-    searchIncomes,
+    getTotalReceivable,
+    getTotalPayable,
 
-    getRecentIncomes,
+    getTotalGiven,
+    getTotalTaken,
 
-    clearIncomes,
+    getTotalRepayment,
+    getTotalSaving,
 
-    calculateIncomeTotal,
+    getMoneyIn,
+    getMoneyOut,
 
-    saveIncome,
+    getBalance,
+    getBalanceAfterSaving,
 
-    resetIncomeForm,
+    formatMoney
 
-    editIncome,
-
-    deleteIncome,
-
-    getProfile
 };
