@@ -1,246 +1,120 @@
 /* =========================================================
    DIGITAL NOTEBOOK V2
-   INCOME DATA ENGINE
-
-   Responsibilities:
-   - Income records
-   - Local storage
-   - Legacy V1 migration
-   - CRUD operations
-   - NPR / INR support
-   - Firebase sync
+   INCOME MANAGER
 ========================================================= */
 
 import {
     getDataWithLegacy,
-    saveData
+    saveData,
+    getProfileValue
 } from "./storage.js";
 
 import {
-    scheduleSync
+    scheduleSync,
+    deleteCloudRecord
 } from "./sync.js";
 
 
-/* =========================================================
-   STORAGE CONFIGURATION
-========================================================= */
-
-const STORAGE_KEY =
-    "incomes";
-
-
-const LEGACY_KEYS = [
-
-    "incomes",
-
-    "income",
-
-    "incomeData",
-
-    "incomeRecords",
-
-    "incomeHistory",
-
-    "digital_notebook_incomes"
-
-];
-
-
-/* =========================================================
-   INR RATE
-========================================================= */
+const STORAGE_KEY = "incomes";
+const LEGACY_KEY = "digital_notebook_incomes";
 
 const INR_RATE = 1.6;
 
 
 /* =========================================================
-   NUMBER HELPER
+   HELPERS
 ========================================================= */
 
-function toNumber(
-    value
-) {
+function number(value) {
+    const n = Number(value);
 
-    const number =
-        Number(value);
-
-
-    if (
-        Number.isFinite(number)
-    ) {
-
-        return number;
-
-    }
-
-
-    return 0;
-
+    return Number.isFinite(n)
+        ? n
+        : 0;
 }
 
 
-/* =========================================================
-   DATE HELPER
-========================================================= */
+function createId() {
+    if (
+        typeof crypto !== "undefined" &&
+        crypto.randomUUID
+    ) {
+        return crypto.randomUUID();
+    }
+
+    return (
+        Date.now().toString(36) +
+        Math.random()
+            .toString(36)
+            .slice(2)
+    );
+}
+
 
 function getToday() {
-
-    const date =
-        new Date();
-
+    const date = new Date();
 
     const year =
         date.getFullYear();
 
-
     const month =
         String(
             date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
+        ).padStart(2, "0");
 
     const day =
         String(
             date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
+        ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
-
 }
 
 
 /* =========================================================
-   ID GENERATOR
+   NORMALIZE
 ========================================================= */
 
-function createId() {
-
-    return (
-        "income_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 8)
-    );
-
-}
-
-
-/* =========================================================
-   NORMALIZE INCOME RECORD
-========================================================= */
-
-function normalizeIncome(
-    record
-) {
-
-    if (
-        !record ||
-        typeof record !== "object"
-    ) {
-
-        return null;
-
-    }
-
+function normalizeIncome(item = {}) {
 
     const npr =
-        toNumber(
-            record.npr
+        number(
+            item.npr ??
+            item.amountNpr ??
+            0
         );
-
 
     const inr =
-        toNumber(
-            record.inr
+        number(
+            item.inr ??
+            item.amountInr ??
+            0
         );
 
+    const calculated =
+        npr +
+        (inr * INR_RATE);
 
-    let total =
-        toNumber(
-            record.total
-        );
-
-
-    /*
-       If total is missing,
-       calculate from NPR + INR.
-    */
-
-    if (
-        total === 0 &&
-        (
-            npr !== 0 ||
-            inr !== 0
-        )
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    /*
-       Old V1 records may only have amount.
-    */
-
-    if (
-        total === 0 &&
-        record.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                record.amount
-            );
-
-    }
-
-
-    const now =
-        Date.now();
-
+    const total =
+        calculated;
 
     return {
 
         id:
-            record.id ||
-            createId(),
-
+            item.id
+                ? String(item.id)
+                : createId(),
 
         sourceName:
             String(
-                record.sourceName ??
-                record.source ??
-                record.name ??
+                item.sourceName ??
+                item.source ??
                 ""
             ).trim(),
-
-
-        category:
-            String(
-                record.category ??
-                ""
-            ).trim(),
-
 
         date:
-            record.date ||
+            item.date ||
             getToday(),
-
 
         npr,
 
@@ -248,667 +122,834 @@ function normalizeIncome(
 
         total,
 
-        amount:
-            total,
-
-
-        note:
-            String(
-                record.note ??
-                ""
-            ).trim(),
-
-
         createdAt:
-            record.createdAt ||
-            now,
-
+            item.createdAt ||
+            Date.now(),
 
         updatedAt:
-            now
-
+            Date.now()
     };
-
 }
 
 
 /* =========================================================
-   GET ALL INCOMES
+   GET
 ========================================================= */
 
-export function getIncomes() {
+function getIncomes() {
 
     const data =
         getDataWithLegacy(
             STORAGE_KEY,
-            LEGACY_KEYS,
+            LEGACY_KEY,
             []
         );
-
 
     if (
         !Array.isArray(data)
     ) {
-
         return [];
-
     }
 
-
-    return data
-        .map(
-            normalizeIncome
-        )
-        .filter(
-            Boolean
-        );
-
+    return data.map(
+        normalizeIncome
+    );
 }
 
 
 /* =========================================================
-   SAVE ALL INCOMES
+   SAVE ALL
 ========================================================= */
 
-export function saveIncomes(
+function saveIncomes(
     incomes
+) {
+
+    const data =
+        Array.isArray(incomes)
+            ? incomes.map(
+                normalizeIncome
+            )
+            : [];
+
+    saveData(
+        STORAGE_KEY,
+        data
+    );
+
+    scheduleSync(
+        STORAGE_KEY,
+        data
+    );
+
+    return data;
+}
+
+
+/* =========================================================
+   ADD
+========================================================= */
+
+function addIncome(
+    data
+) {
+
+    const incomes =
+        getIncomes();
+
+    const item =
+        normalizeIncome(
+            data
+        );
+
+    incomes.unshift(
+        item
+    );
+
+    saveIncomes(
+        incomes
+    );
+
+    return item;
+}
+
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function updateIncome(
+    id,
+    data
+) {
+
+    const incomes =
+        getIncomes();
+
+    const index =
+        incomes.findIndex(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (
+        index === -1
+    ) {
+        return null;
+    }
+
+    const updated =
+        normalizeIncome({
+
+            ...incomes[index],
+
+            ...data,
+
+            id:
+                incomes[index].id,
+
+            createdAt:
+                incomes[index]
+                    .createdAt
+
+        });
+
+    incomes[index] =
+        updated;
+
+    saveIncomes(
+        incomes
+    );
+
+    return updated;
+}
+
+
+/* =========================================================
+   DELETE BY ID
+========================================================= */
+
+async function deleteIncomeById(
+    id
+) {
+
+    const incomes =
+        getIncomes();
+
+    const index =
+        incomes.findIndex(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (
+        index === -1
+    ) {
+        return false;
+    }
+
+    const removed =
+        incomes[index];
+
+    incomes.splice(
+        index,
+        1
+    );
+
+    saveData(
+        STORAGE_KEY,
+        incomes
+    );
+
+    try {
+
+        await deleteCloudRecord(
+            STORAGE_KEY,
+            removed.id
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Income delete:",
+            error
+        );
+    }
+
+    scheduleSync(
+        STORAGE_KEY,
+        incomes
+    );
+
+    return true;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+function getTotalIncome(
+    incomes = getIncomes()
 ) {
 
     if (
         !Array.isArray(incomes)
     ) {
-
-        return false;
-
+        return 0;
     }
-
-
-    const normalized =
-        incomes
-            .map(
-                normalizeIncome
-            )
-            .filter(
-                Boolean
-            );
-
-
-    const saved =
-        saveData(
-            STORAGE_KEY,
-            normalized
-        );
-
-
-    if (
-        saved
-    ) {
-
-        scheduleSync(
-            STORAGE_KEY,
-            normalized
-        );
-
-    }
-
-
-    return saved;
-
-}
-
-
-/* =========================================================
-   ADD INCOME
-========================================================= */
-
-export function addIncome(
-    incomeData = {}
-) {
-
-    const incomes =
-        getIncomes();
-
-
-    const now =
-        Date.now();
-
-
-    const npr =
-        toNumber(
-            incomeData.npr
-        );
-
-
-    const inr =
-        toNumber(
-            incomeData.inr
-        );
-
-
-    let total =
-        toNumber(
-            incomeData.total
-        );
-
-
-    if (
-        total === 0
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        total === 0 &&
-        incomeData.amount !== undefined
-    ) {
-
-        total =
-            toNumber(
-                incomeData.amount
-            );
-
-    }
-
-
-    const income = {
-
-        id:
-            incomeData.id ||
-            createId(),
-
-
-        sourceName:
-            String(
-                incomeData.sourceName ??
-                incomeData.source ??
-                ""
-            ).trim(),
-
-
-        category:
-            String(
-                incomeData.category ??
-                ""
-            ).trim(),
-
-
-        date:
-            incomeData.date ||
-            getToday(),
-
-
-        npr,
-
-        inr,
-
-        total,
-
-        amount:
-            total,
-
-
-        note:
-            String(
-                incomeData.note ??
-                ""
-            ).trim(),
-
-
-        createdAt:
-            incomeData.createdAt ||
-            now,
-
-
-        updatedAt:
-            now
-
-    };
-
-
-    incomes.push(
-        income
-    );
-
-
-    saveIncomes(
-        incomes
-    );
-
-
-    return income;
-
-}
-
-
-/* =========================================================
-   UPDATE INCOME
-========================================================= */
-
-export function updateIncome(
-    id,
-    changes = {}
-) {
-
-    const incomes =
-        getIncomes();
-
-
-    const index =
-        incomes.findIndex(
-            (item) =>
-                item.id === id
-        );
-
-
-    if (
-        index === -1
-    ) {
-
-        return null;
-
-    }
-
-
-    const oldIncome =
-        incomes[index];
-
-
-    const updated = {
-
-        ...oldIncome,
-
-        ...changes,
-
-        id:
-            oldIncome.id,
-
-
-        updatedAt:
-            Date.now()
-
-    };
-
-
-    /*
-       Recalculate total when
-       NPR / INR / amount changes.
-    */
-
-    const npr =
-        toNumber(
-            updated.npr
-        );
-
-
-    const inr =
-        toNumber(
-            updated.inr
-        );
-
-
-    let total =
-        toNumber(
-            updated.total
-        );
-
-
-    if (
-        changes.npr !== undefined ||
-        changes.inr !== undefined
-    ) {
-
-        total =
-            npr +
-            (
-                inr *
-                INR_RATE
-            );
-
-    }
-
-
-    if (
-        changes.amount !== undefined &&
-        changes.npr === undefined &&
-        changes.inr === undefined &&
-        changes.total === undefined
-    ) {
-
-        total =
-            toNumber(
-                changes.amount
-            );
-
-    }
-
-
-    updated.npr =
-        npr;
-
-
-    updated.inr =
-        inr;
-
-
-    updated.total =
-        total;
-
-
-    updated.amount =
-        total;
-
-
-    updated.sourceName =
-        String(
-            updated.sourceName ??
-            ""
-        ).trim();
-
-
-    updated.category =
-        String(
-            updated.category ??
-            ""
-        ).trim();
-
-
-    updated.note =
-        String(
-            updated.note ??
-            ""
-        ).trim();
-
-
-    incomes[index] =
-        updated;
-
-
-    saveIncomes(
-        incomes
-    );
-
-
-    return updated;
-
-}
-
-
-/* =========================================================
-   DELETE INCOME
-========================================================= */
-
-export function deleteIncome(
-    id
-) {
-
-    const incomes =
-        getIncomes();
-
-
-    const filtered =
-        incomes.filter(
-            (item) =>
-                item.id !== id
-        );
-
-
-    if (
-        filtered.length ===
-        incomes.length
-    ) {
-
-        return false;
-
-    }
-
-
-    saveIncomes(
-        filtered
-    );
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   GET INCOME BY ID
-========================================================= */
-
-export function getIncomeById(
-    id
-) {
-
-    const incomes =
-        getIncomes();
-
-
-    return (
-        incomes.find(
-            (item) =>
-                item.id === id
-        ) ||
-        null
-    );
-
-}
-
-
-/* =========================================================
-   GET TOTAL INCOME
-========================================================= */
-
-export function getTotalIncome() {
-
-    const incomes =
-        getIncomes();
-
 
     return incomes.reduce(
         (
             total,
-            income
-        ) => {
+            item
+        ) =>
+            total +
+            number(item.total),
 
-            return (
-                total +
-                toNumber(
-                    income.total ??
-                    income.amount
-                )
-            );
-
-        },
         0
     );
-
 }
 
 
 /* =========================================================
-   GET TOTAL NPR
+   SEARCH
 ========================================================= */
 
-export function getTotalIncomeNPR() {
-
-    const incomes =
-        getIncomes();
-
-
-    return incomes.reduce(
-        (
-            total,
-            income
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    income.npr
-                )
-            );
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   GET TOTAL INR
-========================================================= */
-
-export function getTotalIncomeINR() {
-
-    const incomes =
-        getIncomes();
-
-
-    return incomes.reduce(
-        (
-            total,
-            income
-        ) => {
-
-            return (
-                total +
-                toNumber(
-                    income.inr
-                )
-            );
-
-        },
-        0
-    );
-
-}
-
-
-/* =========================================================
-   GET INCOMES BY DATE
-========================================================= */
-
-export function getIncomesByDate(
-    date
+function searchIncomes(
+    query = ""
 ) {
 
-    return getIncomes().filter(
-        (income) =>
-            income.date === date
-    );
-
-}
-
-
-/* =========================================================
-   GET INCOMES BY CATEGORY
-========================================================= */
-
-export function getIncomesByCategory(
-    category
-) {
-
-    const target =
-        String(
-            category || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    return getIncomes().filter(
-        (income) =>
-            String(
-                income.category || ""
-            )
+    const q =
+        String(query)
             .trim()
-            .toLowerCase() ===
-            target
-    );
+            .toLowerCase();
 
+    if (!q) {
+        return getIncomes();
+    }
+
+    return getIncomes()
+        .filter(
+            item =>
+                item.sourceName
+                    .toLowerCase()
+                    .includes(q)
+        );
 }
 
 
 /* =========================================================
-   GET RECENT INCOMES
+   RECENT
 ========================================================= */
 
-export function getRecentIncomes(
+function getRecentIncomes(
     limit = 10
 ) {
 
-    const count =
-        Math.max(
-            0,
-            Number(limit) || 0
-        );
-
-
     return getIncomes()
         .sort(
-            (
-                a,
-                b
-            ) =>
-                (
-                    Number(
-                        b.createdAt
-                    ) || 0
-                ) -
-                (
-                    Number(
-                        a.createdAt
-                    ) || 0
-                )
+            (a, b) =>
+                new Date(b.date) -
+                new Date(a.date)
         )
         .slice(
             0,
-            count
+            limit
         );
-
 }
 
 
 /* =========================================================
-   CLEAR ALL INCOMES
+   CLEAR
 ========================================================= */
 
-export function clearIncomes() {
+function clearIncomes() {
 
-    saveIncomes(
+    saveData(
+        STORAGE_KEY,
         []
     );
 
+    scheduleSync(
+        STORAGE_KEY,
+        []
+    );
 
     return true;
-
 }
 
 
 /* =========================================================
-   EXPORT RATE
+   LIVE CALCULATION
 ========================================================= */
 
-export {
-    INR_RATE
-};
+function calculateIncomeTotal() {
+
+    const nprInput =
+        document.getElementById(
+            "income-amount-npr"
+        );
+
+    const inrInput =
+        document.getElementById(
+            "income-amount-inr"
+        );
+
+    const totalInput =
+        document.getElementById(
+            "income-total-calc"
+        );
+
+    if (
+        !nprInput ||
+        !inrInput ||
+        !totalInput
+    ) {
+        return 0;
+    }
+
+    const npr =
+        number(
+            nprInput.value
+        );
+
+    const inr =
+        number(
+            inrInput.value
+        );
+
+    const total =
+        npr +
+        (
+            inr *
+            INR_RATE
+        );
+
+    totalInput.value =
+        total.toFixed(2);
+
+    totalInput.dataset.value =
+        total.toFixed(2);
+
+    return total;
+}
 
 
 /* =========================================================
-   DEFAULT EXPORT
+   FORM STATUS
 ========================================================= */
 
-export default {
+function setStatus(
+    message,
+    type = "success"
+) {
+
+    const element =
+        document.getElementById(
+            "income-form-status"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        message;
+
+    element.className =
+        "form-status " +
+        type;
+}
+
+
+/* =========================================================
+   SAVE FORM
+========================================================= */
+
+async function saveIncome(
+    event
+) {
+
+    if (event) {
+        event.preventDefault();
+    }
+
+    const source =
+        document.getElementById(
+            "income-source-name"
+        );
+
+    const date =
+        document.getElementById(
+            "income-date"
+        );
+
+    const npr =
+        document.getElementById(
+            "income-amount-npr"
+        );
+
+    const inr =
+        document.getElementById(
+            "income-amount-inr"
+        );
+
+    const editIndex =
+        document.getElementById(
+            "edit-income-index"
+        );
+
+    if (
+        !source ||
+        !date ||
+        !npr ||
+        !inr
+    ) {
+        return false;
+    }
+
+    const sourceName =
+        source.value.trim();
+
+    const dateValue =
+        date.value;
+
+    const nprValue =
+        number(npr.value);
+
+    const inrValue =
+        number(inr.value);
+
+    const total =
+        nprValue +
+        (
+            inrValue *
+            INR_RATE
+        );
+
+    if (!sourceName) {
+
+        setStatus(
+            "Income source is required.",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (!dateValue) {
+
+        setStatus(
+            "Date is required.",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (
+        nprValue <= 0 &&
+        inrValue <= 0
+    ) {
+
+        setStatus(
+            "Please enter NPR or INR amount.",
+            "error"
+        );
+
+        return false;
+    }
+
+    const incomes =
+        getIncomes();
+
+    const index =
+        editIndex
+            ? editIndex.value
+            : "";
+
+    const item = {
+
+        sourceName,
+
+        date:
+            dateValue,
+
+        npr:
+            nprValue,
+
+        inr:
+            inrValue,
+
+        total
+    };
+
+
+    /* EDIT */
+
+    if (
+        index !== ""
+    ) {
+
+        const i =
+            Number(index);
+
+        if (
+            Number.isInteger(i) &&
+            incomes[i]
+        ) {
+
+            incomes[i] =
+                normalizeIncome({
+
+                    ...incomes[i],
+
+                    ...item,
+
+                    id:
+                        incomes[i].id,
+
+                    createdAt:
+                        incomes[i]
+                            .createdAt
+
+                });
+
+            saveIncomes(
+                incomes
+            );
+
+            setStatus(
+                "Income record updated.",
+                "success"
+            );
+        }
+
+    }
+
+    /* NEW */
+
+    else {
+
+        incomes.unshift(
+            normalizeIncome({
+                ...item,
+                id: createId()
+            })
+        );
+
+        saveIncomes(
+            incomes
+        );
+
+        setStatus(
+            "Income record saved.",
+            "success"
+        );
+    }
+
+
+    resetIncomeForm();
+
+    renderIncomePage();
+
+    return false;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetIncomeForm() {
+
+    const form =
+        document.getElementById(
+            "income-form"
+        );
+
+    const editIndex =
+        document.getElementById(
+            "edit-income-index"
+        );
+
+    const date =
+        document.getElementById(
+            "income-date"
+        );
+
+    const submit =
+        document.getElementById(
+            "income-submit-btn"
+        );
+
+    const cancel =
+        document.getElementById(
+            "income-cancel-btn"
+        );
+
+    if (form) {
+        form.reset();
+    }
+
+    if (editIndex) {
+        editIndex.value = "";
+    }
+
+    if (date) {
+        date.value =
+            getToday();
+    }
+
+    if (submit) {
+        submit.textContent =
+            "Save Income";
+    }
+
+    if (cancel) {
+        cancel.classList.add(
+            "hidden"
+        );
+    }
+
+    calculateIncomeTotal();
+}
+
+
+/* =========================================================
+   EDIT
+========================================================= */
+
+function editIncome(
+    index
+) {
+
+    const incomes =
+        getIncomes();
+
+    const item =
+        incomes[
+            Number(index)
+        ];
+
+    if (!item) {
+        return;
+    }
+
+    document.getElementById(
+        "edit-income-index"
+    ).value =
+        index;
+
+    document.getElementById(
+        "income-source-name"
+    ).value =
+        item.sourceName;
+
+    document.getElementById(
+        "income-date"
+    ).value =
+        item.date;
+
+    document.getElementById(
+        "income-amount-npr"
+    ).value =
+        item.npr;
+
+    document.getElementById(
+        "income-amount-inr"
+    ).value =
+        item.inr;
+
+    document.getElementById(
+        "income-submit-btn"
+    ).textContent =
+        "Update Income";
+
+    document.getElementById(
+        "income-cancel-btn"
+    ).classList.remove(
+        "hidden"
+    );
+
+    calculateIncomeTotal();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function deleteIncome(
+    index
+) {
+
+    const incomes =
+        getIncomes();
+
+    const item =
+        incomes[
+            Number(index)
+        ];
+
+    if (!item) {
+        return;
+    }
+
+    await deleteIncomeById(
+        item.id
+    );
+
+    renderIncomePage();
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function getProfile() {
+
+    return {
+
+        name:
+            getProfileValue(
+                "name",
+                ""
+            ),
+
+        mobile:
+            getProfileValue(
+                "mobile",
+                ""
+            ),
+
+        email:
+            getProfileValue(
+                "email",
+                ""
+            ),
+
+        address:
+            getProfileValue(
+                "address",
+                ""
+            ),
+
+        avatar:
+            getProfileValue(
+                "avatar",
+                ""
+            )
+    };
+}
+
+
+/* =========================================================
+   GLOBAL BRIDGE
+========================================================= */
+
+window.calculateIncomeTotal =
+    calculateIncomeTotal;
+
+window.saveIncome =
+    saveIncome;
+
+window.resetIncomeForm =
+    resetIncomeForm;
+
+window.editIncome =
+    editIncome;
+
+window.deleteIncome =
+    deleteIncome;
+
+
+/* =========================================================
+   PAGE RENDER CALLBACK
+========================================================= */
+
+function renderIncomePage() {
+
+    if (
+        typeof window.renderIncomes ===
+        "function" &&
+        window.renderIncomes !==
+        renderIncomePage
+    ) {
+        window.renderIncomes();
+    }
+
+    const event =
+        new CustomEvent(
+            "incomeDataChanged"
+        );
+
+    document.dispatchEvent(
+        event
+    );
+}
+
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+export {
+
+    INR_RATE,
+
+    getToday,
+
+    normalizeIncome,
 
     getIncomes,
 
@@ -918,24 +959,65 @@ export default {
 
     updateIncome,
 
-    deleteIncome,
-
-    getIncomeById,
+    deleteIncomeById,
 
     getTotalIncome,
 
-    getTotalIncomeNPR,
-
-    getTotalIncomeINR,
-
-    getIncomesByDate,
-
-    getIncomesByCategory,
+    searchIncomes,
 
     getRecentIncomes,
 
     clearIncomes,
 
-    INR_RATE
+    calculateIncomeTotal,
 
+    saveIncome,
+
+    resetIncomeForm,
+
+    editIncome,
+
+    deleteIncome,
+
+    getProfile
+};
+
+
+export default {
+
+    INR_RATE,
+
+    getToday,
+
+    normalizeIncome,
+
+    getIncomes,
+
+    saveIncomes,
+
+    addIncome,
+
+    updateIncome,
+
+    deleteIncomeById,
+
+    getTotalIncome,
+
+    searchIncomes,
+
+    getRecentIncomes,
+
+    clearIncomes,
+
+    calculateIncomeTotal,
+
+    saveIncome,
+
+    resetIncomeForm,
+
+    editIncome,
+
+    deleteIncome,
+
+    getProfile
 };
