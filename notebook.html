@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
 
@@ -40,45 +40,35 @@
             font-family: "Poppins", sans-serif;
         }
 
-        body {
-            background: #f3f4f6;
-            color: #111827;
+        html, body {
+            background: #020617;
+            color: #f8fafc;
         }
 
-        html[data-theme="dark"] body {
-            background: #111827;
-            color: #f9fafb;
+        body {
+            background: #020617;
+            color: #f8fafc;
         }
 
         .app-panel {
-            background: white;
-            border: 1px solid #e5e7eb;
-        }
-
-        html[data-theme="dark"] .app-panel {
-            background: #1f2937;
-            border-color: #374151;
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(51, 65, 85, 0.75);
+            color: #f8fafc;
         }
 
         .app-input {
             width: 100%;
-            border: 1px solid #d1d5db;
+            border: 1px solid rgba(51, 65, 85, 0.75);
             border-radius: 0.75rem;
             padding: 0.75rem 1rem;
-            background: white;
-            color: #111827;
-        }
-
-        html[data-theme="dark"] .app-input {
-            background: #111827;
-            color: #f9fafb;
-            border-color: #4b5563;
+            background: rgba(15, 23, 42, 0.75);
+            color: #f8fafc;
         }
 
         .app-input:focus {
-            border-color: #6366f1;
-            box-shadow:
-                0 0 0 3px rgba(99, 102, 241, 0.12);
+            border-color: rgba(52, 211, 153, 0.8);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+            outline: none;
         }
 
         .sidebar-link {
@@ -87,25 +77,18 @@
             gap: 0.75rem;
             padding: 0.75rem 1rem;
             border-radius: 0.75rem;
-            color: #374151;
+            color: #cbd5e1;
             transition: 0.2s;
         }
 
-        html[data-theme="dark"] .sidebar-link {
-            color: #d1d5db;
-        }
-
         .sidebar-link:hover {
-            background: #f3f4f6;
-        }
-
-        html[data-theme="dark"] .sidebar-link:hover {
-            background: #374151;
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .sidebar-link.active {
-            background: #4f46e5;
-            color: white !important;
+            background: rgba(16, 185, 129, 0.14);
+            color: #f8fafc !important;
+            border: 1px solid rgba(16, 185, 129, 0.28);
         }
 
         .note-card {
@@ -117,7 +100,7 @@
         }
 
         .priority-normal {
-            border-left: 4px solid #6b7280;
+            border-left: 4px solid #64748b;
         }
 
         .priority-important {
@@ -150,9 +133,7 @@
 
 </head>
 
-
 <body>
-
 
     <!-- SIDEBAR BACKDROP -->
 
@@ -161,29 +142,28 @@
         class="fixed inset-0 z-40 hidden bg-black/50"
     ></div>
 
-
     <!-- SIDEBAR -->
 
     <aside
         id="sidebar"
-        class="fixed left-0 top-0 z-50 h-full w-72 -translate-x-full overflow-y-auto border-r bg-white p-4 transition-transform duration-300 dark:border-gray-700 dark:bg-gray-900 md:translate-x-0"
+        class="fixed left-0 top-0 z-50 h-full w-72 -translate-x-full overflow-y-auto border-r border-slate-800 bg-slate-950 p-4 transition-transform duration-300 md:translate-x-0"
     >
 
         <div class="mb-6 flex items-center gap-3 px-2">
 
             <div
-                class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white"
+                class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white"
             >
                 <i class="fa-solid fa-book"></i>
             </div>
 
             <div>
 
-                <h1 class="text-lg font-bold">
+                <h1 class="text-lg font-bold text-white">
                     Digital NoteBook
                 </h1>
 
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <p class="text-xs text-slate-400">
                     Personal Notebook
                 </p>
 
@@ -191,17 +171,14 @@
 
         </div>
 
-
-        <!-- PROFILE -->
-
         <div
-            class="mb-5 rounded-2xl bg-gray-100 p-4 dark:bg-gray-800"
+            class="mb-5 rounded-2xl border border-slate-800 bg-slate-900 p-4"
         >
 
             <div class="flex items-center gap-3">
 
                 <div
-                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-bold text-white"
+                    class="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-emerald-600 text-xl font-bold text-white"
                 >
 
                     <span id="sidebar-avatar-letter">
@@ -221,19 +198,18 @@
 
                     <p
                         id="sidebar-profile-name"
-                        class="truncate font-semibold"
+                        class="truncate font-semibold text-white"
                     >
                         User
                     </p>
 
-                    <p class="truncate text-xs text-gray-500 dark:text-gray-400">
+                    <p class="truncate text-xs text-slate-400">
                         Personal Account
                     </p>
 
                 </div>
 
             </div>
-
 
             <div class="mt-4 space-y-2">
 
@@ -269,164 +245,104 @@
 
         </div>
 
-
-        <!-- NAVIGATION -->
-
         <nav class="space-y-1">
 
-            <a
-                href="./index.html"
-                class="sidebar-link"
-            >
+            <a href="./index.html" class="sidebar-link">
                 <i class="fa-solid fa-house w-5"></i>
-                <span data-i18n="dashboard">
-                    Dashboard
-                </span>
+                <span>Dashboard</span>
             </a>
 
-            <a
-                href="./add-income.html"
-                class="sidebar-link"
-            >
+            <a href="./add-income.html" class="sidebar-link">
                 <i class="fa-solid fa-money-bill-trend-up w-5"></i>
-                <span data-i18n="income">
-                    Income
-                </span>
+                <span>Income</span>
             </a>
 
-            <a
-                href="./add-saving.html"
-                class="sidebar-link"
-            >
+            <a href="./add-saving.html" class="sidebar-link">
                 <i class="fa-solid fa-piggy-bank w-5"></i>
-                <span data-i18n="saving">
-                    Saving
-                </span>
+                <span>Saving</span>
             </a>
 
-            <a
-                href="./add-transaction.html"
-                class="sidebar-link"
-            >
+            <a href="./add-transaction.html" class="sidebar-link">
                 <i class="fa-solid fa-right-left w-5"></i>
-                <span data-i18n="transaction">
-                    Transaction
-                </span>
+                <span>Transaction</span>
             </a>
 
-            <a
-                href="./notebook.html"
-                class="sidebar-link active"
-            >
+            <a href="./notebook.html" class="sidebar-link active">
                 <i class="fa-solid fa-book-open w-5"></i>
-                <span data-i18n="notebook">
-                    Notebook
-                </span>
+                <span>Notebook</span>
             </a>
 
-            <a
-                href="./calendar.html"
-                class="sidebar-link"
-            >
+            <a href="./calendar.html" class="sidebar-link">
                 <i class="fa-solid fa-calendar-days w-5"></i>
-                <span data-i18n="calendar">
-                    Calendar
-                </span>
+                <span>Calendar</span>
             </a>
 
-            <a
-                href="./calculate.html"
-                class="sidebar-link"
-            >
+            <a href="./calculate.html" class="sidebar-link">
                 <i class="fa-solid fa-calculator w-5"></i>
-                <span data-i18n="calculator">
-                    Calculator
-                </span>
+                <span>Calculator</span>
             </a>
 
-            <a
-                href="./account.html"
-                class="sidebar-link"
-            >
+            <a href="./account.html" class="sidebar-link">
                 <i class="fa-solid fa-user w-5"></i>
-                <span data-i18n="account">
-                    Account
-                </span>
+                <span>Account</span>
             </a>
 
-            <a
-                href="./setting.html"
-                class="sidebar-link"
-            >
+            <a href="./setting.html" class="sidebar-link">
                 <i class="fa-solid fa-gear w-5"></i>
-                <span data-i18n="settings">
-                    Settings
-                </span>
+                <span>Settings</span>
             </a>
 
         </nav>
 
     </aside>
 
-
-    <!-- MAIN -->
-
     <main class="min-h-screen md:ml-72">
 
-
-        <!-- HEADER -->
-
         <header
-            class="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-700 dark:bg-gray-900/95"
+            class="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
         >
 
-            <div
-                class="flex items-center justify-between gap-3 px-4 py-3 md:px-6"
-            >
+            <div class="flex items-center justify-between gap-3 px-4 py-3 md:px-6">
 
                 <div class="flex items-center gap-3">
 
                     <button
                         id="menu-button"
                         type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 md:hidden"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 md:hidden"
                     >
-                        <i class="fa-solid fa-bars"></i>
+                        <i class="fa-solid fa-bars text-slate-200"></i>
                     </button>
 
                     <div>
 
-                        <h2 class="text-lg font-bold md:text-xl">
+                        <h2 class="text-lg font-bold text-white md:text-xl">
                             Personal Notebook
                         </h2>
 
                         <p
                             id="current-date-time"
-                            class="text-xs text-gray-500 dark:text-gray-400"
+                            class="text-xs text-slate-400"
                         ></p>
 
                     </div>
 
                 </div>
 
-
                 <div class="flex items-center gap-2">
 
                     <button
                         id="privacy-toggle"
                         type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800"
                     >
-                        <i
-                            id="privacy-icon"
-                            class="fa-solid fa-eye"
-                        ></i>
+                        <i id="privacy-icon" class="fa-solid fa-eye text-slate-200"></i>
                     </button>
 
                     <button
                         id="language-toggle"
                         type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xs font-bold dark:bg-gray-800"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-xs font-bold text-slate-200"
                     >
                         EN
                     </button>
@@ -434,12 +350,9 @@
                     <button
                         id="theme-toggle"
                         type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800"
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800"
                     >
-                        <i
-                            id="theme-icon"
-                            class="fa-solid fa-moon"
-                        ></i>
+                        <i id="theme-icon" class="fa-solid fa-moon text-slate-200"></i>
                     </button>
 
                 </div>
@@ -448,336 +361,107 @@
 
         </header>
 
-
-        <!-- PAGE -->
-
         <div class="mx-auto max-w-6xl p-4 md:p-6">
 
+            <section class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
 
-            <!-- DAILY TOOLS -->
-
-            <section
-                class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4"
-            >
-
-                <button
-                    type="button"
-                    data-quick-category="todo"
-                    class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm"
-                >
-
-                    <i class="fa-solid fa-check-circle text-xl text-green-600"></i>
-
-                    <p class="mt-2 text-sm font-semibold">
-                        To-Do
-                    </p>
-
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                        Daily tasks
-                    </p>
-
+                <button type="button" data-quick-category="todo" class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm">
+                    <i class="fa-solid fa-check-circle text-xl text-emerald-400"></i>
+                    <p class="mt-2 text-sm font-semibold text-white">To-Do</p>
+                    <p class="text-xs text-slate-400">Daily tasks</p>
                 </button>
 
-
-                <button
-                    type="button"
-                    data-quick-category="shopping"
-                    class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm"
-                >
-
-                    <i class="fa-solid fa-cart-shopping text-xl text-orange-600"></i>
-
-                    <p class="mt-2 text-sm font-semibold">
-                        Shopping
-                    </p>
-
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                        Shopping list
-                    </p>
-
+                <button type="button" data-quick-category="shopping" class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm">
+                    <i class="fa-solid fa-cart-shopping text-xl text-orange-400"></i>
+                    <p class="mt-2 text-sm font-semibold text-white">Shopping</p>
+                    <p class="text-xs text-slate-400">Shopping list</p>
                 </button>
 
-
-                <button
-                    type="button"
-                    data-quick-category="contact"
-                    class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm"
-                >
-
-                    <i class="fa-solid fa-address-book text-xl text-blue-600"></i>
-
-                    <p class="mt-2 text-sm font-semibold">
-                        Contact
-                    </p>
-
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                        Important contact
-                    </p>
-
+                <button type="button" data-quick-category="contact" class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm">
+                    <i class="fa-solid fa-address-book text-xl text-sky-400"></i>
+                    <p class="mt-2 text-sm font-semibold text-white">Contact</p>
+                    <p class="text-xs text-slate-400">Important contact</p>
                 </button>
 
-
-                <button
-                    type="button"
-                    data-quick-category="idea"
-                    class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm"
-                >
-
-                    <i class="fa-solid fa-lightbulb text-xl text-yellow-500"></i>
-
-                    <p class="mt-2 text-sm font-semibold">
-                        Ideas
-                    </p>
-
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                        Save ideas
-                    </p>
-
+                <button type="button" data-quick-category="idea" class="quick-category app-panel rounded-2xl p-4 text-left shadow-sm">
+                    <i class="fa-solid fa-lightbulb text-xl text-yellow-400"></i>
+                    <p class="mt-2 text-sm font-semibold text-white">Ideas</p>
+                    <p class="text-xs text-slate-400">Save ideas</p>
                 </button>
 
             </section>
 
-
-            <!-- ADD NOTE -->
-
-            <section
-                class="app-panel mb-6 rounded-2xl p-5 shadow-sm"
-            >
+            <section class="app-panel mb-6 rounded-2xl p-5 shadow-sm">
 
                 <div class="mb-5">
 
-                    <h3
-                        id="form-title"
-                        class="text-lg font-bold"
-                    >
-                        Add Note
-                    </h3>
-
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Write something useful for your daily life.
-                    </p>
+                    <h3 id="form-title" class="text-lg font-bold text-white">Add Note</h3>
+                    <p class="text-sm text-slate-400">Write something useful for your daily life.</p>
 
                 </div>
 
-
                 <form id="note-form">
 
-                    <input
-                        type="hidden"
-                        id="edit-note-id"
-                    >
-
+                    <input type="hidden" id="edit-note-id">
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
+                        <div class="md:col-span-2">
+                            <label for="note-title" class="mb-2 block text-sm font-medium text-slate-200">Title</label>
+                            <input id="note-title" type="text" placeholder="Example: Pay electricity bill" class="app-input" required>
+                        </div>
 
-                        <!-- TITLE -->
+                        <div>
+                            <label for="note-category" class="mb-2 block text-sm font-medium text-slate-200">Category</label>
+                            <select id="note-category" class="app-input">
+                                <option value="general">General</option>
+                                <option value="todo">To-Do</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="contact">Contact</option>
+                                <option value="important">Important</option>
+                                <option value="idea">Idea</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="travel">Travel</option>
+                                <option value="study">Study</option>
+                                <option value="reminder">Reminder</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="note-priority" class="mb-2 block text-sm font-medium text-slate-200">Priority</label>
+                            <select id="note-priority" class="app-input">
+                                <option value="normal">Normal</option>
+                                <option value="important">Important</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="note-date" class="mb-2 block text-sm font-medium text-slate-200">Date</label>
+                            <input id="note-date" type="date" class="app-input" required>
+                        </div>
+
+                        <div>
+                            <label for="note-reminder" class="mb-2 block text-sm font-medium text-slate-200">Reminder</label>
+                            <input id="note-reminder" type="datetime-local" class="app-input">
+                        </div>
 
                         <div class="md:col-span-2">
-
-                            <label
-                                for="note-title"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Title
-                            </label>
-
-                            <input
-                                id="note-title"
-                                type="text"
-                                placeholder="Example: Pay electricity bill"
-                                class="app-input"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- CATEGORY -->
-
-                        <div>
-
-                            <label
-                                for="note-category"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Category
-                            </label>
-
-                            <select
-                                id="note-category"
-                                class="app-input"
-                            >
-
-                                <option value="general">
-                                    General
-                                </option>
-
-                                <option value="todo">
-                                    To-Do
-                                </option>
-
-                                <option value="shopping">
-                                    Shopping
-                                </option>
-
-                                <option value="contact">
-                                    Contact
-                                </option>
-
-                                <option value="important">
-                                    Important
-                                </option>
-
-                                <option value="idea">
-                                    Idea
-                                </option>
-
-                                <option value="work">
-                                    Work
-                                </option>
-
-                                <option value="personal">
-                                    Personal
-                                </option>
-
-                                <option value="travel">
-                                    Travel
-                                </option>
-
-                                <option value="study">
-                                    Study
-                                </option>
-
-                                <option value="reminder">
-                                    Reminder
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- PRIORITY -->
-
-                        <div>
-
-                            <label
-                                for="note-priority"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Priority
-                            </label>
-
-                            <select
-                                id="note-priority"
-                                class="app-input"
-                            >
-
-                                <option value="normal">
-                                    Normal
-                                </option>
-
-                                <option value="important">
-                                    Important
-                                </option>
-
-                                <option value="urgent">
-                                    Urgent
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <!-- DATE -->
-
-                        <div>
-
-                            <label
-                                for="note-date"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Date
-                            </label>
-
-                            <input
-                                id="note-date"
-                                type="date"
-                                class="app-input"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- REMINDER -->
-
-                        <div>
-
-                            <label
-                                for="note-reminder"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Reminder
-                            </label>
-
-                            <input
-                                id="note-reminder"
-                                type="datetime-local"
-                                class="app-input"
-                            >
-
-                        </div>
-
-
-                        <!-- CONTENT -->
-
-                        <div class="md:col-span-2">
-
-                            <label
-                                for="note-content"
-                                class="mb-2 block text-sm font-medium"
-                            >
-                                Note / Details
-                            </label>
-
-                            <textarea
-                                id="note-content"
-                                rows="6"
-                                placeholder="Write your note here..."
-                                class="app-input resize-y"
-                            ></textarea>
-
+                            <label for="note-content" class="mb-2 block text-sm font-medium text-slate-200">Note / Details</label>
+                            <textarea id="note-content" rows="6" placeholder="Write your note here..." class="app-input resize-y"></textarea>
                         </div>
 
                     </div>
 
-
-                    <!-- ACTION -->
-
                     <div class="mt-5 flex flex-wrap gap-3">
 
-                        <button
-                            type="submit"
-                            class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700"
-                        >
-
+                        <button type="submit" class="rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-500">
                             <i class="fa-solid fa-floppy-disk mr-2"></i>
-
-                            <span id="save-button-text">
-                                Save Note
-                            </span>
-
+                            <span id="save-button-text">Save Note</span>
                         </button>
 
-
-                        <button
-                            id="cancel-edit"
-                            type="button"
-                            class="hidden rounded-xl bg-gray-200 px-5 py-3 font-semibold text-gray-800 dark:bg-gray-700 dark:text-white"
-                        >
+                        <button id="cancel-edit" type="button" class="hidden rounded-xl bg-slate-700 px-5 py-3 font-semibold text-white">
                             <i class="fa-solid fa-xmark mr-2"></i>
                             Cancel
                         </button>
@@ -788,180 +472,64 @@
 
             </section>
 
+            <section class="app-panel mb-6 rounded-2xl p-4 shadow-sm">
 
-            <!-- SEARCH -->
-
-            <section
-                class="app-panel mb-6 rounded-2xl p-4 shadow-sm"
-            >
-
-                <div
-                    class="flex flex-col gap-3 md:flex-row"
-                >
+                <div class="flex flex-col gap-3 md:flex-row">
 
                     <div class="relative flex-1">
-
-                        <i
-                            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        ></i>
-
-                        <input
-                            id="search-notes"
-                            type="search"
-                            placeholder="Search notes..."
-                            class="app-input pl-10"
-                        >
-
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="search-notes" type="search" placeholder="Search notes..." class="app-input pl-10">
                     </div>
 
-
-                    <select
-                        id="filter-category"
-                        class="app-input md:w-52"
-                    >
-
-                        <option value="all">
-                            All Categories
-                        </option>
-
-                        <option value="general">
-                            General
-                        </option>
-
-                        <option value="todo">
-                            To-Do
-                        </option>
-
-                        <option value="shopping">
-                            Shopping
-                        </option>
-
-                        <option value="contact">
-                            Contact
-                        </option>
-
-                        <option value="important">
-                            Important
-                        </option>
-
-                        <option value="idea">
-                            Idea
-                        </option>
-
-                        <option value="work">
-                            Work
-                        </option>
-
-                        <option value="personal">
-                            Personal
-                        </option>
-
-                        <option value="travel">
-                            Travel
-                        </option>
-
-                        <option value="study">
-                            Study
-                        </option>
-
-                        <option value="reminder">
-                            Reminder
-                        </option>
-
+                    <select id="filter-category" class="app-input md:w-52">
+                        <option value="all">All Categories</option>
+                        <option value="general">General</option>
+                        <option value="todo">To-Do</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="contact">Contact</option>
+                        <option value="important">Important</option>
+                        <option value="idea">Idea</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="travel">Travel</option>
+                        <option value="study">Study</option>
+                        <option value="reminder">Reminder</option>
                     </select>
 
-
-                    <select
-                        id="sort-notes"
-                        class="app-input md:w-52"
-                    >
-
-                        <option value="newest">
-                            Newest First
-                        </option>
-
-                        <option value="oldest">
-                            Oldest First
-                        </option>
-
-                        <option value="priority">
-                            Priority
-                        </option>
-
-                        <option value="title">
-                            Title
-                        </option>
-
+                    <select id="sort-notes" class="app-input md:w-52">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="priority">Priority</option>
+                        <option value="title">Title</option>
                     </select>
 
                 </div>
 
             </section>
 
-
-            <!-- NOTE COUNT -->
-
-            <div
-                class="mb-4 flex items-center justify-between"
-            >
+            <div class="mb-4 flex items-center justify-between">
 
                 <div>
-
-                    <h3 class="font-bold">
-                        My Notes
-                    </h3>
-
-                    <p
-                        id="note-count"
-                        class="text-xs text-gray-500 dark:text-gray-400"
-                    >
-                        0 notes
-                    </p>
-
+                    <h3 class="font-bold text-white">My Notes</h3>
+                    <p id="note-count" class="text-xs text-slate-400">0 notes</p>
                 </div>
 
-                <button
-                    id="clear-completed"
-                    type="button"
-                    class="text-sm font-medium text-indigo-600 dark:text-indigo-400"
-                >
+                <button id="clear-completed" type="button" class="text-sm font-medium text-emerald-400">
                     Clear Completed
                 </button>
 
             </div>
 
+            <section id="notes-container" class="grid grid-cols-1 gap-4 md:grid-cols-2"></section>
 
-            <!-- NOTES -->
+            <section id="empty-notes" class="app-panel hidden rounded-2xl p-10 text-center">
 
-            <section
-                id="notes-container"
-                class="grid grid-cols-1 gap-4 md:grid-cols-2"
-            >
-            </section>
-
-
-            <!-- EMPTY -->
-
-            <section
-                id="empty-notes"
-                class="app-panel hidden rounded-2xl p-10 text-center"
-            >
-
-                <div
-                    class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800"
-                >
-
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-slate-400">
                     <i class="fa-solid fa-book-open text-2xl"></i>
-
                 </div>
 
-                <h3 class="font-semibold">
-                    No notes found
-                </h3>
-
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Add your first note above.
-                </p>
+                <h3 class="font-semibold text-white">No notes found</h3>
+                <p class="mt-1 text-sm text-slate-400">Add your first note above.</p>
 
             </section>
 
@@ -969,25 +537,11 @@
 
     </main>
 
-
-    <!-- TOAST -->
-
-    <div
-        id="toast-container"
-        class="fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2"
-    >
-
-        <div
-            id="toast"
-            class="rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white shadow-xl"
-        >
+    <div id="toast-container" class="fixed bottom-5 left-1/2 z-[100] hidden -translate-x-1/2">
+        <div id="toast" class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-xl">
             Saved
         </div>
-
     </div>
-
-
-    <!-- JAVASCRIPT -->
 
     <script type="module">
 
@@ -998,1501 +552,686 @@
             deleteNote
         } from "./js/notes.js";
 
-        import {
-            initTheme,
-            getTheme,
-            setTheme
-        } from "./js/theme.js";
+        const noteForm = document.getElementById("note-form");
+        const searchNotes = document.getElementById("search-notes");
+        const filterCategory = document.getElementById("filter-category");
+        const sortNotes = document.getElementById("sort-notes");
+        const notesContainer = document.getElementById("notes-container");
+        const emptyNotes = document.getElementById("empty-notes");
+        const noteTitle = document.getElementById("note-title");
+        const noteCategory = document.getElementById("note-category");
+        const notePriority = document.getElementById("note-priority");
+        const noteDate = document.getElementById("note-date");
+        const noteReminder = document.getElementById("note-reminder");
+        const noteContent = document.getElementById("note-content");
+        const editNoteId = document.getElementById("edit-note-id");
+        const formTitle = document.getElementById("form-title");
+        const saveButtonText = document.getElementById("save-button-text");
+        const cancelEdit = document.getElementById("cancel-edit");
+        const toastContainer = document.getElementById("toast-container");
+        const toast = document.getElementById("toast");
 
-        import {
-            getLanguage,
-            setLanguage,
-            applyTranslations
-        } from "./js/language.js";
-
-
-        /* =====================================
-           ELEMENTS
-           ===================================== */
-
-        const form =
-            document.getElementById(
-                "note-form"
-            );
-
-        const titleInput =
-            document.getElementById(
-                "note-title"
-            );
-
-        const categoryInput =
-            document.getElementById(
-                "note-category"
-            );
-
-        const priorityInput =
-            document.getElementById(
-                "note-priority"
-            );
-
-        const dateInput =
-            document.getElementById(
-                "note-date"
-            );
-
-        const reminderInput =
-            document.getElementById(
-                "note-reminder"
-            );
-
-        const contentInput =
-            document.getElementById(
-                "note-content"
-            );
-
-        const editIdInput =
-            document.getElementById(
-                "edit-note-id"
-            );
-
-        const notesContainer =
-            document.getElementById(
-                "notes-container"
-            );
-
-        const emptyNotes =
-            document.getElementById(
-                "empty-notes"
-            );
-
-
-        /* =====================================
-           INIT
-           ===================================== */
-
-        initTheme();
-
-        setToday();
-
-        loadProfile();
-
-        renderNotes();
-
-        updateThemeIcon();
-
-        updateLanguageButton();
-
-        updateDateTime();
-
-        setInterval(
-            updateDateTime,
-            1000
-        );
-
-
-        /* =====================================
-           DATE
-           ===================================== */
-
-        function setToday() {
-
-            if (!dateInput.value) {
-
-                dateInput.value =
-                    new Date()
-                        .toISOString()
-                        .split("T")[0];
-
-            }
-
+        function nowISODate() {
+            return new Date().toISOString().slice(0, 10);
         }
 
-
-        function updateDateTime() {
-
-            document.getElementById(
-                "current-date-time"
-            ).textContent =
-                new Date().toLocaleString(
-                    getLanguage() === "ne"
-                        ? "ne-NP"
-                        : "en-US",
-                    {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                    }
-                );
-
+        function setTodayDate() {
+            if (noteDate) noteDate.value = nowISODate();
         }
-
-
-        /* =====================================
-           PROFILE
-           ===================================== */
-
-        function loadProfile() {
-
-            const name =
-                localStorage.getItem(
-                    "profile_name"
-                ) || "";
-
-            const address =
-                localStorage.getItem(
-                    "profile_address"
-                ) || "";
-
-            const mobile =
-                localStorage.getItem(
-                    "profile_mobile"
-                ) || "";
-
-            const email =
-                localStorage.getItem(
-                    "profile_email"
-                ) || "";
-
-            const avatar =
-                localStorage.getItem(
-                    "profile_avatar"
-                ) || "";
-
-
-            document.getElementById(
-                "input-full-name"
-            ).value = name;
-
-            document.getElementById(
-                "input-address"
-            ).value = address;
-
-            document.getElementById(
-                "input-mobile"
-            ).value = mobile;
-
-            document.getElementById(
-                "input-email"
-            ).value = email;
-
-            document.getElementById(
-                "sidebar-profile-name"
-            ).textContent =
-                name || "User";
-
-
-            if (avatar) {
-
-                const image =
-                    document.getElementById(
-                        "sidebar-avatar-image"
-                    );
-
-                const letter =
-                    document.getElementById(
-                        "sidebar-avatar-letter"
-                    );
-
-                image.src = avatar;
-
-                image.classList.remove(
-                    "hidden"
-                );
-
-                letter.classList.add(
-                    "hidden"
-                );
-
-            } else {
-
-                document.getElementById(
-                    "sidebar-avatar-letter"
-                ).textContent =
-                    (
-                        name
-                        ? name.charAt(0)
-                        : "U"
-                    ).toUpperCase();
-
-            }
-
-        }
-
-
-        function saveProfileField(
-            id,
-            key
-        ) {
-
-            document.getElementById(
-                id
-            ).addEventListener(
-                "change",
-                event => {
-
-                    localStorage.setItem(
-                        key,
-                        event.target.value.trim()
-                    );
-
-                    if (
-                        key ===
-                        "profile_name"
-                    ) {
-
-                        document.getElementById(
-                            "sidebar-profile-name"
-                        ).textContent =
-                            event.target.value.trim()
-                            || "User";
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        saveProfileField(
-            "input-full-name",
-            "profile_name"
-        );
-
-        saveProfileField(
-            "input-address",
-            "profile_address"
-        );
-
-        saveProfileField(
-            "input-mobile",
-            "profile_mobile"
-        );
-
-        saveProfileField(
-            "input-email",
-            "profile_email"
-        );
-
-
-        /* =====================================
-           ADD / UPDATE
-           ===================================== */
-
-        form.addEventListener(
-            "submit",
-            event => {
-
-                event.preventDefault();
-
-
-                if (
-                    !titleInput.value.trim()
-                ) {
-
-                    showToast(
-                        "Please enter a title."
-                    );
-
-                    titleInput.focus();
-
-                    return;
-
-                }
-
-
-                const data = {
-
-                    title:
-                        titleInput.value.trim(),
-
-                    content:
-                        contentInput.value.trim(),
-
-                    category:
-                        categoryInput.value,
-
-                    priority:
-                        priorityInput.value,
-
-                    date:
-                        dateInput.value,
-
-                    reminder:
-                        reminderInput.value,
-
-                    completed: false
-
-                };
-
-
-                const editId =
-                    editIdInput.value;
-
-
-                if (editId) {
-
-                    updateNote(
-                        editId,
-                        data
-                    );
-
-                    showToast(
-                        "Note updated successfully."
-                    );
-
-                } else {
-
-                    addNote(data);
-
-                    showToast(
-                        "Note saved successfully."
-                    );
-
-                }
-
-
-                resetForm();
-
-                renderNotes();
-
-            }
-        );
-
-
-        /* =====================================
-           RESET
-           ===================================== */
-
-        function resetForm() {
-
-            form.reset();
-
-            editIdInput.value = "";
-
-            document.getElementById(
-                "form-title"
-            ).textContent =
-                "Add Note";
-
-            document.getElementById(
-                "save-button-text"
-            ).textContent =
-                "Save Note";
-
-            document.getElementById(
-                "cancel-edit"
-            ).classList.add(
-                "hidden"
-            );
-
-            setToday();
-
-        }
-
-
-        document.getElementById(
-            "cancel-edit"
-        ).addEventListener(
-            "click",
-            resetForm
-        );
-
-
-        /* =====================================
-           RENDER
-           ===================================== */
-
-        function renderNotes() {
-
-            let notes =
-                getNotes();
-
-
-            const search =
-                document.getElementById(
-                    "search-notes"
-                ).value
-                    .trim()
-                    .toLowerCase();
-
-
-            const category =
-                document.getElementById(
-                    "filter-category"
-                ).value;
-
-
-            const sort =
-                document.getElementById(
-                    "sort-notes"
-                ).value;
-
-
-            /* SEARCH */
-
-            if (search) {
-
-                notes =
-                    notes.filter(
-                        note => {
-
-                            const title =
-                                String(
-                                    note.title || ""
-                                ).toLowerCase();
-
-                            const content =
-                                String(
-                                    note.content || ""
-                                ).toLowerCase();
-
-                            const categoryText =
-                                String(
-                                    note.category || ""
-                                ).toLowerCase();
-
-                            return (
-                                title.includes(search)
-                                ||
-                                content.includes(search)
-                                ||
-                                categoryText.includes(search)
-                            );
-
-                        }
-                    );
-
-            }
-
-
-            /* CATEGORY */
-
-            if (category !== "all") {
-
-                notes =
-                    notes.filter(
-                        note =>
-                            note.category ===
-                            category
-                    );
-
-            }
-
-
-            /* SORT */
-
-            notes.sort(
-                (a, b) => {
-
-                    if (
-                        sort === "oldest"
-                    ) {
-
-                        return (
-                            Number(
-                                a.createdAt || 0
-                            )
-                            -
-                            Number(
-                                b.createdAt || 0
-                            )
-                        );
-
-                    }
-
-
-                    if (
-                        sort === "title"
-                    ) {
-
-                        return String(
-                            a.title || ""
-                        ).localeCompare(
-                            String(
-                                b.title || ""
-                            )
-                        );
-
-                    }
-
-
-                    if (
-                        sort === "priority"
-                    ) {
-
-                        const priority = {
-                            urgent: 1,
-                            important: 2,
-                            normal: 3
-                        };
-
-                        return (
-                            (
-                                priority[
-                                    a.priority
-                                ] || 3
-                            )
-                            -
-                            (
-                                priority[
-                                    b.priority
-                                ] || 3
-                            )
-                        );
-
-                    }
-
-
-                    return (
-                        Number(
-                            b.createdAt || 0
-                        )
-                        -
-                        Number(
-                            a.createdAt || 0
-                        )
-                    );
-
-                }
-            );
-
-
-            notesContainer.innerHTML = "";
-
-
-            document.getElementById(
-                "note-count"
-            ).textContent =
-                `${notes.length} note${notes.length === 1 ? "" : "s"}`;
-
-
-            if (!notes.length) {
-
-                emptyNotes.classList.remove(
-                    "hidden"
-                );
-
-                return;
-
-            }
-
-
-            emptyNotes.classList.add(
-                "hidden"
-            );
-
-
-            notes.forEach(
-                note => {
-
-                    notesContainer.appendChild(
-                        createNoteCard(note)
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =====================================
-           NOTE CARD
-           ===================================== */
-
-        function createNoteCard(note) {
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            const priorityClass =
-                note.priority === "urgent"
-                    ? "priority-urgent"
-                    : note.priority === "important"
-                        ? "priority-important"
-                        : "priority-normal";
-
-
-            card.className =
-                `
-                note-card
-                app-panel
-                ${priorityClass}
-                rounded-2xl
-                p-5
-                shadow-sm
-                ${note.completed ? "completed-note" : ""}
-                `;
-
-
-            const categoryInfo =
-                getCategoryInfo(
-                    note.category
-                );
-
-
-            const reminderText =
-                note.reminder
-                    ? formatReminder(
-                        note.reminder
-                    )
-                    : "";
-
-
-            card.innerHTML = `
-
-                <div class="flex items-start justify-between gap-3">
-
-                    <div class="flex min-w-0 items-start gap-3">
-
-                        <button
-                            type="button"
-                            data-complete-id="${escapeAttribute(note.id)}"
-                            class="complete-note mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
-                                note.completed
-                                ? "border-green-500 bg-green-500 text-white"
-                                : "border-gray-400 text-transparent"
-                            }"
-                            title="Complete"
-                        >
-                            <i class="fa-solid fa-check text-xs"></i>
-                        </button>
-
-
-                        <div class="min-w-0">
-
-                            <h3
-                                class="note-title break-words text-lg font-bold"
-                            >
-                                ${escapeHTML(note.title)}
-                            </h3>
-
-                            <div class="mt-2 flex flex-wrap gap-2">
-
-                                <span
-                                    class="category-chip"
-                                    style="background:${categoryInfo.bg};color:${categoryInfo.color}"
-                                >
-                                    <i class="${categoryInfo.icon}"></i>
-                                    ${categoryInfo.name}
-                                </span>
-
-                                ${
-                                    note.priority !== "normal"
-                                    ?
-                                    `
-                                    <span class="category-chip bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                                        <i class="fa-solid fa-flag"></i>
-                                        ${escapeHTML(note.priority)}
-                                    </span>
-                                    `
-                                    :
-                                    ""
-                                }
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="flex shrink-0 gap-1">
-
-                        <button
-                            type="button"
-                            data-edit-id="${escapeAttribute(note.id)}"
-                            class="edit-note flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                        >
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-
-                        <button
-                            type="button"
-                            data-delete-id="${escapeAttribute(note.id)}"
-                            class="delete-note flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                        >
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                ${
-                    note.content
-                    ?
-                    `
-                    <div
-                        class="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-gray-600 dark:text-gray-300"
-                    >
-                        ${escapeHTML(note.content)}
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-
-                <div
-                    class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-gray-100 pt-3 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400"
-                >
-
-                    <span>
-                        <i class="fa-regular fa-calendar mr-1"></i>
-                        ${escapeHTML(note.date || "-")}
-                    </span>
-
-                    ${
-                        reminderText
-                        ?
-                        `
-                        <span>
-                            <i class="fa-regular fa-bell mr-1"></i>
-                            ${escapeHTML(reminderText)}
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-                </div>
-
-            `;
-
-
-            return card;
-
-        }
-
-
-        /* =====================================
-           CATEGORY INFO
-           ===================================== */
-
-        function getCategoryInfo(
-            category
-        ) {
-
-            const data = {
-
-                general: {
-                    name: "General",
-                    icon: "fa-solid fa-note-sticky",
-                    bg: "#e5e7eb",
-                    color: "#374151"
-                },
-
-                todo: {
-                    name: "To-Do",
-                    icon: "fa-solid fa-check",
-                    bg: "#dcfce7",
-                    color: "#166534"
-                },
-
-                shopping: {
-                    name: "Shopping",
-                    icon: "fa-solid fa-cart-shopping",
-                    bg: "#ffedd5",
-                    color: "#c2410c"
-                },
-
-                contact: {
-                    name: "Contact",
-                    icon: "fa-solid fa-address-book",
-                    bg: "#dbeafe",
-                    color: "#1d4ed8"
-                },
-
-                important: {
-                    name: "Important",
-                    icon: "fa-solid fa-star",
-                    bg: "#fef3c7",
-                    color: "#a16207"
-                },
-
-                idea: {
-                    name: "Idea",
-                    icon: "fa-solid fa-lightbulb",
-                    bg: "#fef9c3",
-                    color: "#854d0e"
-                },
-
-                work: {
-                    name: "Work",
-                    icon: "fa-solid fa-briefcase",
-                    bg: "#e0e7ff",
-                    color: "#3730a3"
-                },
-
-                personal: {
-                    name: "Personal",
-                    icon: "fa-solid fa-user",
-                    bg: "#fce7f3",
-                    color: "#be185d"
-                },
-
-                travel: {
-                    name: "Travel",
-                    icon: "fa-solid fa-plane",
-                    bg: "#cffafe",
-                    color: "#0e7490"
-                },
-
-                study: {
-                    name: "Study",
-                    icon: "fa-solid fa-graduation-cap",
-                    bg: "#ede9fe",
-                    color: "#6d28d9"
-                },
-
-                reminder: {
-                    name: "Reminder",
-                    icon: "fa-solid fa-bell",
-                    bg: "#fee2e2",
-                    color: "#b91c1c"
-                }
-
-            };
-
-
-            return (
-                data[category]
-                ||
-                data.general
-            );
-
-        }
-
-
-        /* =====================================
-           QUICK CATEGORY
-           ===================================== */
-
-        document
-            .querySelectorAll(
-                ".quick-category"
-            )
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        "click",
-                        () => {
-
-                            categoryInput.value =
-                                button.dataset.quickCategory;
-
-                            titleInput.focus();
-
-                            window.scrollTo({
-                                top: 0,
-                                behavior: "smooth"
-                            });
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =====================================
-           EDIT / DELETE / COMPLETE
-           ===================================== */
-
-        document.addEventListener(
-            "click",
-            event => {
-
-
-                const completeButton =
-                    event.target.closest(
-                        ".complete-note"
-                    );
-
-
-                if (completeButton) {
-
-                    toggleComplete(
-                        completeButton.dataset.completeId
-                    );
-
-                    return;
-
-                }
-
-
-                const editButton =
-                    event.target.closest(
-                        ".edit-note"
-                    );
-
-
-                if (editButton) {
-
-                    editNote(
-                        editButton.dataset.editId
-                    );
-
-                    return;
-
-                }
-
-
-                const deleteButton =
-                    event.target.closest(
-                        ".delete-note"
-                    );
-
-
-                if (deleteButton) {
-
-                    removeNote(
-                        deleteButton.dataset.deleteId
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* =====================================
-           COMPLETE
-           ===================================== */
-
-        function toggleComplete(id) {
-
-            const notes =
-                getNotes();
-
-            const note =
-                notes.find(
-                    item => item.id === id
-                );
-
-
-            if (!note) {
-                return;
-            }
-
-
-            updateNote(
-                id,
-                {
-                    completed:
-                        !note.completed
-                }
-            );
-
-
-            renderNotes();
-
-        }
-
-
-        /* =====================================
-           EDIT
-           ===================================== */
-
-        function editNote(id) {
-
-            const note =
-                getNotes().find(
-                    item => item.id === id
-                );
-
-
-            if (!note) {
-                return;
-            }
-
-
-            editIdInput.value =
-                note.id;
-
-            titleInput.value =
-                note.title || "";
-
-            contentInput.value =
-                note.content || "";
-
-            categoryInput.value =
-                note.category || "general";
-
-            priorityInput.value =
-                note.priority || "normal";
-
-            dateInput.value =
-                note.date || "";
-
-            reminderInput.value =
-                note.reminder || "";
-
-
-            document.getElementById(
-                "form-title"
-            ).textContent =
-                "Edit Note";
-
-
-            document.getElementById(
-                "save-button-text"
-            ).textContent =
-                "Update Note";
-
-
-            document.getElementById(
-                "cancel-edit"
-            ).classList.remove(
-                "hidden"
-            );
-
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-
-
-        /* =====================================
-           DELETE
-           ===================================== */
-
-        function removeNote(id) {
-
-            const confirmed =
-                window.confirm(
-                    "Delete this note?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            deleteNote(id);
-
-            showToast(
-                "Note deleted successfully."
-            );
-
-            renderNotes();
-
-        }
-
-
-        /* =====================================
-           CLEAR COMPLETED
-           ===================================== */
-
-        document.getElementById(
-            "clear-completed"
-        ).addEventListener(
-            "click",
-            () => {
-
-                const notes =
-                    getNotes();
-
-                const completed =
-                    notes.filter(
-                        note =>
-                            note.completed
-                    );
-
-
-                if (!completed.length) {
-
-                    showToast(
-                        "No completed notes."
-                    );
-
-                    return;
-
-                }
-
-
-                const confirmed =
-                    window.confirm(
-                        "Delete all completed notes?"
-                    );
-
-
-                if (!confirmed) {
-                    return;
-                }
-
-
-                completed.forEach(
-                    note => {
-                        deleteNote(
-                            note.id
-                        );
-                    }
-                );
-
-
-                showToast(
-                    "Completed notes cleared."
-                );
-
-
-                renderNotes();
-
-            }
-        );
-
-
-        /* =====================================
-           SEARCH / FILTER
-           ===================================== */
-
-        document.getElementById(
-            "search-notes"
-        ).addEventListener(
-            "input",
-            renderNotes
-        );
-
-
-        document.getElementById(
-            "filter-category"
-        ).addEventListener(
-            "change",
-            renderNotes
-        );
-
-
-        document.getElementById(
-            "sort-notes"
-        ).addEventListener(
-            "change",
-            renderNotes
-        );
-
-
-        /* =====================================
-           PRIVACY
-           ===================================== */
-
-        let privacyMode =
-            localStorage.getItem(
-                "privacy_mode"
-            ) === "true";
-
-
-        document.getElementById(
-            "privacy-toggle"
-        ).addEventListener(
-            "click",
-            () => {
-
-                privacyMode =
-                    !privacyMode;
-
-                localStorage.setItem(
-                    "privacy_mode",
-                    privacyMode
-                );
-
-                updatePrivacyIcon();
-
-                renderNotes();
-
-            }
-        );
-
-
-        function updatePrivacyIcon() {
-
-            document.getElementById(
-                "privacy-icon"
-            ).className =
-                privacyMode
-                    ? "fa-solid fa-eye-slash"
-                    : "fa-solid fa-eye";
-
-        }
-
-
-        updatePrivacyIcon();
-
-
-        /* =====================================
-           LANGUAGE
-           ===================================== */
-
-        document.getElementById(
-            "language-toggle"
-        ).addEventListener(
-            "click",
-            () => {
-
-                const current =
-                    getLanguage();
-
-                const next =
-                    current === "en"
-                        ? "ne"
-                        : "en";
-
-
-                setLanguage(next);
-
-                applyTranslations(next);
-
-                updateLanguageButton();
-
-                updateDateTime();
-
-            }
-        );
-
-
-        function updateLanguageButton() {
-
-            document.getElementById(
-                "language-toggle"
-            ).textContent =
-                getLanguage() === "ne"
-                    ? "ने"
-                    : "EN";
-
-        }
-
-
-        /* =====================================
-           THEME
-           ===================================== */
-
-        document.getElementById(
-            "theme-toggle"
-        ).addEventListener(
-            "click",
-            () => {
-
-                const current =
-                    getTheme();
-
-                const next =
-                    current === "dark"
-                        ? "light"
-                        : "dark";
-
-
-                setTheme(next);
-
-                updateThemeIcon();
-
-            }
-        );
-
-
-        function updateThemeIcon() {
-
-            document.getElementById(
-                "theme-icon"
-            ).className =
-                getTheme() === "dark"
-                    ? "fa-solid fa-sun"
-                    : "fa-solid fa-moon";
-
-        }
-
-
-        /* =====================================
-           MOBILE SIDEBAR
-           ===================================== */
-
-        document.getElementById(
-            "menu-button"
-        ).addEventListener(
-            "click",
-            () => {
-
-                document
-                    .getElementById(
-                        "sidebar"
-                    )
-                    .classList.remove(
-                        "-translate-x-full"
-                    );
-
-                document
-                    .getElementById(
-                        "sidebar-backdrop"
-                    )
-                    .classList.remove(
-                        "hidden"
-                    );
-
-            }
-        );
-
-
-        document.getElementById(
-            "sidebar-backdrop"
-        ).addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-        function closeSidebar() {
-
-            document
-                .getElementById(
-                    "sidebar"
-                )
-                .classList.add(
-                    "-translate-x-full"
-                );
-
-            document
-                .getElementById(
-                    "sidebar-backdrop"
-                )
-                .classList.add(
-                    "hidden"
-                );
-
-        }
-
-
-        /* =====================================
-           TOAST
-           ===================================== */
-
-        let toastTimer;
-
 
         function showToast(message) {
-
-            const container =
-                document.getElementById(
-                    "toast-container"
-                );
-
-            const toast =
-                document.getElementById(
-                    "toast"
-                );
-
-
-            toast.textContent =
-                message;
-
-            container.classList.remove(
-                "hidden"
-            );
-
-
-            clearTimeout(
-                toastTimer
-            );
-
-
-            toastTimer =
-                setTimeout(
-                    () => {
-
-                        container.classList.add(
-                            "hidden"
-                        );
-
-                    },
-                    2200
-                );
-
+            if (!toast || !toastContainer) return;
+            toast.textContent = message;
+            toastContainer.classList.remove("hidden");
+            clearTimeout(showToast.timeoutId);
+            showToast.timeoutId = setTimeout(() => {
+                toastContainer.classList.add("hidden");
+            }, 1800);
         }
 
+        function renderNotes() {
+            const notes = getNotes();
+            const query = (searchNotes?.value || "").trim().toLowerCase();
+            const category = filterCategory?.value || "all";
+            const sortValue = sortNotes?.value || "newest";
 
-        /* =====================================
-           REMINDER FORMAT
-           ===================================== */
+            const filtered = notes.filter((note) => {
+                const matchesCategory = category === "all" || note.category === category;
+                const text = [note.title, note.content, note.category].join(" ").toLowerCase();
+                const matchesQuery = !query || text.includes(query);
+                return matchesCategory && matchesQuery;
+            });
 
-        function formatReminder(value) {
+            filtered.sort((a, b) => {
+                if (sortValue === "oldest") return new Date(a.date) - new Date(b.date);
+                if (sortValue === "priority") {
+                    const priorityOrder = { urgent: 3, important: 2, normal: 1 };
+                    return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+                }
+                if (sortValue === "title") return a.title.localeCompare(b.title);
+                return new Date(b.date) - new Date(a.date);
+            });
 
-            const date =
-                new Date(value);
+            if (!notesContainer) return;
+            notesContainer.innerHTML = "";
 
-            if (
-                Number.isNaN(
-                    date.getTime()
-                )
-            ) {
-
-                return value;
-
+            if (!filtered.length) {
+                emptyNotes?.classList.remove("hidden");
+            } else {
+                emptyNotes?.classList.add("hidden");
             }
 
+            filtered.forEach((note) => {
+                const card = document.createElement("article");
+                card.className = "note-card app-panel rounded-2xl p-4 shadow-sm";
+                if (note.completed) card.classList.add("completed-note");
 
-            return date.toLocaleString(
-                getLanguage() === "ne"
-                    ? "ne-NP"
-                    : "en-US",
-                {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            );
+                const priority = note.priority || "normal";
+                card.classList.add(`priority-${priority}`);
 
+                const title = note.title || "Untitled note";
+                const date = note.date || nowISODate();
+                const content = note.content || "";
+
+                card.innerHTML = `
+                    <div class="mb-3 flex items-start justify-between gap-3">
+                        <div>
+                            <h4 class="note-title text-base font-bold text-white">${title}</h4>
+                            <p class="mt-1 text-xs text-slate-400">${date}</p>
+                        </div>
+                        <span class="category-chip bg-slate-800 text-slate-200">${note.category || "general"}</span>
+                    </div>
+                    <p class="text-sm leading-6 text-slate-300">${content.replace(/</g, "&lt;").replace(/>/g, "&gt;") || "No description."}</p>
+                    <div class="mt-4 flex gap-2">
+                        <button type="button" data-edit="${note.id}" class="rounded-xl bg-slate-800 px-3 py-2 text-xs font-medium text-white">Edit</button>
+                        <button type="button" data-delete="${note.id}" class="rounded-xl bg-rose-600 px-3 py-2 text-xs font-medium text-white">Delete</button>
+                    </div>
+                `;
+
+                notesContainer.appendChild(card);
+            });
+
+            document.getElementById("note-count")?.replaceChildren(document.createTextNode(`${filtered.length} notes`));
         }
 
+        noteForm?.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const title = (noteTitle?.value || "").trim();
+            const content = (noteContent?.value || "").trim();
+            const category = noteCategory?.value || "general";
+            const priority = notePriority?.value || "normal";
+            const date = noteDate?.value || nowISODate();
 
-        /* =====================================
-           HTML SAFETY
-           ===================================== */
+            if (!title && !content) {
+                showToast("Please add note title or content.");
+                return;
+            }
 
-        function escapeHTML(value) {
+            const payload = { title, content, category, priority, date };
+            if (editNoteId && editNoteId.value) {
+                updateNote(editNoteId.value, payload);
+                showToast("Note updated");
+            } else {
+                addNote(payload);
+                showToast("Note saved");
+            }
 
-            return String(value)
-                .replaceAll(
-                    "&",
-                    "&amp;"
-                )
-                .replaceAll(
-                    "<",
-                    "&lt;"
-                )
-                .replaceAll(
-                    ">",
-                    "&gt;"
-                )
-                .replaceAll(
-                    '"',
-                    "&quot;"
-                )
-                .replaceAll(
-                    "'",
-                    "&#039;"
-                );
+            noteForm.reset();
+            setTodayDate();
+            editNoteId.value = "";
+            formTitle.textContent = "Add Note";
+            saveButtonText.textContent = "Save Note";
+            cancelEdit.classList.add("hidden");
+            renderNotes();
+        });
 
-        }
+        notesContainer?.addEventListener("click", (event) => {
+            const target = event.target.closest("[data-edit]");
+            const deleteTarget = event.target.closest("[data-delete]");
+            if (target) {
+                const note = getNotes().find((item) => String(item.id) === String(target.dataset.edit));
+                if (!note) return;
+                noteTitle.value = note.title || "";
+                noteContent.value = note.content || "";
+                noteCategory.value = note.category || "general";
+                notePriority.value = note.priority || "normal";
+                noteDate.value = note.date || nowISODate();
+                editNoteId.value = note.id;
+                formTitle.textContent = "Edit Note";
+                saveButtonText.textContent = "Update Note";
+                cancelEdit.classList.remove("hidden");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+            if (deleteTarget) {
+                const id = deleteTarget.dataset.delete;
+                deleteNote(id);
+                showToast("Note deleted");
+                renderNotes();
+            }
+        });
 
+        cancelEdit?.addEventListener("click", () => {
+            noteForm.reset();
+            setTodayDate();
+            editNoteId.value = "";
+            formTitle.textContent = "Add Note";
+            saveButtonText.textContent = "Save Note";
+            cancelEdit.classList.add("hidden");
+        });
 
-        function escapeAttribute(value) {
+        searchNotes?.addEventListener("input", renderNotes);
+        filterCategory?.addEventListener("change", renderNotes);
+        sortNotes?.addEventListener("change", renderNotes);
 
-            return escapeHTML(value);
+        document.getElementById("clear-completed")?.addEventListener("click", () => {
+            const notes = getNotes().filter((item) => item.completed);
+            notes.forEach((item) => deleteNote(item.id));
+            renderNotes();
+            showToast("Completed notes cleared");
+        });
 
-        }
+        document.querySelector("[data-quick-category]")?.addEventListener("click", () => {
+            noteCategory.value = "todo";
+            noteTitle.focus();
+        });
+
+        setTodayDate();
+        renderNotes();
 
     </script>
 
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Arabic? We need not include extra weird stuff. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"}]} , {
