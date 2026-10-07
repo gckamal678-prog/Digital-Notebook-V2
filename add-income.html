@@ -2,67 +2,114 @@
 <html lang="en" class="dark">
 
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
 
-    <title>Digital NoteBook - Income</title>
+<title>Digital NoteBook - Income</title>
 
-    <link rel="icon" href="assets/N1024.png">
+<link rel="icon" href="assets/N1024.png">
 
-    <link rel="stylesheet" href="css/app.css">
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
+<script>
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ["Poppins", "sans-serif"]
+            }
+        }
+    }
+};
+</script>
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+.hidden {
+    display: none !important;
+}
+
+#pdf-printable-content {
+    font-family: Arial, sans-serif;
+}
+
+</style>
+
 </head>
 
 
-<body>
+<body
+class="bg-slate-950 text-slate-100 text-xs min-h-screen select-none"
+>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
 
-    <header class="app-header">
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
 
-        <div class="header-left">
+<div
+    id="sidebar"
+    class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800 transform -translate-x-full transition-transform duration-300 flex flex-col"
+>
 
-            <a
-                href="index.html"
-                class="back-button"
-                aria-label="Back"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
 
-            <div class="header-title-wrap">
+        <div class="flex items-center gap-2.5">
 
-                <h1>Income</h1>
+            <div class="w-9 h-9 rounded-lg bg-emerald-600 overflow-hidden">
 
-                <p>Income records</p>
+                <img
+                    src="assets/N1024.png"
+                    class="w-full h-full object-cover"
+                    alt="Digital NoteBook"
+                >
+
+            </div>
+
+            <div>
+
+                <div class="font-extrabold text-sm text-emerald-400">
+                    Digital NoteBook
+                </div>
+
+                <div class="text-[10px] text-slate-400">
+                    Income
+                </div>
 
             </div>
 
@@ -71,2290 +118,2234 @@
 
         <button
             type="button"
-            id="header-avatar-button"
-            class="avatar-button"
-            aria-label="Profile"
+            onclick="toggleSidebar()"
+            class="text-slate-400 text-lg"
         >
-
-            <img
-                id="header-avatar"
-                src="assets/N1024.png"
-                alt="User avatar"
-            >
-
+            ×
         </button>
 
-    </header>
+    </div>
 
 
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
+    <div class="p-4">
 
-    <main class="page-container">
+        <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-3">
 
+            <div class="flex items-center gap-3">
 
-        <!-- =================================================
-             SUMMARY
-        ================================================== -->
+                <div class="w-12 h-12 rounded-full overflow-hidden bg-emerald-600">
 
-        <section class="summary-grid">
-
-            <div class="summary-card">
-
-                <div class="summary-label">
-                    Total Income
-                </div>
-
-                <div
-                    id="summary-total-income"
-                    class="summary-value money-positive"
-                >
-                    NPR 0.00
-                </div>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <div class="summary-label">
-                    Records
-                </div>
-
-                <div
-                    id="summary-record-count"
-                    class="summary-value"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             ADD INCOME CARD
-        ================================================== -->
-
-        <section class="app-card income-form-card">
-
-            <div class="card-heading-row">
-
-                <div>
-
-                    <h2>
-                        <i class="fa-solid fa-plus-circle"></i>
-                        Add Income
-                    </h2>
-
-                </div>
-
-                <div class="card-icon-badge">
-
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-
-                </div>
-
-            </div>
-
-
-            <form
-                id="income-form"
-                novalidate
-            >
-
-                <input
-                    type="hidden"
-                    id="edit-income-index"
-                    value=""
-                >
-
-
-                <!-- SOURCE -->
-
-                <div class="form-group">
-
-                    <label
-                        for="income-source-name"
-                    >
-                        Income Source
-                    </label>
-
-                    <input
-                        type="text"
-                        id="income-source-name"
-                        placeholder="e.g. Salary"
-                        autocomplete="off"
+                    <img
+                        id="sidebar-avatar"
+                        src="assets/N1024.png"
+                        class="w-full h-full object-cover"
+                        alt="Avatar"
                     >
 
                 </div>
 
 
-                <!-- DATE -->
-
-                <div class="form-group">
-
-                    <label
-                        for="income-date"
-                    >
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="income-date"
-                    >
-
-                </div>
-
-
-                <!-- AMOUNT -->
-
-                <div class="form-group">
-
-                    <label>
-                        Amount
-                    </label>
-
-
-                    <div class="amount-grid">
-
-                        <div>
-
-                            <span class="field-small-label">
-                                NPR
-                            </span>
-
-                            <input
-                                type="number"
-                                id="income-amount-npr"
-                                inputmode="decimal"
-                                step="0.01"
-                                min="0"
-                                placeholder="NPR"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-
-                        <div>
-
-                            <span class="field-small-label">
-                                INR
-                            </span>
-
-                            <input
-                                type="number"
-                                id="income-amount-inr"
-                                inputmode="decimal"
-                                step="0.01"
-                                min="0"
-                                placeholder="INR"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- LIVE TOTAL -->
-
-                <div class="income-total-box">
-
-                    <div class="income-total-top">
-
-                        <div>
-
-                            <span class="income-total-label">
-                                Total
-                            </span>
-
-                            <div
-                                id="income-live-total"
-                                class="income-total-value"
-                            >
-                                NPR 0.00
-                            </div>
-
-                        </div>
-
-
-                        <div class="income-rate-box">
-
-                            <span>
-                                Rate
-                            </span>
-
-                            <strong>
-                                1 INR = 1.6 NPR
-                            </strong>
-
-                        </div>
-
-                    </div>
-
+                <div class="min-w-0">
 
                     <div
-                        id="income-calculation-text"
-                        class="income-calculation"
+                        id="sidebar-name"
+                        class="font-bold text-sm truncate"
                     >
-                        NPR 0 + INR 0 × 1.6 = NPR 0
+                        User
+                    </div>
+
+                    <div
+                        id="sidebar-email"
+                        class="text-[10px] text-slate-400 truncate"
+                    >
                     </div>
 
                 </div>
 
-
-                <!-- FORM STATUS -->
-
-                <div
-                    id="income-form-status"
-                    class="form-status"
-                    aria-live="polite"
-                ></div>
-
-
-                <!-- BUTTONS -->
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        id="income-cancel-btn"
-                        class="btn btn-secondary hidden"
-                    >
-                        Cancel
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        id="income-submit-btn"
-                        class="btn btn-primary"
-                    >
-                        Save Income
-                    </button>
-
-                </div>
-
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             RECORDS
-        ================================================== -->
-
-        <section class="app-card">
-
-            <div class="records-heading">
-
-                <div>
-
-                    <h2>
-                        Income Records
-                    </h2>
-
-                </div>
-
-                <span
-                    id="income-group-count"
-                    class="records-count"
-                >
-                    0 groups
-                </span>
-
             </div>
 
-
-            <!-- SEARCH -->
-
-            <div class="search-box">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input
-                    type="search"
-                    id="search-income"
-                    placeholder="Search income source"
-                    autocomplete="off"
-                >
-
-            </div>
+        </div>
 
 
-            <!-- SORT -->
+        <nav class="mt-4 space-y-1">
 
-            <div class="sort-row">
-
-                <select
-                    id="sort-income"
-                >
-
-                    <option value="date_desc">
-                        Latest first
-                    </option>
-
-                    <option value="date_asc">
-                        Oldest first
-                    </option>
-
-                    <option value="name">
-                        Name A-Z
-                    </option>
-
-                    <option value="total_desc">
-                        Highest total
-                    </option>
-
-                    <option value="total_asc">
-                        Lowest total
-                    </option>
-
-                </select>
+            <a
+                href="index.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
+            >
+                <i class="fa-solid fa-chart-pie w-5"></i>
+                Dashboard
+            </a>
 
 
-                <button
-                    type="button"
-                    id="pdf-button"
-                    class="btn btn-outline"
-                >
-                    <i class="fa-solid fa-file-pdf"></i>
-                    PDF
-                </button>
-
-            </div>
+            <a
+                href="add-income.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl bg-emerald-600 text-white"
+            >
+                <i class="fa-solid fa-wallet w-5"></i>
+                Income
+            </a>
 
 
-            <!-- LIST -->
-
-            <div
-                id="income-list-container"
-                class="income-record-list"
-            ></div>
-
-
-            <!-- GRAND TOTAL -->
-
-            <div class="grand-total-row">
-
-                <span>
-                    Grand Total
-                </span>
-
-                <strong
-                    id="income-table-total"
-                >
-                    NPR 0.00
-                </strong>
-
-            </div>
-
-        </section>
-
-    </main>
+            <a
+                href="add-saving.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
+            >
+                <i class="fa-solid fa-piggy-bank w-5"></i>
+                Saving
+            </a>
 
 
-    <!-- =====================================================
-         PDF MODAL
-    ====================================================== -->
-
-    <div
-        id="pdf-modal"
-        class="modal-backdrop hidden"
-    >
-
-        <div class="modal-card">
-
-            <div class="modal-header">
-
-                <div>
-
-                    <h2>
-                        Income Report
-                    </h2>
-
-                    <p>
-                        PDF Preview
-                    </p>
-
-                </div>
+            <a
+                href="add-transaction.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
+            >
+                <i class="fa-solid fa-arrow-right-arrow-left w-5"></i>
+                Transaction
+            </a>
 
 
-                <button
-                    type="button"
-                    id="close-pdf-button"
-                    class="modal-close"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+            <a
+                href="account.html"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 hover:bg-slate-800"
+            >
+                <i class="fa-solid fa-user w-5"></i>
+                Account
+            </a>
 
-            </div>
+        </nav>
 
+    </div>
 
-            <div
-                id="pdf-preview-container"
-                class="pdf-preview-container"
-            ></div>
+</div>
 
 
-            <div class="modal-actions">
 
-                <button
-                    type="button"
-                    id="print-pdf-button"
-                    class="btn btn-secondary"
-                >
-                    <i class="fa-solid fa-print"></i>
-                    Print
-                </button>
+<!-- =========================================================
+     PAGE
+========================================================= -->
+
+<div class="min-h-screen">
 
 
-                <button
-                    type="button"
-                    id="download-pdf-button"
-                    class="btn btn-primary"
-                >
-                    <i class="fa-solid fa-download"></i>
-                    Download PDF
-                </button>
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-            </div>
+<header
+class="sticky top-0 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800"
+>
+
+<div class="flex items-center justify-between px-4 py-3">
+
+
+    <div class="flex items-center gap-3">
+
+        <a
+            href="index.html"
+            class="w-11 h-11 rounded-2xl bg-slate-800 flex items-center justify-center text-white"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+
+        <div>
+
+            <h1 class="text-xl font-extrabold">
+                Income
+            </h1>
+
+            <p class="text-xs text-slate-400">
+                Income records
+            </p>
 
         </div>
 
     </div>
 
 
-    <!-- =====================================================
-         PAGE SCRIPT
-    ====================================================== -->
+    <button
+        type="button"
+        onclick="toggleSidebar()"
+        class="w-11 h-11 rounded-full bg-emerald-600 overflow-hidden border-2 border-emerald-500"
+    >
 
-    <script type="module">
+        <img
+            id="header-avatar"
+            src="assets/N1024.png"
+            class="w-full h-full object-cover"
+            alt="Profile"
+        >
 
-        import {
-            initApp
-        } from "./js/app.js";
+    </button>
 
-        import {
-            getIncomes,
-            getTotalIncome,
-            calculateIncomeTotal,
-            saveIncome,
-            resetIncomeForm,
-            editIncome,
-            deleteIncome
-        } from "./js/incomes.js";
+</div>
 
-        import {
-            getProfileValue
-        } from "./js/storage.js";
+</header>
 
 
-        /* =================================================
-           ELEMENTS
-        ================================================== */
 
-        const form =
-            document.getElementById(
-                "income-form"
-            );
+<!-- =========================================================
+     MAIN
+========================================================= -->
 
-        const sourceInput =
-            document.getElementById(
-                "income-source-name"
-            );
+<main class="max-w-2xl mx-auto px-4 py-5 pb-20">
 
-        const dateInput =
-            document.getElementById(
-                "income-date"
-            );
 
-        const nprInput =
+<!-- =========================================================
+     SUMMARY
+========================================================= -->
+
+<div class="grid grid-cols-2 gap-4 mb-5">
+
+
+    <div
+        class="bg-slate-900 border border-slate-800 rounded-2xl p-5"
+    >
+
+        <div class="text-sm text-slate-400">
+            Total Income
+        </div>
+
+        <div
+            id="summary-total-income"
+            class="text-2xl font-extrabold text-emerald-400 mt-2"
+        >
+            NPR 0.00
+        </div>
+
+    </div>
+
+
+    <div
+        class="bg-slate-900 border border-slate-800 rounded-2xl p-5"
+    >
+
+        <div class="text-sm text-slate-400">
+            Records
+        </div>
+
+        <div
+            id="summary-record-count"
+            class="text-2xl font-extrabold mt-2"
+        >
+            0
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     ADD INCOME
+========================================================= -->
+
+<section
+class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden"
+>
+
+<div class="p-5 border-b border-slate-800 flex items-center justify-between">
+
+
+    <h2 class="text-lg font-extrabold">
+        Add Income
+    </h2>
+
+
+    <div
+        class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl"
+    >
+        <i class="fa-solid fa-file-invoice-dollar"></i>
+    </div>
+
+</div>
+
+
+<div class="p-5">
+
+
+<form
+    id="income-form"
+    onsubmit="saveIncome(event)"
+>
+
+
+<input
+    type="hidden"
+    id="edit-income-index"
+    value=""
+>
+
+
+<!-- SOURCE -->
+
+<div class="mb-5">
+
+<label
+    for="income-source-name"
+    class="block font-semibold text-sm mb-2"
+>
+    Income Source
+</label>
+
+<input
+    type="text"
+    id="income-source-name"
+    placeholder="e.g. Salary"
+    autocomplete="off"
+    required
+    class="w-full h-14 rounded-2xl bg-slate-800 border border-slate-700 px-4 text-base text-white outline-none focus:border-emerald-500"
+>
+
+</div>
+
+
+
+<!-- DATE -->
+
+<div class="mb-5">
+
+<label
+    for="income-date"
+    class="block font-semibold text-sm mb-2"
+>
+    Date
+</label>
+
+<input
+    type="date"
+    id="income-date"
+    required
+    class="w-full h-14 rounded-2xl bg-slate-800 border border-slate-700 px-4 text-base text-white outline-none focus:border-emerald-500"
+>
+
+</div>
+
+
+
+<!-- AMOUNT -->
+
+<div class="mb-5">
+
+<label
+    class="block font-semibold text-sm mb-2"
+>
+    Amount
+</label>
+
+
+<div class="grid grid-cols-2 gap-3">
+
+
+<div>
+
+<div class="text-xs text-slate-500 mb-2">
+NPR
+</div>
+
+<input
+    type="number"
+    id="income-amount-npr"
+    inputmode="decimal"
+    step="0.01"
+    min="0"
+    placeholder="NPR"
+    oninput="calculateIncomeTotal()"
+    class="w-full h-14 rounded-2xl bg-slate-800 border border-slate-700 px-4 text-base text-white outline-none focus:border-emerald-500"
+>
+
+</div>
+
+
+<div>
+
+<div class="text-xs text-slate-500 mb-2">
+INR
+</div>
+
+<input
+    type="number"
+    id="income-amount-inr"
+    inputmode="decimal"
+    step="0.01"
+    min="0"
+    placeholder="INR"
+    oninput="calculateIncomeTotal()"
+    class="w-full h-14 rounded-2xl bg-slate-800 border border-slate-700 px-4 text-base text-white outline-none focus:border-emerald-500"
+>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- TOTAL -->
+
+<div
+class="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-5 mb-5"
+>
+
+
+<div class="flex items-start justify-between">
+
+<div>
+
+<div class="text-sm text-slate-400">
+Total
+</div>
+
+
+<div
+id="income-total-display"
+class="text-3xl font-extrabold text-emerald-400 mt-1"
+>
+NPR 0.00
+</div>
+
+</div>
+
+
+<div class="text-right">
+
+<div class="text-xs text-slate-500">
+Rate
+</div>
+
+<div class="font-bold text-sm mt-1">
+1 INR = 1.6 NPR
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="income-calculation-text"
+class="text-xs text-slate-400 mt-4"
+>
+NPR 0 + INR 0 × 1.6 = NPR 0
+</div>
+
+
+<input
+type="hidden"
+id="income-total-calc"
+value="0"
+>
+
+</div>
+
+
+
+<!-- STATUS -->
+
+<div
+id="income-form-status"
+class="hidden text-sm mb-4 rounded-xl px-4 py-3 bg-emerald-500/10 text-emerald-400"
+></div>
+
+
+
+<!-- BUTTONS -->
+
+<div class="flex gap-3">
+
+
+<button
+    type="button"
+    id="income-cancel-btn"
+    onclick="resetIncomeForm()"
+    class="hidden flex-1 h-14 rounded-2xl bg-slate-700 text-white font-bold"
+>
+    Cancel
+</button>
+
+
+<button
+    type="submit"
+    id="income-submit-btn"
+    class="flex-1 h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base transition"
+>
+    Save Income
+</button>
+
+</div>
+
+
+</form>
+
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     RECORDS
+========================================================= -->
+
+<section
+class="bg-slate-900 border border-slate-800 rounded-3xl p-5 mt-5"
+>
+
+
+<div class="flex items-center justify-between mb-4">
+
+<h2 class="text-lg font-extrabold">
+Income Records
+</h2>
+
+<span
+id="income-group-count"
+class="text-xs text-slate-500"
+>
+0 groups
+</span>
+
+</div>
+
+
+
+<!-- SEARCH -->
+
+<div class="relative mb-3">
+
+<i
+class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+></i>
+
+
+<input
+type="search"
+id="search-income"
+placeholder="Search income source"
+oninput="renderIncomes()"
+class="w-full h-14 rounded-2xl bg-slate-800 border border-slate-700 pl-11 pr-4 text-base text-white outline-none focus:border-emerald-500"
+>
+
+</div>
+
+
+
+<!-- SORT -->
+
+<div class="flex gap-3 mb-5">
+
+
+<select
+id="sort-income"
+onchange="renderIncomes()"
+class="flex-1 h-12 rounded-xl bg-slate-800 border border-slate-700 px-3 text-sm text-white outline-none"
+>
+
+<option value="date_desc">
+Latest first
+</option>
+
+<option value="date_asc">
+Oldest first
+</option>
+
+<option value="name">
+Name A-Z
+</option>
+
+<option value="total_desc">
+Highest total
+</option>
+
+<option value="total_asc">
+Lowest total
+</option>
+
+</select>
+
+
+<button
+type="button"
+onclick="generateAndShareIncomePDF()"
+class="px-5 h-12 rounded-xl bg-emerald-600 text-white font-bold"
+>
+
+<i class="fa-solid fa-file-pdf mr-1"></i>
+PDF
+
+</button>
+
+</div>
+
+
+
+<!-- LIST -->
+
+<div
+id="income-list-container"
+class="space-y-3"
+></div>
+
+
+
+<!-- TOTAL -->
+
+<div
+class="mt-5 p-4 rounded-2xl bg-slate-800/60 border border-slate-700 flex items-center justify-between"
+>
+
+<span class="font-semibold">
+Grand Total
+</span>
+
+
+<strong
+id="income-table-total"
+class="text-emerald-400 text-lg"
+>
+NPR 0.00
+</strong>
+
+</div>
+
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<!-- =========================================================
+     PDF MODAL
+========================================================= -->
+
+<div
+id="pdf-modal"
+class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-sm p-3 items-center justify-center"
+>
+
+
+<div
+class="w-full max-w-3xl max-h-[95vh] bg-slate-900 rounded-3xl overflow-hidden border border-slate-700 flex flex-col"
+>
+
+
+<div
+class="flex items-center justify-between px-5 py-4 border-b border-slate-800"
+>
+
+<div>
+
+<h3 class="font-extrabold text-base">
+Income Report
+</h3>
+
+<p class="text-xs text-slate-500">
+PDF Preview
+</p>
+
+</div>
+
+
+<button
+type="button"
+onclick="closePdfModal()"
+class="w-10 h-10 rounded-xl bg-slate-800 text-white"
+>
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+
+
+<div
+id="pdf-preview-container"
+class="flex-1 overflow-auto p-4 bg-slate-950"
+></div>
+
+
+
+<div
+class="p-4 border-t border-slate-800 flex justify-end gap-3"
+>
+
+<button
+type="button"
+onclick="printFromModal()"
+class="h-12 px-5 rounded-xl bg-slate-700 text-white font-bold"
+>
+
+<i class="fa-solid fa-print mr-1"></i>
+Print
+
+</button>
+
+
+<button
+type="button"
+onclick="downloadIncomePDF()"
+class="h-12 px-5 rounded-xl bg-emerald-600 text-white font-bold"
+>
+
+<i class="fa-solid fa-download mr-1"></i>
+Download PDF
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================================================
+     PAGE JS
+========================================================= -->
+
+<script type="module">
+
+import {
+    initApp
+} from "./js/app.js";
+
+import {
+    getIncomes,
+    getTotalIncome,
+    calculateIncomeTotal as moduleCalculateIncomeTotal,
+    saveIncome as moduleSaveIncome,
+    resetIncomeForm as moduleResetIncomeForm,
+    editIncome as moduleEditIncome,
+    deleteIncome as moduleDeleteIncome
+} from "./js/incomes.js";
+
+import {
+    getProfileValue
+} from "./js/storage.js";
+
+
+
+/* =========================================================
+   TODAY
+========================================================= */
+
+function today() {
+
+    const d = new Date();
+
+    const year =
+        d.getFullYear();
+
+    const month =
+        String(
+            d.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            d.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+
+/* =========================================================
+   MONEY
+========================================================= */
+
+function money(value) {
+
+    return (
+        "NPR " +
+        (
+            Number(value) || 0
+        ).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+
+}
+
+
+
+/* =========================================================
+   LIVE CALCULATION
+========================================================= */
+
+function calculateIncomeTotal() {
+
+    const npr =
+        Number(
             document.getElementById(
                 "income-amount-npr"
-            );
+            ).value
+        ) || 0;
 
-        const inrInput =
+
+    const inr =
+        Number(
             document.getElementById(
                 "income-amount-inr"
+            ).value
+        ) || 0;
+
+
+    const total =
+        npr +
+        (
+            inr * 1.6
+        );
+
+
+    document.getElementById(
+        "income-total-display"
+    ).textContent =
+        money(total);
+
+
+    document.getElementById(
+        "income-calculation-text"
+    ).textContent =
+        `NPR ${npr} + INR ${inr} × 1.6 = NPR ${total.toFixed(2)}`;
+
+
+    const hidden =
+        document.getElementById(
+            "income-total-calc"
+        );
+
+    hidden.value =
+        total.toFixed(2);
+
+
+    /*
+       Keep V2 module calculation alive.
+    */
+
+    try {
+
+        moduleCalculateIncomeTotal();
+
+    } catch (error) {
+
+        console.warn(
+            "Income calculation bridge:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+   IMPORTANT:
+   Inline HTML handlers use window function.
+*/
+
+window.calculateIncomeTotal =
+    calculateIncomeTotal;
+
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+window.saveIncome =
+async function(event) {
+
+    event.preventDefault();
+
+    const result =
+        await moduleSaveIncome(
+            event
+        );
+
+
+    /*
+       Module already saves the data.
+       We refresh the visible page here.
+    */
+
+    renderIncomes();
+
+    showInlineStatus(
+        "Income saved successfully."
+    );
+
+
+    return false;
+
+};
+
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+window.resetIncomeForm =
+function() {
+
+    moduleResetIncomeForm();
+
+    document.getElementById(
+        "income-total-display"
+    ).textContent =
+        "NPR 0.00";
+
+
+    document.getElementById(
+        "income-calculation-text"
+    ).textContent =
+        "NPR 0 + INR 0 × 1.6 = NPR 0";
+
+
+    document.getElementById(
+        "income-total-calc"
+    ).value =
+        "0";
+
+
+    document.getElementById(
+        "income-submit-btn"
+    ).textContent =
+        "Save Income";
+
+
+    document.getElementById(
+        "income-cancel-btn"
+    ).classList.add(
+        "hidden"
+    );
+
+};
+
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function showInlineStatus(
+    message
+) {
+
+    const box =
+        document.getElementById(
+            "income-form-status"
+        );
+
+    box.textContent =
+        message;
+
+    box.classList.remove(
+        "hidden"
+    );
+
+    setTimeout(
+        () => {
+            box.classList.add(
+                "hidden"
             );
+        },
+        2200
+    );
 
-        const liveTotal =
-            document.getElementById(
-                "income-live-total"
-            );
-
-        const calculationText =
-            document.getElementById(
-                "income-calculation-text"
-            );
-
-        const statusBox =
-            document.getElementById(
-                "income-form-status"
-            );
-
-        const cancelButton =
-            document.getElementById(
-                "income-cancel-btn"
-            );
-
-        const submitButton =
-            document.getElementById(
-                "income-submit-btn"
-            );
-
-        const searchInput =
-            document.getElementById(
-                "search-income"
-            );
-
-        const sortInput =
-            document.getElementById(
-                "sort-income"
-            );
-
-        const listContainer =
-            document.getElementById(
-                "income-list-container"
-            );
-
-        const totalElement =
-            document.getElementById(
-                "income-table-total"
-            );
-
-        const groupCount =
-            document.getElementById(
-                "income-group-count"
-            );
-
-        const recordCount =
-            document.getElementById(
-                "summary-record-count"
-            );
-
-        const summaryTotal =
-            document.getElementById(
-                "summary-total-income"
-            );
+}
 
 
-        /* =================================================
-           DATE
-        ================================================== */
 
-        function getToday() {
+/* =========================================================
+   DATE FORMAT
+========================================================= */
 
-            const now =
-                new Date();
+function formatDate(value) {
 
-            const year =
-                now.getFullYear();
+    if (!value) {
+        return "";
+    }
 
-            const month =
-                String(
-                    now.getMonth() + 1
-                ).padStart(2, "0");
+    const d =
+        new Date(
+            value +
+            "T00:00:00"
+        );
 
-            const day =
-                String(
-                    now.getDate()
-                ).padStart(2, "0");
+    if (
+        Number.isNaN(
+            d.getTime()
+        )
+    ) {
+        return value;
+    }
 
-            return (
-                year +
-                "-" +
-                month +
-                "-" +
-                day
-            );
+    return d.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
         }
+    );
+
+}
 
 
-        function setToday() {
 
-            if (
-                !dateInput.value
-            ) {
-                dateInput.value =
-                    getToday();
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderIncomes() {
+
+    const container =
+        document.getElementById(
+            "income-list-container"
+        );
+
+
+    const incomes =
+        getIncomes();
+
+
+    const query =
+        document.getElementById(
+            "search-income"
+        ).value
+        .trim()
+        .toLowerCase();
+
+
+    const sort =
+        document.getElementById(
+            "sort-income"
+        ).value;
+
+
+    let records =
+        incomes.filter(
+            item => {
+
+                if (!query) {
+                    return true;
+                }
+
+                return item.sourceName
+                    .toLowerCase()
+                    .includes(query);
+
             }
-        }
+        );
 
 
-        /* =================================================
-           MONEY
-        ================================================== */
+    if (
+        sort === "name"
+    ) {
 
-        function money(
-            value
-        ) {
+        records.sort(
+            (a, b) =>
+                a.sourceName
+                    .localeCompare(
+                        b.sourceName
+                    )
+        );
 
-            const amount =
-                Number(value) || 0;
+    } else if (
+        sort === "date_asc"
+    ) {
 
-            return (
-                "NPR " +
-                amount.toLocaleString(
-                    "en-IN",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                )
-            );
-        }
+        records.sort(
+            (a, b) =>
+                new Date(a.date) -
+                new Date(b.date)
+        );
 
+    } else if (
+        sort === "total_desc"
+    ) {
 
-        /* =================================================
-           LIVE TOTAL
-        ================================================== */
+        records.sort(
+            (a, b) =>
+                b.total -
+                a.total
+        );
 
-        function updateLiveTotal() {
+    } else if (
+        sort === "total_asc"
+    ) {
 
-            const npr =
-                Number(
-                    nprInput.value
-                ) || 0;
+        records.sort(
+            (a, b) =>
+                a.total -
+                b.total
+        );
 
-            const inr =
-                Number(
-                    inrInput.value
-                ) || 0;
+    } else {
 
-            const total =
-                npr +
-                (
-                    inr * 1.6
-                );
+        records.sort(
+            (a, b) =>
+                new Date(b.date) -
+                new Date(a.date)
+        );
 
-
-            liveTotal.textContent =
-                money(total);
-
-
-            calculationText.textContent =
-                "NPR " +
-                npr.toLocaleString(
-                    "en-IN"
-                ) +
-                " + INR " +
-                inr.toLocaleString(
-                    "en-IN"
-                ) +
-                " × 1.6 = NPR " +
-                total.toLocaleString(
-                    "en-IN",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                );
+    }
 
 
-            /*
-               Keep V2 module calculation
-               in sync too.
-            */
+    /*
+       Summary always uses all records.
+    */
 
-            calculateIncomeTotal();
-
-        }
-
-
-        /* =================================================
-           PROFILE AVATAR
-        ================================================== */
-
-        function loadAvatar() {
-
-            const avatar =
-                getProfileValue(
-                    "avatar",
-                    ""
-                );
-
-            const headerAvatar =
-                document.getElementById(
-                    "header-avatar"
-                );
-
-            if (
-                avatar &&
-                headerAvatar
-            ) {
-
-                headerAvatar.src =
-                    avatar;
-
-            } else if (
-                headerAvatar
-            ) {
-
-                headerAvatar.src =
-                    "assets/N1024.png";
-
-            }
-
-        }
+    const grandTotal =
+        getTotalIncome(
+            incomes
+        );
 
 
-        /* =================================================
-           PROFILE HEADER
-        ================================================== */
-
-        function loadProfileName() {
-
-            const name =
-                getProfileValue(
-                    "name",
-                    ""
-                );
-
-            const button =
-                document.getElementById(
-                    "header-avatar-button"
-                );
-
-            if (
-                button &&
-                name
-            ) {
-
-                button.title =
-                    name;
-
-            }
-
-        }
+    document.getElementById(
+        "summary-total-income"
+    ).textContent =
+        money(
+            grandTotal
+        );
 
 
-        /* =================================================
-           STATUS
-        ================================================== */
-
-        function showStatus(
-            message,
-            type = "success"
-        ) {
-
-            statusBox.textContent =
-                message;
-
-            statusBox.dataset.type =
-                type;
-
-            statusBox.classList.add(
-                "show"
-            );
+    document.getElementById(
+        "summary-record-count"
+    ).textContent =
+        incomes.length;
 
 
-            window.setTimeout(
-                () => {
-
-                    statusBox.classList.remove(
-                        "show"
-                    );
-
-                },
-                2500
-            );
-
-        }
+    document.getElementById(
+        "income-table-total"
+    ).textContent =
+        money(
+            grandTotal
+        );
 
 
-        /* =================================================
-           RENDER
-        ================================================== */
+    /*
+       Group records.
+    */
 
-        function renderIncomes() {
-
-            let incomes =
-                getIncomes();
+    const groups =
+        {};
 
 
-            const query =
-                searchInput.value
+    records.forEach(
+        item => {
+
+            const key =
+                item.sourceName
                     .trim()
                     .toLowerCase();
 
 
-            if (query) {
-
-                incomes =
-                    incomes.filter(
-                        item =>
-                            item.sourceName
-                                .toLowerCase()
-                                .includes(
-                                    query
-                                )
-                    );
-
-            }
-
-
-            const sort =
-                sortInput.value;
-
-
             if (
-                sort ===
-                "name"
+                !groups[key]
             ) {
 
-                incomes.sort(
-                    (a, b) =>
-                        a.sourceName
-                            .localeCompare(
-                                b.sourceName
-                            )
-                );
+                groups[key] = {
+                    name:
+                        item.sourceName,
 
-            } else if (
-                sort ===
-                "date_asc"
-            ) {
+                    items: [],
 
-                incomes.sort(
-                    (a, b) =>
-                        new Date(a.date) -
-                        new Date(b.date)
-                );
-
-            } else if (
-                sort ===
-                "total_desc"
-            ) {
-
-                incomes.sort(
-                    (a, b) =>
-                        b.total -
-                        a.total
-                );
-
-            } else if (
-                sort ===
-                "total_asc"
-            ) {
-
-                incomes.sort(
-                    (a, b) =>
-                        a.total -
-                        b.total
-                );
-
-            } else {
-
-                incomes.sort(
-                    (a, b) =>
-                        new Date(b.date) -
-                        new Date(a.date)
-                );
+                    total: 0
+                };
 
             }
 
 
-            /*
-               Summary uses all records,
-               not only search result.
-            */
-
-            const allIncomes =
-                getIncomes();
-
-
-            const grandTotal =
-                getTotalIncome(
-                    allIncomes
-                );
-
-
-            summaryTotal.textContent =
-                money(
-                    grandTotal
-                );
-
-
-            recordCount.textContent =
-                allIncomes.length;
-
-
-            totalElement.textContent =
-                money(
-                    grandTotal
-                );
-
-
-            /*
-               Group by source
-            */
-
-            const groups =
-                new Map();
-
-
-            incomes.forEach(
-                (income) => {
-
-                    const key =
-                        income.sourceName
-                            .trim()
-                            .toLowerCase();
-
-
-                    if (
-                        !groups.has(
-                            key
-                        )
-                    ) {
-
-                        groups.set(
-                            key,
-                            {
-                                name:
-                                    income.sourceName,
-                                items: [],
-                                total: 0
-                            }
-                        );
-
-                    }
-
-
-                    const group =
-                        groups.get(
-                            key
-                        );
-
-
-                    group.items.push(
-                        income
-                    );
-
-                    group.total +=
-                        Number(
-                            income.total
-                        ) || 0;
-
-                }
-            );
-
-
-            groupCount.textContent =
-                groups.size +
-                (
-                    groups.size === 1
-                        ? " group"
-                        : " groups"
-                );
-
-
-            if (
-                groups.size === 0
-            ) {
-
-                listContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-
-                        <strong>
-                            No income records
-                        </strong>
-
-                        <span>
-                            Add your first income above.
-                        </span>
-                    </div>
-                `;
-
-                return;
-
-            }
-
-
-            listContainer.innerHTML =
-                "";
-
-
-            let groupIndex = 0;
-
-
-            groups.forEach(
-                (group) => {
-
-                    const wrapper =
-                        document.createElement(
-                            "div"
-                        );
-
-                    wrapper.className =
-                        "income-group";
-
-
-                    const header =
-                        document.createElement(
-                            "button"
-                        );
-
-                    header.type =
-                        "button";
-
-                    header.className =
-                        "income-group-header";
-
-
-                    header.innerHTML = `
-                        <span class="income-group-left">
-
-                            <span class="income-group-icon">
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </span>
-
-                            <span>
-
-                                <strong>
-                                    ${escapeHtml(group.name)}
-                                </strong>
-
-                                <small>
-                                    ${group.items.length}
-                                    ${group.items.length === 1 ? "record" : "records"}
-                                </small>
-
-                            </span>
-
-                        </span>
-
-                        <span class="income-group-total">
-                            ${money(group.total)}
-                        </span>
-                    `;
-
-
-                    const details =
-                        document.createElement(
-                            "div"
-                        );
-
-                    details.className =
-                        "income-group-details hidden";
-
-
-                    header.addEventListener(
-                        "click",
-                        () => {
-
-                            details.classList.toggle(
-                                "hidden"
-                            );
-
-                            const icon =
-                                header.querySelector(
-                                    ".income-group-icon i"
-                                );
-
-                            icon.classList.toggle(
-                                "rotate-90"
-                            );
-
-                        }
-                    );
-
-
-                    group.items.forEach(
-                        (income) => {
-
-                            const row =
-                                document.createElement(
-                                    "div"
-                                );
-
-                            row.className =
-                                "income-record-row";
-
-
-                            row.innerHTML = `
-
-                                <div class="income-record-main">
-
-                                    <strong>
-                                        ${formatDate(income.date)}
-                                    </strong>
-
-                                    <span>
-                                        NPR ${formatNumber(income.npr)}
-                                        &nbsp; | &nbsp;
-                                        INR ${formatNumber(income.inr)}
-                                    </span>
-
-                                </div>
-
-
-                                <div class="income-record-right">
-
-                                    <strong>
-                                        ${money(income.total)}
-                                    </strong>
-
-                                    <div class="income-record-actions">
-
-                                        <button
-                                            type="button"
-                                            class="record-action edit"
-                                            data-id="${escapeAttribute(income.id)}"
-                                            title="Edit"
-                                        >
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
-
-
-                                        <button
-                                            type="button"
-                                            class="record-action delete"
-                                            data-id="${escapeAttribute(income.id)}"
-                                            title="Delete"
-                                        >
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-
-                                    </div>
-
-                                </div>
-                            `;
-
-
-                            const editButton =
-                                row.querySelector(
-                                    ".edit"
-                                );
-
-
-                            const deleteButton =
-                                row.querySelector(
-                                    ".delete"
-                                );
-
-
-                            editButton.addEventListener(
-                                "click",
-                                () => {
-
-                                    const all =
-                                        getIncomes();
-
-                                    const index =
-                                        all.findIndex(
-                                            item =>
-                                                String(
-                                                    item.id
-                                                ) ===
-                                                String(
-                                                    income.id
-                                                )
-                                        );
-
-                                    if (
-                                        index !== -1
-                                    ) {
-
-                                        editIncome(
-                                            index
-                                        );
-
-                                        window.scrollTo({
-                                            top: 0,
-                                            behavior: "smooth"
-                                        });
-
-                                    }
-
-                                }
-                            );
-
-
-                            deleteButton.addEventListener(
-                                "click",
-                                async () => {
-
-                                    await deleteIncome(
-                                        getIncomes()
-                                            .findIndex(
-                                                item =>
-                                                    String(
-                                                        item.id
-                                                    ) ===
-                                                    String(
-                                                        income.id
-                                                    )
-                                            )
-                                    );
-
-                                    showStatus(
-                                        "Income record deleted.",
-                                        "success"
-                                    );
-
-                                    renderIncomes();
-
-                                }
-                            );
-
-
-                            details.appendChild(
-                                row
-                            );
-
-                        }
-                    );
-
-
-                    wrapper.appendChild(
-                        header
-                    );
-
-                    wrapper.appendChild(
-                        details
-                    );
-
-                    listContainer.appendChild(
-                        wrapper
-                    );
-
-                    groupIndex++;
-
-                }
-            );
+            groups[key]
+                .items
+                .push(item);
+
+
+            groups[key]
+                .total +=
+                Number(
+                    item.total
+                ) || 0;
 
         }
+    );
 
 
-        /* =================================================
-           FORMAT
-        ================================================== */
-
-        function formatNumber(
-            value
-        ) {
-
-            return (
-                Number(value) || 0
-            ).toLocaleString(
-                "en-IN",
-                {
-                    maximumFractionDigits: 2
-                }
-            );
-
-        }
-
-
-        function formatDate(
-            value
-        ) {
-
-            if (!value) {
-                return "";
-            }
-
-            const date =
-                new Date(
-                    value +
-                    "T00:00:00"
-                );
-
-            if (
-                Number.isNaN(
-                    date.getTime()
-                )
-            ) {
-                return value;
-            }
-
-            return date.toLocaleDateString(
-                "en-IN",
-                {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric"
-                }
-            );
-
-        }
-
-
-        function escapeHtml(
-            value
-        ) {
-
-            return String(value)
-                .replaceAll(
-                    "&",
-                    "&amp;"
-                )
-                .replaceAll(
-                    "<",
-                    "&lt;"
-                )
-                .replaceAll(
-                    ">",
-                    "&gt;"
-                )
-                .replaceAll(
-                    '"',
-                    "&quot;"
-                )
-                .replaceAll(
-                    "'",
-                    "&#039;"
-                );
-
-        }
-
-
-        function escapeAttribute(
-            value
-        ) {
-
-            return escapeHtml(
-                value
-            );
-
-        }
-
-
-        /* =================================================
-           EDIT MODE
-        ================================================== */
-
-        document.addEventListener(
-            "incomeDataChanged",
-            () => {
-
-                renderIncomes();
-
-            }
+    const groupList =
+        Object.values(
+            groups
         );
 
 
-        cancelButton.addEventListener(
-            "click",
-            () => {
-
-                resetIncomeForm();
-
-                submitButton.textContent =
-                    "Save Income";
-
-            }
-        );
+    document.getElementById(
+        "income-group-count"
+    ).textContent =
+        `${groupList.length} ${
+            groupList.length === 1
+                ? "group"
+                : "groups"
+        }`;
 
 
-        /* =================================================
-           FORM SUBMIT
-        ================================================== */
-
-        form.addEventListener(
-            "submit",
-            async (event) => {
-
-                event.preventDefault();
+    container.innerHTML =
+        "";
 
 
-                await saveIncome(
-                    event
+    if (
+        groupList.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div
+                class="py-10 text-center text-slate-500"
+            >
+
+                <i
+                    class="fa-solid fa-wallet text-3xl mb-3"
+                ></i>
+
+                <div class="font-semibold">
+                    No income records
+                </div>
+
+                <div class="text-xs mt-1">
+                    Add your first income above.
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    groupList.forEach(
+        (group, groupIndex) => {
+
+            const card =
+                document.createElement(
+                    "div"
                 );
 
 
-                const editIndex =
-                    document.getElementById(
-                        "edit-income-index"
-                    );
+            card.className =
+                "border border-slate-800 rounded-2xl overflow-hidden";
 
 
-                if (
-                    editIndex.value === ""
-                ) {
-
-                    showStatus(
-                        "Income record saved.",
-                        "success"
-                    );
-
-                }
-
-
-                submitButton.textContent =
-                    "Save Income";
-
-
-                cancelButton.classList.add(
-                    "hidden"
+            const header =
+                document.createElement(
+                    "button"
                 );
 
 
-                renderIncomes();
-
-            }
-        );
+            header.type =
+                "button";
 
 
-        /* =================================================
-           LIVE INPUT
-        ================================================== */
-
-        nprInput.addEventListener(
-            "input",
-            updateLiveTotal
-        );
+            header.className =
+                "w-full flex items-center justify-between p-4 bg-slate-800/40";
 
 
-        inrInput.addEventListener(
-            "input",
-            updateLiveTotal
-        );
+            header.innerHTML = `
 
+                <div class="flex items-center gap-3">
 
-        /* =================================================
-           SEARCH / SORT
-        ================================================== */
-
-        searchInput.addEventListener(
-            "input",
-            renderIncomes
-        );
-
-
-        sortInput.addEventListener(
-            "change",
-            renderIncomes
-        );
-
-
-        /* =================================================
-           PDF PROFILE
-        ================================================== */
-
-        function getPdfProfile() {
-
-            return {
-
-                name:
-                    getProfileValue(
-                        "name",
-                        "Digital NoteBook"
-                    ),
-
-                mobile:
-                    getProfileValue(
-                        "mobile",
-                        ""
-                    ),
-
-                email:
-                    getProfileValue(
-                        "email",
-                        ""
-                    ),
-
-                address:
-                    getProfileValue(
-                        "address",
-                        ""
-                    ),
-
-                avatar:
-                    getProfileValue(
-                        "avatar",
-                        ""
-                    )
-
-            };
-
-        }
-
-
-        /* =================================================
-           PDF HTML
-        ================================================== */
-
-        function buildPdfHtml() {
-
-            const incomes =
-                getIncomes();
-
-
-            const profile =
-                getPdfProfile();
-
-
-            const total =
-                getTotalIncome(
-                    incomes
-                );
-
-
-            const avatar =
-                profile.avatar ||
-                "assets/N1024.png";
-
-
-            let rows =
-                "";
-
-
-            incomes.forEach(
-                income => {
-
-                    rows += `
-
-                        <tr>
-
-                            <td>
-                                ${escapeHtml(
-                                    formatDate(
-                                        income.date
-                                    )
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    income.sourceName
-                                )}
-                            </td>
-
-                            <td class="num">
-                                ${formatNumber(
-                                    income.npr
-                                )}
-                            </td>
-
-                            <td class="num">
-                                ${formatNumber(
-                                    income.inr
-                                )}
-                            </td>
-
-                            <td class="total">
-                                ${money(
-                                    income.total
-                                )}
-                            </td>
-
-                        </tr>
-                    `;
-
-                }
-            );
-
-
-            return `
-
-                <div
-                    id="pdf-printable-content"
-                    class="pdf-document"
-                >
-
-                    <!-- PERMANENT BANNER -->
-
-                    <div class="pdf-banner">
-
-                        <div class="pdf-banner-brand">
-                            DIGITAL NOTEBOOK
-                        </div>
-
-                        <div class="pdf-banner-subtitle">
-                            PERSONAL FINANCIAL RECORD
-                        </div>
-
+                    <div
+                        class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center"
+                    >
+                        <i class="fa-solid fa-wallet"></i>
                     </div>
 
 
-                    <!-- USER PROFILE -->
+                    <div class="text-left">
 
-                    <div class="pdf-profile">
-
-                        <div class="pdf-profile-avatar">
-
-                            <img
-                                src="${escapeAttribute(avatar)}"
-                                alt="User"
-                            >
-
-                        </div>
-
-
-                        <div class="pdf-profile-info">
-
-                            <h1>
-                                ${escapeHtml(
-                                    profile.name
-                                )}
-                            </h1>
-
-                            <p>
-                                <strong>Mobile:</strong>
-                                ${escapeHtml(
-                                    profile.mobile ||
-                                    "-"
-                                )}
-                            </p>
-
-                            <p>
-                                <strong>Email:</strong>
-                                ${escapeHtml(
-                                    profile.email ||
-                                    "-"
-                                )}
-                            </p>
-
-                            <p>
-                                <strong>Address:</strong>
-                                ${escapeHtml(
-                                    profile.address ||
-                                    "-"
-                                )}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- REPORT TITLE -->
-
-                    <div class="pdf-report-title">
-
-                        <h2>
-                            INCOME REPORT
-                        </h2>
-
-                        <span>
-                            Generated:
-                            ${new Date().toLocaleDateString(
-                                "en-IN"
+                        <div class="font-bold">
+                            ${escapeHtml(
+                                group.name
                             )}
-                        </span>
+                        </div>
 
-                    </div>
-
-
-                    <!-- TABLE -->
-
-                    <table class="pdf-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Date
-                                </th>
-
-                                <th>
-                                    Source
-                                </th>
-
-                                <th>
-                                    NPR
-                                </th>
-
-                                <th>
-                                    INR
-                                </th>
-
-                                <th>
-                                    Total NPR
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            ${rows}
-
-                        </tbody>
-
-                    </table>
-
-
-                    <!-- GRAND TOTAL -->
-
-                    <div class="pdf-grand-total">
-
-                        <span>
-                            GRAND TOTAL
-                        </span>
-
-                        <strong>
-                            ${money(total)}
-                        </strong>
-
-                    </div>
-
-
-                    <!-- FOOTER -->
-
-                    <div class="pdf-footer">
-
-                        Digital NoteBook
-                        &nbsp; • &nbsp;
-                        Income Report
+                        <div class="text-[10px] text-slate-500">
+                            ${group.items.length}
+                            ${
+                                group.items.length === 1
+                                    ? "record"
+                                    : "records"
+                            }
+                        </div>
 
                     </div>
 
                 </div>
+
+
+                <div class="flex items-center gap-3">
+
+                    <strong class="text-emerald-400">
+                        ${money(
+                            group.total
+                        )}
+                    </strong>
+
+                    <i
+                        id="group-icon-${groupIndex}"
+                        class="fa-solid fa-chevron-right text-slate-500 transition"
+                    ></i>
+
+                </div>
+
             `;
 
-        }
 
-
-        /* =================================================
-           PDF CSS
-        ================================================== */
-
-        function injectPdfStyles() {
-
-            if (
-                document.getElementById(
-                    "income-pdf-styles"
-                )
-            ) {
-                return;
-            }
-
-
-            const style =
+            const details =
                 document.createElement(
-                    "style"
+                    "div"
                 );
 
 
-            style.id =
-                "income-pdf-styles";
+            details.className =
+                "hidden border-t border-slate-800";
 
 
-            style.textContent = `
+            group.items.forEach(
+                item => {
 
-                .pdf-document {
-                    width: 794px;
-                    min-height: 1123px;
-                    box-sizing: border-box;
-                    padding: 34px;
-                    background: #ffffff;
-                    color: #1f2937;
-                    font-family: Arial, sans-serif;
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    row.className =
+                        "flex items-center justify-between gap-3 px-4 py-3";
+
+
+                    row.innerHTML = `
+
+                        <div>
+
+                            <div class="font-semibold">
+                                ${formatDate(
+                                    item.date
+                                )}
+                            </div>
+
+                            <div class="text-[10px] text-slate-500 mt-1">
+                                NPR ${Number(item.npr || 0).toLocaleString("en-IN")}
+                                &nbsp; | &nbsp;
+                                INR ${Number(item.inr || 0).toLocaleString("en-IN")}
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex items-center gap-3">
+
+                            <strong class="text-emerald-400">
+                                ${money(
+                                    item.total
+                                )}
+                            </strong>
+
+
+                            <button
+                                type="button"
+                                class="edit-income text-blue-400"
+                                data-id="${escapeHtml(item.id)}"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="delete-income text-rose-400"
+                                data-id="${escapeHtml(item.id)}"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    details.appendChild(
+                        row
+                    );
+
                 }
-
-
-                .pdf-banner {
-                    background: #0f172a;
-                    color: #ffffff;
-                    padding: 18px 20px;
-                    border-radius: 10px;
-                    text-align: center;
-                    border-bottom: 5px solid #10b981;
-                }
-
-
-                .pdf-banner-brand {
-                    font-size: 22px;
-                    font-weight: 800;
-                    letter-spacing: 2px;
-                }
-
-
-                .pdf-banner-subtitle {
-                    margin-top: 5px;
-                    font-size: 9px;
-                    letter-spacing: 2px;
-                    color: #a7f3d0;
-                }
-
-
-                .pdf-profile {
-                    display: flex;
-                    align-items: center;
-                    gap: 18px;
-                    margin-top: 22px;
-                    padding-bottom: 18px;
-                    border-bottom: 1px solid #d1d5db;
-                }
-
-
-                .pdf-profile-avatar {
-                    width: 78px;
-                    height: 78px;
-                    min-width: 78px;
-                    border-radius: 50%;
-                    overflow: hidden;
-                    border: 3px solid #10b981;
-                }
-
-
-                .pdf-profile-avatar img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-
-
-                .pdf-profile-info h1 {
-                    margin: 0 0 7px;
-                    font-size: 18px;
-                    color: #111827;
-                }
-
-
-                .pdf-profile-info p {
-                    margin: 3px 0;
-                    font-size: 10px;
-                    color: #4b5563;
-                }
-
-
-                .pdf-report-title {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin: 22px 0 12px;
-                }
-
-
-                .pdf-report-title h2 {
-                    margin: 0;
-                    font-size: 16px;
-                    letter-spacing: 1px;
-                    color: #111827;
-                }
-
-
-                .pdf-report-title span {
-                    font-size: 9px;
-                    color: #6b7280;
-                }
-
-
-                .pdf-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    font-size: 9px;
-                }
-
-
-                .pdf-table th {
-                    background: #f3f4f6;
-                    color: #374151;
-                    font-weight: 700;
-                    padding: 9px 7px;
-                    border: 1px solid #d1d5db;
-                    text-align: left;
-                }
-
-
-                .pdf-table td {
-                    padding: 8px 7px;
-                    border: 1px solid #e5e7eb;
-                    color: #374151;
-                }
-
-
-                .pdf-table .num,
-                .pdf-table .total {
-                    text-align: right;
-                }
-
-
-                .pdf-table .total {
-                    font-weight: 700;
-                    color: #059669;
-                }
-
-
-                .pdf-grand-total {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-top: 20px;
-                    padding: 14px 16px;
-                    background: #ecfdf5;
-                    border: 1px solid #a7f3d0;
-                    border-radius: 8px;
-                }
-
-
-                .pdf-grand-total span {
-                    font-size: 11px;
-                    font-weight: 800;
-                    color: #374151;
-                }
-
-
-                .pdf-grand-total strong {
-                    font-size: 16px;
-                    color: #059669;
-                }
-
-
-                .pdf-footer {
-                    margin-top: 30px;
-                    padding-top: 10px;
-                    border-top: 1px solid #e5e7eb;
-                    text-align: center;
-                    font-size: 8px;
-                    color: #9ca3af;
-                }
-
-            `;
-
-
-            document.head.appendChild(
-                style
             );
 
-        }
 
+            header.addEventListener(
+                "click",
+                () => {
 
-        /* =================================================
-           OPEN PDF
-        ================================================== */
-
-        function openPdf() {
-
-            const incomes =
-                getIncomes();
-
-
-            if (
-                incomes.length === 0
-            ) {
-
-                showStatus(
-                    "Add an income record before creating PDF.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            injectPdfStyles();
-
-
-            document.getElementById(
-                "pdf-preview-container"
-            ).innerHTML =
-                buildPdfHtml();
-
-
-            document.getElementById(
-                "pdf-modal"
-            ).classList.remove(
-                "hidden"
-            );
-
-        }
-
-
-        /* =================================================
-           CLOSE PDF
-        ================================================== */
-
-        function closePdf() {
-
-            document.getElementById(
-                "pdf-modal"
-            ).classList.add(
-                "hidden"
-            );
-
-        }
-
-
-        /* =================================================
-           DOWNLOAD PDF
-        ================================================== */
-
-        async function downloadPdf() {
-
-            const element =
-                document.getElementById(
-                    "pdf-printable-content"
-                );
-
-
-            if (
-                !element
-            ) {
-                return;
-            }
-
-
-            const profile =
-                getPdfProfile();
-
-
-            const fileName =
-                (
-                    profile.name ||
-                    "Digital-NoteBook"
-                )
-                    .trim()
-                    .replace(
-                        /[^a-z0-9-_]+/gi,
-                        "-"
+                    details.classList.toggle(
+                        "hidden"
                     );
 
 
-            const options = {
+                    document.getElementById(
+                        `group-icon-${groupIndex}`
+                    ).classList.toggle(
+                        "rotate-90"
+                    );
 
-                margin:
-                    0,
-
-                filename:
-                    `${fileName}-Income-Report.pdf`,
-
-                image: {
-                    type: "jpeg",
-                    quality: 0.98
-                },
-
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor:
-                        "#ffffff"
-                },
-
-                jsPDF: {
-                    unit: "mm",
-                    format: "a4",
-                    orientation: "portrait"
                 }
-
-            };
-
-
-            await html2pdf()
-                .set(options)
-                .from(element)
-                .save();
-
-        }
+            );
 
 
-        /* =================================================
-           PRINT PDF
-        ================================================== */
-
-        function printPdf() {
-
-            const element =
-                document.getElementById(
-                    "pdf-printable-content"
-                );
+            card.appendChild(
+                header
+            );
 
 
-            if (
-                !element
-            ) {
-                return;
-            }
+            card.appendChild(
+                details
+            );
 
 
-            const printWindow =
-                window.open(
-                    "",
-                    "_blank"
-                );
-
-
-            if (
-                !printWindow
-            ) {
-                return;
-            }
-
-
-            printWindow.document.write(`
-                <!DOCTYPE html>
-
-                <html>
-
-                <head>
-
-                    <title>
-                        Income Report
-                    </title>
-
-                    <style>
-
-                        body {
-                            margin: 0;
-                            background: #fff;
-                        }
-
-                        @page {
-                            size: A4;
-                            margin: 0;
-                        }
-
-                    </style>
-
-                </head>
-
-                <body>
-
-                    ${element.outerHTML}
-
-                </body>
-
-                </html>
-            `);
-
-
-            printWindow.document.close();
-
-
-            printWindow.onload =
-                () => {
-
-                    printWindow.focus();
-
-                    printWindow.print();
-
-                };
+            container.appendChild(
+                card
+            );
 
         }
+    );
 
 
-        /* =================================================
-           PDF EVENTS
-        ================================================== */
+    /*
+       EDIT
+    */
 
-        document.getElementById(
-            "pdf-button"
-        ).addEventListener(
-            "click",
-            openPdf
+    container
+        .querySelectorAll(
+            ".edit-income"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset.id;
+
+
+                        const all =
+                            getIncomes();
+
+
+                        const index =
+                            all.findIndex(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(id)
+                            );
+
+
+                        if (
+                            index !== -1
+                        ) {
+
+                            moduleEditIncome(
+                                index
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
         );
 
 
-        document.getElementById(
-            "close-pdf-button"
-        ).addEventListener(
-            "click",
-            closePdf
+    /*
+       DELETE
+    */
+
+    container
+        .querySelectorAll(
+            ".delete-income"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    async () => {
+
+                        const id =
+                            button.dataset.id;
+
+
+                        const all =
+                            getIncomes();
+
+
+                        const index =
+                            all.findIndex(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(id)
+                            );
+
+
+                        if (
+                            index !== -1
+                        ) {
+
+                            /*
+                               No browser alert.
+                               Direct delete.
+                            */
+
+                            await moduleDeleteIncome(
+                                index
+                            );
+
+
+                            renderIncomes();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+
+/* =========================================================
+   PROFILE / AVATAR
+========================================================= */
+
+function loadProfile() {
+
+    const name =
+        getProfileValue(
+            "name",
+            ""
         );
 
 
-        document.getElementById(
-            "download-pdf-button"
-        ).addEventListener(
-            "click",
-            downloadPdf
+    const email =
+        getProfileValue(
+            "email",
+            ""
         );
 
 
-        document.getElementById(
-            "print-pdf-button"
-        ).addEventListener(
-            "click",
-            printPdf
+    const avatar =
+        getProfileValue(
+            "avatar",
+            ""
         );
 
 
+    const image =
+        avatar ||
+        "assets/N1024.png";
+
+
+    document.getElementById(
+        "header-avatar"
+    ).src =
+        image;
+
+
+    document.getElementById(
+        "sidebar-avatar"
+    ).src =
+        image;
+
+
+    document.getElementById(
+        "sidebar-name"
+    ).textContent =
+        name ||
+        "User";
+
+
+    document.getElementById(
+        "sidebar-email"
+    ).textContent =
+        email;
+
+}
+
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+window.generateAndShareIncomePDF =
+function() {
+
+    const incomes =
+        getIncomes();
+
+
+    if (
+        incomes.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const name =
+        getProfileValue(
+            "name",
+            "Digital NoteBook"
+        );
+
+
+    const mobile =
+        getProfileValue(
+            "mobile",
+            ""
+        );
+
+
+    const email =
+        getProfileValue(
+            "email",
+            ""
+        );
+
+
+    const address =
+        getProfileValue(
+            "address",
+            ""
+        );
+
+
+    const avatar =
+        getProfileValue(
+            "avatar",
+            ""
+        ) ||
+        "assets/N1024.png";
+
+
+    const total =
+        getTotalIncome(
+            incomes
+        );
+
+
+    let rows =
+        "";
+
+
+    incomes.forEach(
+        item => {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${escapeHtml(
+                            formatDate(
+                                item.date
+                            )
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.sourceName
+                        )}
+                    </td>
+
+                    <td>
+                        ${Number(
+                            item.npr || 0
+                        ).toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${Number(
+                            item.inr || 0
+                        ).toFixed(2)}
+                    </td>
+
+                    <td>
+                        NPR ${
+                            Number(
+                                item.total || 0
+                            ).toFixed(2)
+                        }
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    document.getElementById(
+        "pdf-preview-container"
+    ).innerHTML = `
+
+        <div
+            id="pdf-printable-content"
+            style="
+                width:100%;
+                max-width:760px;
+                background:#fff;
+                color:#111827;
+                padding:30px;
+                margin:auto;
+                font-family:Arial,sans-serif;
+            "
+        >
+
+            <!-- PERMANENT BANNER -->
+
+            <div
+                style="
+                    background:#061a4a;
+                    border-bottom:6px solid #10b981;
+                    padding:16px;
+                    text-align:center;
+                    border-radius:10px;
+                "
+            >
+
+                <img
+                    src="assets/N1024.png"
+                    style="
+                        width:100%;
+                        max-height:130px;
+                        object-fit:contain;
+                    "
+                >
+
+                <div
+                    style="
+                        color:#fff;
+                        font-size:18px;
+                        font-weight:800;
+                        letter-spacing:2px;
+                        margin-top:8px;
+                    "
+                >
+                    DIGITAL NOTEBOOK
+                </div>
+
+                <div
+                    style="
+                        color:#a7f3d0;
+                        font-size:9px;
+                        letter-spacing:2px;
+                        margin-top:3px;
+                    "
+                >
+                    PERSONAL FINANCIAL RECORD
+                </div>
+
+            </div>
+
+
+            <!-- USER -->
+
+            <div
+                style="
+                    display:flex;
+                    gap:18px;
+                    align-items:center;
+                    padding:20px 0;
+                    border-bottom:1px solid #ddd;
+                "
+            >
+
+                <img
+                    src="${escapeHtml(avatar)}"
+                    style="
+                        width:72px;
+                        height:72px;
+                        border-radius:50%;
+                        object-fit:cover;
+                        border:3px solid #10b981;
+                    "
+                >
+
+
+                <div>
+
+                    <h2
+                        style="
+                            margin:0 0 7px;
+                            font-size:18px;
+                        "
+                    >
+                        ${escapeHtml(name)}
+                    </h2>
+
+                    <div
+                        style="
+                            font-size:10px;
+                            line-height:1.7;
+                            color:#4b5563;
+                        "
+                    >
+                        Mobile: ${escapeHtml(mobile || "-")}
+                        <br>
+                        Email: ${escapeHtml(email || "-")}
+                        <br>
+                        Address: ${escapeHtml(address || "-")}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h2
+                style="
+                    text-align:center;
+                    margin:22px 0 14px;
+                    font-size:17px;
+                    letter-spacing:1px;
+                "
+            >
+                INCOME REPORT
+            </h2>
+
+
+            <!-- TABLE -->
+
+            <table
+                style="
+                    width:100%;
+                    border-collapse:collapse;
+                    font-size:10px;
+                "
+            >
+
+                <thead>
+
+                    <tr
+                        style="
+                            background:#f3f4f6;
+                        "
+                    >
+
+                        <th style="padding:9px;border:1px solid #ddd;">
+                            Date
+                        </th>
+
+                        <th style="padding:9px;border:1px solid #ddd;">
+                            Source
+                        </th>
+
+                        <th style="padding:9px;border:1px solid #ddd;">
+                            NPR
+                        </th>
+
+                        <th style="padding:9px;border:1px solid #ddd;">
+                            INR
+                        </th>
+
+                        <th style="padding:9px;border:1px solid #ddd;">
+                            Total NPR
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <!-- TOTAL -->
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-top:20px;
+                    padding:14px;
+                    background:#ecfdf5;
+                    border:1px solid #a7f3d0;
+                    border-radius:8px;
+                    font-size:14px;
+                    font-weight:800;
+                "
+            >
+
+                <span>
+                    GRAND TOTAL
+                </span>
+
+                <span
+                    style="color:#059669;"
+                >
+                    ${money(total)}
+                </span>
+
+            </div>
+
+
+            <div
+                style="
+                    text-align:center;
+                    color:#9ca3af;
+                    font-size:8px;
+                    margin-top:25px;
+                    border-top:1px solid #eee;
+                    padding-top:10px;
+                "
+            >
+                Digital NoteBook • Income Report
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "pdf-modal"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "pdf-modal"
+    ).classList.add(
+        "flex"
+    );
+
+};
+
+
+
+/* =========================================================
+   PDF CLOSE
+========================================================= */
+
+window.closePdfModal =
+function() {
+
+    const modal =
         document.getElementById(
             "pdf-modal"
-        ).addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target.id ===
-                    "pdf-modal"
-                ) {
-
-                    closePdf();
-
-                }
-
-            }
         );
 
 
-        /* =================================================
-           INIT
-        ================================================== */
+    modal.classList.add(
+        "hidden"
+    );
 
-        async function startPage() {
 
-            try {
+    modal.classList.remove(
+        "flex"
+    );
 
-                await initApp();
+};
 
-            } catch (error) {
 
-                console.error(
-                    "App initialization:",
-                    error
-                );
 
+/* =========================================================
+   PRINT
+========================================================= */
+
+window.printFromModal =
+function() {
+
+    const content =
+        document.getElementById(
+            "pdf-printable-content"
+        );
+
+
+    if (!content) {
+        return;
+    }
+
+
+    const printWindow =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if (!printWindow) {
+        return;
+    }
+
+
+    printWindow.document.write(`
+
+        <html>
+
+        <head>
+
+            <title>
+                Income Report
+            </title>
+
+            <style>
+
+                body {
+                    margin:0;
+                    background:#fff;
+                }
+
+                @page {
+                    size:A4;
+                    margin:10mm;
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+
+            ${content.outerHTML}
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    printWindow.document.close();
+
+
+    printWindow.onload =
+        function() {
+
+            printWindow.focus();
+
+            printWindow.print();
+
+        };
+
+};
+
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+window.downloadIncomePDF =
+async function() {
+
+    const element =
+        document.getElementById(
+            "pdf-printable-content"
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    const name =
+        getProfileValue(
+            "name",
+            "Digital-NoteBook"
+        );
+
+
+    const safeName =
+        String(name)
+            .replace(
+                /[^a-z0-9-_]+/gi,
+                "-"
+            );
+
+
+    await html2pdf()
+        .set({
+
+            margin: 0,
+
+            filename:
+                `${safeName}-Income-Report.pdf`,
+
+            image: {
+                type: "jpeg",
+                quality: 0.98
+            },
+
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            },
+
+            jsPDF: {
+                unit: "mm",
+                format: "a4",
+                orientation: "portrait"
             }
 
+        })
+        .from(element)
+        .save();
 
-            setToday();
-
-            loadAvatar();
-
-            loadProfileName();
-
-            updateLiveTotal();
-
-            renderIncomes();
-
-        }
+};
 
 
-        startPage();
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+window.toggleSidebar =
+function() {
+
+    document
+        .getElementById("sidebar")
+        .classList
+        .toggle(
+            "-translate-x-full"
+        );
+
+};
 
 
-        /* =================================================
-           GLOBAL COMPATIBILITY
-        ================================================= */
 
-        window.renderIncomes =
-            renderIncomes;
+/* =========================================================
+   INIT
+========================================================= */
+
+async function initPage() {
+
+    try {
+
+        await initApp();
+
+    } catch (error) {
+
+        console.error(
+            "Income page init:",
+            error
+        );
+
+    }
 
 
-        window.generateAndShareIncomePDF =
-            openPdf;
+    /*
+       TODAY'S DATE
+    */
+
+    const date =
+        document.getElementById(
+            "income-date"
+        );
 
 
-        window.closePdfModal =
-            closePdf;
+    if (
+        date &&
+        !date.value
+    ) {
+
+        date.value =
+            today();
+
+    }
 
 
-        window.printFromModal =
-            printPdf;
+    loadProfile();
 
-    </script>
+    calculateIncomeTotal();
+
+    renderIncomes();
+
+}
+
+
+initPage();
+
+
+/*
+   Re-render when another V2
+   module changes income data.
+*/
+
+document.addEventListener(
+    "incomeDataChanged",
+    () => {
+
+        renderIncomes();
+
+    }
+);
+
+</script>
 
 </body>
-
 </html>
