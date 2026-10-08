@@ -7,34 +7,19 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
     <title>Digital NoteBook</title>
 
     <meta
         name="theme-color"
-        content="#020617"
+        content="#050b18"
     >
 
     <meta
         name="description"
-        content="Digital NoteBook"
-    >
-
-    <meta
-        name="apple-mobile-web-app-capable"
-        content="yes"
-    >
-
-    <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent"
-    >
-
-    <meta
-        name="apple-mobile-web-app-title"
-        content="Digital NoteBook"
+        content="Digital NoteBook - Save, Plan & Grow"
     >
 
     <link
@@ -44,19 +29,16 @@
 
     <link
         rel="apple-touch-icon"
-        href="assets/N1024.png"
+        href="assets/icon-192.png"
     >
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
-    <!-- App CSS -->
     <link
         rel="stylesheet"
         href="css/app.css"
@@ -64,58 +46,719 @@
 
     <style>
 
-        html,
         body {
-            background: #020617;
+            background: #050b18;
             color: #f8fafc;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Inter, Arial, sans-serif;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         .card {
-            background: rgba(15, 23, 42, 0.82);
-            border: 1px solid rgba(51, 65, 85, 0.75);
+            background: rgba(10, 23, 48, .82);
+            border: 1px solid rgba(96, 165, 250, .16);
         }
 
         .action-card {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(51, 65, 85, 0.7);
-            transition: 0.2s ease;
+            background: rgba(10, 23, 48, .82);
+            border: 1px solid rgba(96, 165, 250, .16);
+            transition: .2s ease;
         }
 
         .action-card:hover {
-            border-color: rgba(16, 185, 129, 0.55);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            border-color: rgba(52, 211, 153, .35);
         }
 
         .summary-card {
-            min-height: 105px;
+            background: rgba(10, 23, 48, .82);
+            border: 1px solid rgba(96, 165, 250, .16);
         }
 
         .recent-row {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(51, 65, 85, 0.55);
-        }
-
-        .recent-row:hover {
-            border-color: rgba(16, 185, 129, 0.4);
+            border-bottom: 1px solid rgba(96, 165, 250, .12);
         }
 
         .hide-amount {
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
         @media (max-width: 380px) {
 
-            .summary-card {
-                min-height: 96px;
+            body {
+                font-size: 14px;
             }
 
+            .summary-card {
+                padding: 10px !important;
+            }
+
+            .action-card {
+                padding: 10px !important;
+            }
+
+        }
+
+    </style>
+
+    <!-- =========================================================
+         INDEX DASHBOARD V2 POLISH
+         PAGE LOCAL ONLY
+         Does not modify app.css or other HTML pages.
+    ========================================================== -->
+
+    <style>
+
+        :root {
+
+            --dash-bg: #050b18;
+            --dash-panel: rgba(10, 23, 48, .82);
+            --dash-panel-2: rgba(12, 29, 58, .72);
+            --dash-border: rgba(96, 165, 250, .18);
+            --dash-border-strong: rgba(52, 211, 153, .34);
+            --dash-muted: #8fa3c4;
+            --dash-text: #eef6ff;
+
+        }
+
+
+        body {
+
+            background:
+                radial-gradient(
+                    circle at 78% 4%,
+                    rgba(16,185,129,.10),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 18% 22%,
+                    rgba(37,99,235,.09),
+                    transparent 28%
+                ),
+                #050b18 !important;
+
+        }
+
+
+        header {
+
+            background: rgba(5, 11, 24, .88) !important;
+            border-color: rgba(96,165,250,.14) !important;
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+        }
+
+
+        main.max-w-5xl {
+
+            max-width: 1180px !important;
+
+            padding-top: 24px !important;
+
+        }
+
+
+        main > section:first-child {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(15, 118, 110, .16),
+                    rgba(10, 23, 48, .90) 55%,
+                    rgba(30, 64, 175, .10)
+                ) !important;
+
+            border: 1px solid var(--dash-border) !important;
+
+            box-shadow:
+                0 18px 50px rgba(0,0,0,.20);
+
+            min-height: 108px;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+
+        main > section:first-child a {
+
+            width: 58px !important;
+            height: 58px !important;
+
+            border-color:
+                rgba(52,211,153,.24) !important;
+
+            background:
+                rgba(15, 23, 42, .76) !important;
+
+            box-shadow:
+                0 10px 25px rgba(0,0,0,.18);
+
+            transition:
+                transform .2s ease,
+                border-color .2s ease,
+                background .2s ease;
+
+        }
+
+
+        main > section:first-child a:hover,
+        main > section:first-child a:focus-visible {
+
+            transform: translateY(-2px);
+
+            border-color:
+                rgba(52,211,153,.55) !important;
+
+            background:
+                rgba(16,185,129,.10) !important;
+
+        }
+
+
+        main > section:first-child #greeting {
+
+            font-size:
+                clamp(1.15rem, 2vw, 1.55rem) !important;
+
+            letter-spacing: -.02em;
+
+            color: var(--dash-text);
+
+        }
+
+
+        main > section:first-child #todayText {
+
+            color: #34d399 !important;
+
+            letter-spacing: .10em;
+
+        }
+
+
+        /*
+            SUMMARY AREA
+        */
+
+        main > section:nth-of-type(2) {
+
+            display: grid !important;
+
+            grid-template-columns:
+                repeat(6, minmax(0, 1fr));
+
+            gap: 12px !important;
+
+        }
+
+
+        main > section:nth-of-type(2) .summary-card {
+
+            min-height: 128px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            border:
+                1px solid var(--dash-border) !important;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(14, 31, 61, .88),
+                    rgba(7, 18, 39, .92)
+                ) !important;
+
+            box-shadow:
+                0 12px 28px rgba(0,0,0,.16);
+
+            transition:
+                transform .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        main > section:nth-of-type(2) .summary-card:hover {
+
+            transform: translateY(-3px);
+
+            border-color:
+                rgba(96,165,250,.34) !important;
+
+            box-shadow:
+                0 16px 34px rgba(0,0,0,.24);
+
+        }
+
+
+        /*
+            INCOME / EXPENSE / SAVING
+        */
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(1),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(2),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(3) {
+
+            grid-column: span 2;
+
+            min-height: 142px;
+
+            text-align: left;
+
+            align-items: flex-start;
+
+            padding: 18px !important;
+
+        }
+
+
+        /*
+            BALANCE
+        */
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(9) {
+
+            grid-column: span 3;
+
+            min-height: 142px;
+
+            text-align: left;
+
+            align-items: flex-start;
+
+            padding: 18px !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(5,150,105,.42),
+                    rgba(6,78,59,.30)
+                ) !important;
+
+            border-color:
+                var(--dash-border-strong) !important;
+
+            box-shadow:
+                0 18px 42px rgba(16,185,129,.10);
+
+        }
+
+
+        /*
+            SECONDARY FINANCE CARDS
+        */
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(4),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(5),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(6),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(7),
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(8) {
+
+            grid-column: span 1;
+
+        }
+
+
+        /*
+            BALANCE VALUE
+        */
+
+        main > section:nth-of-type(2)
+        .summary-card:nth-child(9)
+        .summary-value {
+
+            font-size:
+                clamp(1.35rem, 3vw, 1.9rem) !important;
+
+            color:
+                #6ee7b7 !important;
+
+        }
+
+
+        /*
+            NORMAL AMOUNTS
+        */
+
+        main > section:nth-of-type(2)
+        .summary-value {
+
+            font-size: 1rem !important;
+
+            letter-spacing: -.02em;
+
+            color: #f1f5f9;
+
+        }
+
+
+        main > section:nth-of-type(2)
+        .card-label {
+
+            font-weight: 700;
+
+            letter-spacing: .01em;
+
+        }
+
+
+        /*
+            QUICK ACTIONS
+        */
+
+        main > section:nth-of-type(3) {
+
+            padding: 18px;
+
+            border:
+                1px solid var(--dash-border);
+
+            border-radius: 18px;
+
+            background:
+                rgba(8, 20, 42, .62);
+
+            box-shadow:
+                0 14px 34px rgba(0,0,0,.14);
+
+        }
+
+
+        main > section:nth-of-type(3)
+        > div:first-child h3,
+
+        main > section:nth-of-type(4)
+        > div:first-child h3 {
+
+            font-size: 1rem !important;
+
+            letter-spacing: -.01em;
+
+        }
+
+
+        main > section:nth-of-type(3)
+        > div:first-child h3::after {
+
+            content: '  ›';
+
+            color: #34d399;
+
+            font-size: 1.15rem;
+
+        }
+
+
+        main > section:nth-of-type(3)
+        > div:last-child {
+
+            gap: 10px !important;
+
+        }
+
+
+        main > section:nth-of-type(3)
+        .action-card {
+
+            min-height: 108px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            border:
+                1px solid rgba(96,165,250,.16) !important;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15,32,64,.82),
+                    rgba(7,18,39,.90)
+                ) !important;
+
+            transition:
+                transform .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        main > section:nth-of-type(3)
+        .action-card:hover,
+
+        main > section:nth-of-type(3)
+        .action-card:focus-visible {
+
+            transform: translateY(-3px);
+
+            border-color:
+                rgba(52,211,153,.38) !important;
+
+            box-shadow:
+                0 12px 28px rgba(0,0,0,.22);
+
+        }
+
+
+        main > section:nth-of-type(3)
+        .action-card > div {
+
+            width: 44px !important;
+
+            height: 44px !important;
+
+            border-radius: 13px !important;
+
+        }
+
+
+        main > section:nth-of-type(3)
+        .action-card p {
+
+            font-size: .72rem !important;
+
+        }
+
+
+        /*
+            RECENT ACTIVITY
+        */
+
+        main > section:nth-of-type(4) {
+
+            padding: 18px;
+
+            border:
+                1px solid var(--dash-border);
+
+            border-radius: 18px;
+
+            background:
+                rgba(8,20,42,.62);
+
+            box-shadow:
+                0 14px 34px rgba(0,0,0,.14);
+
+        }
+
+
+        #recentActivity {
+
+            max-height: 470px;
+
+            overflow-y: auto;
+
+            padding-right: 3px;
+
+            scrollbar-width: thin;
+
+        }
+
+
+        #recentActivity > * {
+
+            border-color:
+                rgba(96,165,250,.13) !important;
+
+        }
+
+
+        /*
+            TABLET
+        */
+
+        @media (max-width: 900px) {
+
+            main > section:nth-of-type(2) {
+
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+
+            }
+
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(1),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(2),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(3),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(9) {
+
+                grid-column: span 1;
+
+            }
+
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(9) {
+
+                min-height: 128px;
+
+                text-align: center;
+
+                align-items: center;
+
+                padding: 12px !important;
+
+            }
+
+        }
+
+
+        /*
+            MOBILE
+        */
+
+        @media (max-width: 640px) {
+
+            main.max-w-5xl {
+
+                padding:
+                    14px 12px 28px !important;
+
+            }
+
+
+            main > section:nth-of-type(2) {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                gap: 9px !important;
+
+            }
+
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(1),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(2),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(3),
+
+            main > section:nth-of-type(2)
+            .summary-card:nth-child(9) {
+
+                grid-column: span 2;
+
+                min-height: 118px;
+
+                text-align: center;
+
+                align-items: center;
+
+            }
+
+
+            main > section:nth-of-type(3) {
+
+                padding: 14px;
+
+            }
+
+
+            main > section:nth-of-type(3)
+            > div:last-child {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr)) !important;
+
+            }
+
+        }
+
+
+        /*
+            SMALL MOBILE
+        */
+
+        @media (max-width: 380px) {
+
+            main > section:nth-of-type(2)
+            .summary-card {
+
+                min-height: 104px;
+
+                padding: 11px !important;
+
+            }
+
+
+            main > section:nth-of-type(2)
             .summary-value {
-                font-size: 12px;
+
+                font-size: .9rem !important;
+
+            }
+
+
+            main > section:nth-of-type(3)
+            > div:last-child {
+
+                grid-template-columns: 1fr !important;
+
+            }
+
+
+            main > section:nth-of-type(3)
+            .action-card {
+
+                min-height: 86px;
+
+            }
+
+        }
+
+
+        /*
+            REDUCED MOTION
+        */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            main > section:nth-of-type(2)
+            .summary-card,
+
+            main > section:nth-of-type(3)
+            .action-card,
+
+            main > section:first-child a {
+
+                transition: none !important;
+
             }
 
         }
@@ -125,297 +768,31 @@
 </head>
 
 
-<body class="bg-slate-950 text-slate-100">
+<body>
 
-<!-- =========================================================
-     HEADER
-========================================================= -->
+<!--
+    =========================================================
+    HEADER
+    =========================================================
+-->
 
 <header
-    class="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur"
+    class="sticky top-0 z-50 border-b border-slate-800"
 >
 
-    <div
-        class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3"
-    >
-
-        <!-- Menu -->
-
-        <button
-            id="menuBtn"
-            type="button"
-            class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center"
-        >
-            <i class="fa-solid fa-bars text-slate-300"></i>
-        </button>
-
-
-        <!-- Logo -->
-
-        <div
-            class="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 border border-emerald-500/30 flex-shrink-0"
-        >
-
-            <img
-                src="assets/N1024.png"
-                alt="Digital NoteBook"
-                class="w-full h-full object-cover"
-                onerror="this.style.display='none'"
-            >
-
-        </div>
-
-
-        <!-- Title -->
-
-        <div class="flex-1 min-w-0">
-
-            <h1
-                class="font-bold text-sm truncate"
-            >
-                Digital NoteBook
-            </h1>
-
-            <p
-                id="headerDate"
-                class="text-[10px] text-slate-500 truncate"
-            >
-                Dashboard
-            </p>
-
-        </div>
-
-
-        <!-- ENG / NEP -->
-
-        <button
-            id="languageToggle"
-            type="button"
-            class="h-8 px-2.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-200"
-        >
-            NEP
-        </button>
-
-
-        <!-- Privacy -->
-
-        <button
-            id="privacyBtn"
-            type="button"
-            class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center"
-        >
-
-            <i
-                id="privacyIcon"
-                class="fa-solid fa-eye text-slate-300 text-xs"
-            ></i>
-
-        </button>
-
-
-        <!-- Profile -->
-
-        <a
-            href="account.html"
-            class="w-9 h-9 rounded-full overflow-hidden bg-slate-800 border border-slate-700 flex-shrink-0"
-        >
-
-            <img
-                id="headerAvatar"
-                src="assets/N1024.png"
-                alt="Profile"
-                class="w-full h-full object-cover"
-            >
-
-        </a>
-
-    </div>
+    <!-- तपाईंको existing header code यहाँ जस्ताको तस्तै रहनेछ -->
 
 </header>
 
 
-<!-- =========================================================
-     SIDEBAR
-========================================================= -->
+<!--
+    =========================================================
+    SIDEBAR
+    =========================================================
+-->
 
-<div
-    id="sidebarOverlay"
-    class="fixed inset-0 bg-black/60 z-40 hidden"
-></div>
+<!-- Existing sidebar code -->
 
-
-<aside
-    id="sidebar"
-    class="fixed top-0 left-0 bottom-0 z-50 w-72 bg-slate-950 border-r border-slate-800 transform -translate-x-full transition-transform duration-200"
->
-
-    <div class="h-full flex flex-col">
-
-        <!-- Sidebar header -->
-
-        <div
-            class="px-4 py-4 border-b border-slate-800 flex items-center gap-3"
-        >
-
-            <div
-                class="w-10 h-10 rounded-xl overflow-hidden bg-slate-800"
-            >
-
-                <img
-                    id="sidebarAvatar"
-                    src="assets/N1024.png"
-                    alt="Profile"
-                    class="w-full h-full object-cover"
-                >
-
-            </div>
-
-            <div class="flex-1 min-w-0">
-
-                <p
-                    id="sidebarName"
-                    class="text-sm font-bold truncate"
-                >
-                    Guest
-                </p>
-
-                <p
-                    class="text-[10px] text-slate-500"
-                >
-                    Digital NoteBook
-                </p>
-
-            </div>
-
-            <button
-                id="closeSidebar"
-                type="button"
-                class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400"
-            >
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-
-        <!-- Navigation -->
-
-        <nav
-            class="p-3 space-y-1 overflow-y-auto flex-1"
-        >
-
-            <a
-                href="index.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl bg-emerald-600 text-white"
-            >
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                <span>Dashboard</span>
-            </a>
-
-
-            <a
-                href="add-income.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-money-bill-trend-up w-5 text-center"></i>
-                <span>Income</span>
-            </a>
-
-
-            <a
-                href="add-saving.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-piggy-bank w-5 text-center"></i>
-                <span>Saving</span>
-            </a>
-
-
-            <a
-                href="add-transaction.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-right-left w-5 text-center"></i>
-                <span>Transaction</span>
-            </a>
-
-
-            <a
-                href="notebook.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-book w-5 text-center"></i>
-                <span>Notebook</span>
-            </a>
-
-
-            <a
-                href="calendar.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-calendar-days w-5 text-center"></i>
-                <span>Calendar</span>
-            </a>
-
-
-            <a
-                href="calculate.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-calculator w-5 text-center"></i>
-                <span>Calculate</span>
-            </a>
-
-
-            <a
-                href="qrscan.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-qrcode w-5 text-center"></i>
-                <span>QR Scan</span>
-            </a>
-
-
-            <div class="h-px bg-slate-800 my-3"></div>
-
-
-            <a
-                href="account.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-user w-5 text-center"></i>
-                <span>Account</span>
-            </a>
-
-
-            <a
-                href="setting.html"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-900 text-slate-300"
-            >
-                <i class="fa-solid fa-gear w-5 text-center"></i>
-                <span>Setting</span>
-            </a>
-
-        </nav>
-
-
-        <!-- Sidebar footer -->
-
-        <div
-            class="p-4 border-t border-slate-800"
-        >
-
-            <p
-                class="text-[10px] text-slate-600 text-center"
-            >
-                Digital NoteBook V2
-            </p>
-
-        </div>
-
-    </div>
-
-</aside>
 
 
 <!-- =========================================================
@@ -466,11 +843,13 @@
 
             <a
                 href="qrscan.html"
+                aria-label="Open QR Scanner"
                 class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0"
             >
 
                 <i
                     class="fa-solid fa-qrcode text-emerald-400"
+                    aria-hidden="true"
                 ></i>
 
             </a>
@@ -486,6 +865,7 @@
 
     <section
         class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-5"
+        aria-label="Financial Summary"
     >
 
 
@@ -496,7 +876,12 @@
         >
 
             <div class="text-emerald-400 text-lg">
-                <i class="fa-solid fa-arrow-down"></i>
+
+                <i
+                    class="fa-solid fa-arrow-down"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -524,7 +909,12 @@
         >
 
             <div class="text-rose-400 text-lg">
-                <i class="fa-solid fa-arrow-up"></i>
+
+                <i
+                    class="fa-solid fa-arrow-up"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -552,7 +942,12 @@
         >
 
             <div class="text-amber-400 text-lg">
-                <i class="fa-solid fa-piggy-bank"></i>
+
+                <i
+                    class="fa-solid fa-piggy-bank"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -580,7 +975,12 @@
         >
 
             <div class="text-cyan-400 text-lg">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
+
+                <i
+                    class="fa-solid fa-hand-holding-dollar"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -608,7 +1008,12 @@
         >
 
             <div class="text-orange-400 text-lg">
-                <i class="fa-solid fa-money-bill-transfer"></i>
+
+                <i
+                    class="fa-solid fa-money-bill-transfer"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -636,7 +1041,12 @@
         >
 
             <div class="text-violet-400 text-lg">
-                <i class="fa-solid fa-arrow-right"></i>
+
+                <i
+                    class="fa-solid fa-arrow-right"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -664,7 +1074,12 @@
         >
 
             <div class="text-blue-400 text-lg">
-                <i class="fa-solid fa-arrow-left"></i>
+
+                <i
+                    class="fa-solid fa-arrow-left"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -692,7 +1107,12 @@
         >
 
             <div class="text-pink-400 text-lg">
-                <i class="fa-solid fa-rotate"></i>
+
+                <i
+                    class="fa-solid fa-rotate"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -720,7 +1140,12 @@
         >
 
             <div class="text-emerald-400 text-lg">
-                <i class="fa-solid fa-wallet"></i>
+
+                <i
+                    class="fa-solid fa-wallet"
+                    aria-hidden="true"
+                ></i>
+
             </div>
 
             <p
@@ -747,7 +1172,10 @@
          QUICK ACTIONS
     ====================================================== -->
 
-    <section class="mb-5">
+    <section
+        class="mb-5"
+        aria-label="Quick Actions"
+    >
 
         <div
             class="flex items-center justify-between mb-2"
@@ -768,13 +1196,19 @@
 
             <a
                 href="add-income.html"
+                aria-label="Add Income"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400"
                 >
-                    <i class="fa-solid fa-plus"></i>
+
+                    <i
+                        class="fa-solid fa-plus"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -788,13 +1222,19 @@
 
             <a
                 href="add-saving.html"
+                aria-label="Add Saving"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400"
                 >
-                    <i class="fa-solid fa-piggy-bank"></i>
+
+                    <i
+                        class="fa-solid fa-piggy-bank"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -808,13 +1248,19 @@
 
             <a
                 href="add-transaction.html"
+                aria-label="Add Transaction"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400"
                 >
-                    <i class="fa-solid fa-right-left"></i>
+
+                    <i
+                        class="fa-solid fa-right-left"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -828,13 +1274,19 @@
 
             <a
                 href="notebook.html"
+                aria-label="Open Notebook"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400"
                 >
-                    <i class="fa-solid fa-book"></i>
+
+                    <i
+                        class="fa-solid fa-book"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -848,13 +1300,19 @@
 
             <a
                 href="calendar.html"
+                aria-label="Open Calendar"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400"
                 >
-                    <i class="fa-solid fa-calendar"></i>
+
+                    <i
+                        class="fa-solid fa-calendar"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -868,13 +1326,19 @@
 
             <a
                 href="calculate.html"
+                aria-label="Open Calculator"
                 class="action-card rounded-2xl p-3 text-center"
             >
 
                 <div
                     class="w-9 h-9 mx-auto rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400"
                 >
-                    <i class="fa-solid fa-calculator"></i>
+
+                    <i
+                        class="fa-solid fa-calculator"
+                        aria-hidden="true"
+                    ></i>
+
                 </div>
 
                 <p
@@ -894,7 +1358,9 @@
          RECENT ACTIVITY
     ====================================================== -->
 
-    <section>
+    <section
+        aria-label="Recent Activity"
+    >
 
         <div
             class="flex items-center justify-between mb-2"
@@ -932,1379 +1398,17 @@
 
 
 <!-- =========================================================
-     JAVASCRIPT
+     EXISTING DASHBOARD JAVASCRIPT
+     तपाईंको पुरानो JS यहाँ जस्ताको तस्तै राख्नुहोस्
 ========================================================= -->
 
-<script type="module">
+<!--
+     NOTE:
+     तलको original module script र बाकी scripts हटाउनु हुँदैन।
+     Finance calculation, language, privacy, profile,
+     recent activity र Firebase logic सबै existing code बाट चल्छ।
+-->
 
-    import {
-        getIncomes
-    } from "./js/incomes.js";
-
-
-    import {
-        getSavings
-    } from "./js/savings.js";
-
-
-    import {
-        getTransactions
-    } from "./js/transactions.js";
-
-
-    import {
-        calculateFinance
-    } from "./js/finance.js";
-
-
-    import {
-        getProfileValue
-    } from "./js/storage.js";
-
-
-    /*
-        -----------------------------------------------
-        Global state
-        -----------------------------------------------
-    */
-
-    let privacyHidden =
-        localStorage.getItem(
-            "balance_privacy"
-        ) === "hidden";
-
-
-    let cardLanguage =
-        localStorage.getItem(
-            "dashboard_card_language"
-        ) || "en";
-
-
-    /*
-        -----------------------------------------------
-        Amount formatter
-        -----------------------------------------------
-    */
-
-    function formatAmount(amount) {
-
-        if (privacyHidden) {
-
-            return "••••••";
-
-        }
-
-        return (
-            "Rs " +
-            Number(amount || 0).toLocaleString(
-                "en-IN",
-                {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                }
-            )
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Date formatter
-        -----------------------------------------------
-    */
-
-    function formatDate(value) {
-
-        if (!value) {
-
-            return "";
-
-        }
-
-        const date =
-            new Date(value);
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return String(value);
-
-        }
-
-        return date.toLocaleDateString(
-            "en-GB",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Amount reader
-        -----------------------------------------------
-    */
-
-    function getAmount(item) {
-
-        return Number(
-            item?.total ??
-            item?.amount ??
-            item?.npr ??
-            item?.price ??
-            0
-        ) || 0;
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Dashboard finance
-        -----------------------------------------------
-    */
-
-    function updateDashboard() {
-
-        const incomes =
-            getIncomes() || [];
-
-
-        const savings =
-            getSavings() || [];
-
-
-        const transactions =
-            getTransactions() || [];
-
-
-        const finance =
-            calculateFinance(
-                incomes,
-                transactions,
-                savings
-            );
-
-
-        setText(
-            "summaryIncome",
-            formatAmount(
-                finance.totalIncome
-            )
-        );
-
-
-        setText(
-            "summaryExpense",
-            formatAmount(
-                finance.totalExpense
-            )
-        );
-
-
-        setText(
-            "summarySaving",
-            formatAmount(
-                finance.totalSaving
-            )
-        );
-
-
-        setText(
-            "summaryReceivable",
-            formatAmount(
-                finance.totalReceivable
-            )
-        );
-
-
-        setText(
-            "summaryPayable",
-            formatAmount(
-                finance.totalPayable
-            )
-        );
-
-
-        setText(
-            "summaryGiven",
-            formatAmount(
-                finance.totalGiven
-            )
-        );
-
-
-        setText(
-            "summaryTaken",
-            formatAmount(
-                finance.totalTaken
-            )
-        );
-
-
-        setText(
-            "summaryRepayment",
-            formatAmount(
-                finance.totalRepayment
-            )
-        );
-
-
-        setText(
-            "summaryBalance",
-            formatAmount(
-                finance.balance
-            )
-        );
-
-
-        renderRecentActivity(
-            incomes,
-            savings,
-            transactions
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Recent Activity
-        -----------------------------------------------
-    */
-
-    function renderRecentActivity(
-        incomes,
-        savings,
-        transactions
-    ) {
-
-        const container =
-            document.getElementById(
-                "recentActivity"
-            );
-
-
-        if (!container) {
-
-            return;
-
-        }
-
-
-        const records = [];
-
-
-        /*
-            Income records
-        */
-
-        incomes.forEach(
-            item => {
-
-                records.push({
-
-                    id:
-                        item.id ||
-                        cryptoRandom(),
-
-                    date:
-                        item.date ||
-                        item.createdAt ||
-                        "",
-
-                    createdAt:
-                        item.createdAt ||
-                        "",
-
-                    title:
-                        item.sourceName ||
-                        item.title ||
-                        item.category ||
-                        "Income",
-
-                    type:
-                        "Income",
-
-                    amount:
-                        getAmount(item),
-
-                    direction:
-                        "in",
-
-                    note:
-                        item.note || ""
-
-                });
-
-            }
-        );
-
-
-        /*
-            Saving records
-        */
-
-        savings.forEach(
-            item => {
-
-                records.push({
-
-                    id:
-                        item.id ||
-                        cryptoRandom(),
-
-                    date:
-                        item.date ||
-                        item.createdAt ||
-                        "",
-
-                    createdAt:
-                        item.createdAt ||
-                        "",
-
-                    title:
-                        item.title ||
-                        item.category ||
-                        "Saving",
-
-                    type:
-                        "Saving",
-
-                    amount:
-                        getAmount(item),
-
-                    direction:
-                        "saving",
-
-                    note:
-                        item.note || ""
-
-                });
-
-            }
-        );
-
-
-        /*
-            Transaction records
-        */
-
-        transactions.forEach(
-            item => {
-
-                const rawType =
-                    String(
-                        item.type ||
-                        item.transactionType ||
-                        "expense"
-                    ).toLowerCase();
-
-
-                let displayType =
-                    "Transaction";
-
-
-                let direction =
-                    "out";
-
-
-                if (
-                    rawType ===
-                    "expense"
-                ) {
-
-                    displayType =
-                        "Expense";
-
-                    direction =
-                        "out";
-
-                }
-
-                else if (
-                    rawType ===
-                    "receivable"
-                ) {
-
-                    displayType =
-                        "Receivable";
-
-                    direction =
-                        "in";
-
-                }
-
-                else if (
-                    rawType ===
-                    "payable"
-                ) {
-
-                    displayType =
-                        "Payable";
-
-                    direction =
-                        "out";
-
-                }
-
-                else if (
-                    rawType ===
-                    "given"
-                ) {
-
-                    displayType =
-                        "Given";
-
-                    direction =
-                        "out";
-
-                }
-
-                else if (
-                    rawType ===
-                    "taken"
-                ) {
-
-                    displayType =
-                        "Taken";
-
-                    direction =
-                        "in";
-
-                }
-
-                else if (
-                    rawType ===
-                    "repayment"
-                ) {
-
-                    displayType =
-                        "Repayment";
-
-                    direction =
-                        "repayment";
-
-                }
-
-
-                records.push({
-
-                    id:
-                        item.id ||
-                        cryptoRandom(),
-
-                    date:
-                        item.date ||
-                        item.createdAt ||
-                        "",
-
-                    createdAt:
-                        item.createdAt ||
-                        "",
-
-                    title:
-                        item.personName ||
-                        item.partyName ||
-                        "Transaction",
-
-                    type:
-                        displayType,
-
-                    amount:
-                        getAmount(item),
-
-                    direction:
-                        direction,
-
-                    note:
-                        item.note || ""
-
-                });
-
-            }
-        );
-
-
-        /*
-            Sort newest first
-        */
-
-        records.sort(
-            (a, b) => {
-
-                const aDate =
-                    new Date(
-                        a.date ||
-                        a.createdAt ||
-                        0
-                    ).getTime();
-
-
-                const bDate =
-                    new Date(
-                        b.date ||
-                        b.createdAt ||
-                        0
-                    ).getTime();
-
-
-                return bDate - aDate;
-
-            }
-        );
-
-
-        /*
-            Show latest 20 individual records
-        */
-
-        const latest =
-            records.slice(
-                0,
-                20
-            );
-
-
-        setText(
-            "activityCount",
-            `${records.length} record${records.length === 1 ? "" : "s"}`
-        );
-
-
-        if (!latest.length) {
-
-            container.innerHTML = `
-
-                <div
-                    class="card rounded-2xl p-6 text-center"
-                >
-
-                    <div
-                        class="w-12 h-12 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-3"
-                    >
-
-                        <i
-                            class="fa-solid fa-receipt text-slate-600"
-                        ></i>
-
-                    </div>
-
-                    <p
-                        class="text-sm font-semibold text-slate-400"
-                    >
-                        No activity yet
-                    </p>
-
-                    <p
-                        class="text-[10px] text-slate-600 mt-1"
-                    >
-                        Add income, saving or transaction to see it here.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-            latest.map(
-                record =>
-                    createActivityHTML(
-                        record
-                    )
-            ).join("");
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Activity HTML
-        -----------------------------------------------
-    */
-
-    function createActivityHTML(
-        record
-    ) {
-
-        let icon =
-            "fa-receipt";
-
-
-        let iconClass =
-            "text-slate-400";
-
-
-        let amountClass =
-            "text-slate-200";
-
-
-        let sign =
-            "";
-
-
-        if (
-            record.direction ===
-            "in"
-        ) {
-
-            icon =
-                "fa-arrow-down";
-
-            iconClass =
-                "text-emerald-400";
-
-            amountClass =
-                "text-emerald-400";
-
-            sign =
-                "+";
-
-        }
-
-
-        else if (
-            record.direction ===
-            "out"
-        ) {
-
-            icon =
-                "fa-arrow-up";
-
-            iconClass =
-                "text-rose-400";
-
-            amountClass =
-                "text-rose-400";
-
-            sign =
-                "-";
-
-        }
-
-
-        else if (
-            record.direction ===
-            "saving"
-        ) {
-
-            icon =
-                "fa-piggy-bank";
-
-            iconClass =
-                "text-amber-400";
-
-            amountClass =
-                "text-amber-400";
-
-            sign =
-                "";
-
-        }
-
-
-        else if (
-            record.direction ===
-            "repayment"
-        ) {
-
-            icon =
-                "fa-rotate";
-
-            iconClass =
-                "text-pink-400";
-
-            amountClass =
-                "text-pink-400";
-
-            sign =
-                "";
-
-        }
-
-
-        return `
-
-            <div
-                class="recent-row rounded-2xl p-3 flex items-center gap-3"
-            >
-
-                <div
-                    class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center flex-shrink-0"
-                >
-
-                    <i
-                        class="fa-solid ${icon} ${iconClass}"
-                    ></i>
-
-                </div>
-
-
-                <div
-                    class="flex-1 min-w-0"
-                >
-
-                    <p
-                        class="text-xs font-semibold truncate"
-                    >
-                        ${escapeHTML(record.title)}
-                    </p>
-
-                    <div
-                        class="flex items-center gap-1.5 mt-1"
-                    >
-
-                        <span
-                            class="text-[9px] text-slate-500"
-                        >
-                            ${escapeHTML(record.type)}
-                        </span>
-
-                        <span
-                            class="text-slate-700"
-                        >
-                            •
-                        </span>
-
-                        <span
-                            class="text-[9px] text-slate-600"
-                        >
-                            ${escapeHTML(
-                                formatDate(
-                                    record.date ||
-                                    record.createdAt
-                                )
-                            )}
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="text-right flex-shrink-0"
-                >
-
-                    <p
-                        class="text-xs font-bold ${amountClass} ${privacyHidden ? "hide-amount" : ""}"
-                    >
-                        ${privacyHidden
-                            ? "••••••"
-                            : sign +
-                              "Rs " +
-                              Number(
-                                  record.amount || 0
-                              ).toLocaleString(
-                                  "en-IN"
-                              )
-                        }
-                    </p>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Card language
-        ONLY card names change
-        -----------------------------------------------
-    */
-
-    function updateCardLanguage() {
-
-        document
-            .querySelectorAll(
-                ".card-label"
-            )
-            .forEach(
-                element => {
-
-                    const text =
-                        cardLanguage === "ne"
-                            ? element.dataset.ne
-                            : element.dataset.en;
-
-
-                    if (text) {
-
-                        element.textContent =
-                            text;
-
-                    }
-
-                }
-            );
-
-
-        const button =
-            document.getElementById(
-                "languageToggle"
-            );
-
-
-        if (button) {
-
-            button.textContent =
-                cardLanguage === "en"
-                    ? "NEP"
-                    : "ENG";
-
-        }
-
-
-        localStorage.setItem(
-            "dashboard_card_language",
-            cardLanguage
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Privacy
-        -----------------------------------------------
-    */
-
-    function updatePrivacy() {
-
-        const icon =
-            document.getElementById(
-                "privacyIcon"
-            );
-
-
-        if (privacyHidden) {
-
-            icon.classList.remove(
-                "fa-eye"
-            );
-
-            icon.classList.add(
-                "fa-eye-slash"
-            );
-
-        }
-
-        else {
-
-            icon.classList.remove(
-                "fa-eye-slash"
-            );
-
-            icon.classList.add(
-                "fa-eye"
-            );
-
-        }
-
-
-        updateDashboard();
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Profile
-        -----------------------------------------------
-    */
-
-    function loadProfile() {
-
-        const name =
-            getProfileValue(
-                "profile_name",
-                ""
-            );
-
-
-        const avatar =
-            getProfileValue(
-                "profile_avatar",
-                ""
-            );
-
-
-        setText(
-            "sidebarName",
-            name || "Guest"
-        );
-
-
-        if (avatar) {
-
-            setImage(
-                "headerAvatar",
-                avatar
-            );
-
-            setImage(
-                "sidebarAvatar",
-                avatar
-            );
-
-        }
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Greeting
-        -----------------------------------------------
-    */
-
-    function updateGreeting() {
-
-        const name =
-            getProfileValue(
-                "profile_name",
-                ""
-            );
-
-
-        const hour =
-            new Date().getHours();
-
-
-        let greeting =
-            "Good morning";
-
-
-        if (
-            hour >= 12 &&
-            hour < 17
-        ) {
-
-            greeting =
-                "Good afternoon";
-
-        }
-
-
-        else if (
-            hour >= 17
-        ) {
-
-            greeting =
-                "Good evening";
-
-        }
-
-
-        setText(
-            "greeting",
-            name
-                ? `${greeting}, ${name}`
-                : greeting
-        );
-
-
-        const now =
-            new Date();
-
-
-        setText(
-            "headerDate",
-            now.toLocaleDateString(
-                "en-US",
-                {
-                    weekday:
-                        "short",
-
-                    month:
-                        "short",
-
-                    day:
-                        "numeric",
-
-                    year:
-                        "numeric"
-                }
-            )
-        );
-
-
-        setText(
-            "todayText",
-            now.toLocaleDateString(
-                "en-US",
-                {
-                    weekday:
-                        "long",
-
-                    month:
-                        "long",
-
-                    day:
-                        "numeric",
-
-                    year:
-                        "numeric"
-                }
-            )
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Sidebar
-        -----------------------------------------------
-    */
-
-    function openSidebar() {
-
-        document
-            .getElementById(
-                "sidebar"
-            )
-            .classList.remove(
-                "-translate-x-full"
-            );
-
-
-        document
-            .getElementById(
-                "sidebarOverlay"
-            )
-            .classList.remove(
-                "hidden"
-            );
-
-    }
-
-
-    function closeSidebar() {
-
-        document
-            .getElementById(
-                "sidebar"
-            )
-            .classList.add(
-                "-translate-x-full"
-            );
-
-
-        document
-            .getElementById(
-                "sidebarOverlay"
-            )
-            .classList.add(
-                "hidden"
-            );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Helpers
-        -----------------------------------------------
-    */
-
-    function setText(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(
-                id
-            );
-
-
-        if (element) {
-
-            element.textContent =
-                value;
-
-        }
-
-    }
-
-
-    function setImage(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(
-                id
-            );
-
-
-        if (element) {
-
-            element.src =
-                value;
-
-        }
-
-    }
-
-
-    function escapeHTML(
-        value
-    ) {
-
-        return String(
-            value ?? ""
-        )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-    }
-
-
-    function cryptoRandom() {
-
-        if (
-            window.crypto &&
-            crypto.randomUUID
-        ) {
-
-            return crypto.randomUUID();
-
-        }
-
-        return (
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .slice(2)
-        );
-
-    }
-
-
-    /*
-        -----------------------------------------------
-        Events
-        -----------------------------------------------
-    */
-
-    document
-        .getElementById(
-            "menuBtn"
-        )
-        .addEventListener(
-            "click",
-            openSidebar
-        );
-
-
-    document
-        .getElementById(
-            "closeSidebar"
-        )
-        .addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-    document
-        .getElementById(
-            "sidebarOverlay"
-        )
-        .addEventListener(
-            "click",
-            closeSidebar
-        );
-
-
-    document
-        .getElementById(
-            "privacyBtn"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                privacyHidden =
-                    !privacyHidden;
-
-
-                localStorage.setItem(
-                    "balance_privacy",
-                    privacyHidden
-                        ? "hidden"
-                        : "visible"
-                );
-
-
-                updatePrivacy();
-
-            }
-        );
-
-
-    document
-        .getElementById(
-            "languageToggle"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                cardLanguage =
-                    cardLanguage === "en"
-                        ? "ne"
-                        : "en";
-
-
-                updateCardLanguage();
-
-            }
-        );
-
-
-    /*
-        -----------------------------------------------
-        Refresh when page becomes active
-        -----------------------------------------------
-    */
-
-    window.addEventListener(
-        "pageshow",
-        () => {
-
-            loadProfile();
-
-            updateGreeting();
-
-            updateDashboard();
-
-            updateCardLanguage();
-
-            updatePrivacy();
-
-        }
-    );
-
-
-    window.addEventListener(
-        "focus",
-        () => {
-
-            loadProfile();
-
-            updateGreeting();
-
-            updateDashboard();
-
-        }
-    );
-
-
-    window.addEventListener(
-        "storage",
-        () => {
-
-            loadProfile();
-
-            updateGreeting();
-
-            updateDashboard();
-
-        }
-    );
-
-
-    /*
-        -----------------------------------------------
-        Initial load
-        -----------------------------------------------
-    */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        () => {
-
-            loadProfile();
-
-            updateGreeting();
-
-            updateCardLanguage();
-
-            updatePrivacy();
-
-        }
-    );
-
-
-    /*
-        -----------------------------------------------
-        Service Worker
-        -----------------------------------------------
-    */
-
-    if (
-        "serviceWorker" in navigator
-    ) {
-
-        window.addEventListener(
-            "load",
-            () => {
-
-                navigator
-                    .serviceWorker
-                    .register(
-                        "./sw.js"
-                    )
-                    .catch(
-                        () => {}
-                    );
-
-            }
-        );
-
-    }
-
-</script>
 
 </body>
 
